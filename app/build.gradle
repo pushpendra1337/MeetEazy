@@ -1,5 +1,6 @@
 plugins {
     id 'com.android.application'
+    id 'com.google.gms.google-services'
 }
 
 android {
@@ -12,6 +13,7 @@ android {
         targetSdkVersion 30
         versionCode 1
         versionName "1.0"
+        multiDexEnabled true
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -22,6 +24,7 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
+
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
@@ -30,10 +33,63 @@ android {
 
 dependencies {
 
-    implementation 'androidx.appcompat:appcompat:1.2.0'
+    // Retrofit2
+    implementation 'com.squareup.retrofit2:retrofit:2.9.0'
+
+    // Retrofit2 Scalars Converter
+    implementation 'com.squareup.retrofit2:converter-scalars:2.9.0'
+
+    // Material View Pager Dots Indicator
+    implementation 'com.tbuonomo:dotsindicator:4.2'
+
+    // CircleImageView
+    implementation 'de.hdodenhof:circleimageview:3.1.0'
+
+    // Import the Firebase BoM
+    implementation platform('com.google.firebase:firebase-bom:27.0.0')
+
+    // Analytics
+    implementation 'com.google.firebase:firebase-analytics'
+
+    // Firebase Authentication
+    implementation 'com.google.firebase:firebase-auth'
+
+    // Cloud Firestore
+    implementation 'com.google.firebase:firebase-firestore'
+
+    // Cloud Messaging
+    implementation 'com.google.firebase:firebase-messaging'
+
+    // Cloud Storage
+    implementation 'com.google.firebase:firebase-storage'
+
+    // Material Components for Android
     implementation 'com.google.android.material:material:1.3.0'
+
+    // MultiDex
+    implementation 'com.android.support:multidex:1.0.3'
+
+    // AppCompat
+    implementation 'androidx.appcompat:appcompat:1.2.0'
+
+    // RecyclerView
+    implementation 'androidx.recyclerview:recyclerview:1.2.0'
+
+    // SwipeRefreshLayout
+    implementation "androidx.swiperefreshlayout:swiperefreshlayout:1.1.0"
+
+    // ConstraintLayout
     implementation 'androidx.constraintlayout:constraintlayout:2.0.4'
-    testImplementation 'junit:junit:4.+'
+
+    // Legacy Support v4
+    implementation 'androidx.legacy:legacy-support-v4:1.0.0'
+
+    // JUnit 4
+    testImplementation 'junit:junit:4.13.2'
+
+    // AndroidX Test JUnit
     androidTestImplementation 'androidx.test.ext:junit:1.1.2'
+
+    // AndroidX Test Espresso
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0'
 }
