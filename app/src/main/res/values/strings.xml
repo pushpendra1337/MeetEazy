@@ -1,3 +1,9 @@
 <resources>
+    <!-- Splash Activity -->
     <string name="app_name">MeetEazy</string>
+    <string name="text_in_india">in India</string>
+    <string name="text_made_with">Made with</string>
+    <string name="content_description_logo">Brand Logo</string>
+    <string name="content_description_love">Love</string>
+
 </resources>
