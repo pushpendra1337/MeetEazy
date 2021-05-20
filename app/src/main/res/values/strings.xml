@@ -6,4 +6,19 @@
     <string name="content_description_logo">Brand Logo</string>
     <string name="content_description_love">Love</string>
 
+    <!-- Onboarding Activity -->
+    <string name="onboarding_heading_first_slide">Create or join meeting rooms</string>
+    <string name="onboarding_heading_second_slide">Share your screen</string>
+    <string name="onboarding_heading_third_slide">Connect with your friends and co-workers</string>
+    <string name="onboarding_heading_fourth_slide">Save or add contacts</string>
+    <string name="onboarding_heading_fifth_slide">Picture-in-picture mode</string>
+    <string name="onboarding_description_first_slide">Create or join a room for lag-free video meetings anytime, anywhere.</string>
+    <string name="onboarding_description_second_slide">Easily share your screen, so they\'ll see what you see.</string>
+    <string name="onboarding_description_third_slide">Talk with your friends and co-workers over free voice &amp; video calls anytime.</string>
+    <string name="onboarding_description_fourth_slide">Easily create a contact if you want to call anyone next time in one click.</string>
+    <string name="onboarding_description_fifth_slide">Never lose any moment of an important meeting or call while using other apps.</string>
+    <string name="button_text_skip">Skip</string>
+    <string name="button_text_next">Next</string>
+    <string name="button_text_get_started">Get Started</string>
+
 </resources>
