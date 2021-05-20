@@ -40,4 +40,13 @@
     <string name="error_empty_password">Please enter your password.</string>
     <string name="error_invalid_password">Your password must be at least 8 characters long, must contain at least 1 uppercase, 1 lowercase, 1 numeric &amp; 1 special character.</string>
 
+    <!-- No Internet Dialog -->
+    <string name="dialog_title_no_internet">Whoops!</string>
+    <string name="dialog_message_no_internet">You aren\'t connected to internet. Make sure that Wi-Fi or mobile data is turned on, then try again.</string>
+    <string name="content_description_no_internet">No internet</string>
+    <string name="dialog_button_text_settings">Settings</string>
+
+    <!-- Common Dialog Buttons -->
+    <string name="dialog_button_text_ok">OK</string>
+    
 </resources>
