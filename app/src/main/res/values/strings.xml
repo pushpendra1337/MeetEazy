@@ -49,6 +49,13 @@
     <string name="text_do_not_have_an_account">Don\'t have an account?</string>
     <string name="link_text_sign_up">Sign Up</string>
 
+    <!-- Reset Password Activity -->
+    <string name="title_reset_password_activity">Reset Password</string>
+    <string name="body_text_reset_password_activity">Please enter the email address associated with your account then we\'ll send you a link to reset your password.</string>
+    <string name="hint_registered_email">Registered Email</string>
+    <string name="text_remembered_password">Remembered Password?</string>
+    <string name="button_text_send_link">Send Link</string>
+
     <!-- No Internet Dialog -->
     <string name="dialog_title_no_internet">Whoops!</string>
     <string name="dialog_message_no_internet">You aren\'t connected to internet. Make sure that Wi-Fi or mobile data is turned on, then try again.</string>
