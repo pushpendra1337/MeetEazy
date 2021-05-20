@@ -1,10 +1,136 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="purple_200">#FFBB86FC</color>
-    <color name="purple_500">#FF6200EE</color>
-    <color name="purple_700">#FF3700B3</color>
-    <color name="teal_200">#FF03DAC5</color>
-    <color name="teal_700">#FF018786</color>
-    <color name="black">#FF000000</color>
+
+    <!-- Royal Blue -->
+    <color name="royal_blue">#5B47F5</color>
+
+    <!-- Cornflower Blue -->
+    <color name="cornflower_blue">#6C63FF</color>
+
+    <!-- Governor Bay -->
+    <color name="governor_bay">#3B41BA</color>
+
+    <!-- Dodger Blue -->
+    <color name="dodger_blue">#4A8CFF</color>
+
+    <!-- Mariner -->
+    <color name="mariner">#2050DA</color>
+
+    <!-- Athens Grey -->
+    <color name="athens_grey">#EAEBF3</color>
+
+    <!-- White -->
     <color name="white">#FFFFFFFF</color>
+
+    <!-- Monza -->
+    <color name="monza">#B00020</color>
+
+    <!-- Black -->
+    <color name="black">#FF000000</color>
+
+    <!-- Maroon Flush -->
+    <color name="maroon_flush">#C2185B</color>
+
+    <!-- Lynch -->
+    <color name="lynch">#7682A0</color>
+
+    <!-- Ripple Cornflower Blue -->
+    <color name="ripple_cornflower_blue">#4D6C63FF</color>
+
+    <!-- Dark grey color for 0dp elevation -->
+    <color name="dark_grey_0_overlay">#121212</color>
+
+    <!-- Dark grey color for 1dp elevation -->
+    <color name="dark_grey_5_overlay">#1E1E1E</color>
+
+    <!-- Dark grey color for 2dp elevation -->
+    <color name="dark_grey_7_overlay">#222222</color>
+
+    <!-- Dark grey color for 3dp elevation -->
+    <color name="dark_grey_8_overlay">#242424</color>
+
+    <!-- Dark grey color for 4dp elevation -->
+    <color name="dark_grey_9_overlay">#272727</color>
+
+    <!-- Dark grey color for 6dp elevation -->
+    <color name="dark_grey_11_overlay">#2C2C2C</color>
+
+    <!-- Dark grey color for 8dp elevation -->
+    <color name="dark_grey_12_overlay">#2E2E2E</color>
+
+    <!-- Dark grey color for 12dp elevation -->
+    <color name="dark_grey_14_overlay">#333333</color>
+
+    <!-- Dark grey color for 16dp elevation -->
+    <color name="dark_grey_15_overlay">#343434</color>
+
+    <!-- Dark grey color for 24dp elevation -->
+    <color name="dark_grey_16_overlay">#383838</color>
+
+    <!-- Primary -->
+    <color name="colorPrimary">@color/cornflower_blue</color>
+
+    <!-- Primary Variant -->
+    <color name="colorPrimaryVariant">@color/governor_bay</color>
+
+    <!-- Secondary -->
+    <color name="colorSecondary">@color/dodger_blue</color>
+
+    <!-- Secondary Variant -->
+    <color name="colorSecondaryVariant">@color/mariner</color>
+
+    <!-- Background -->
+    <color name="colorBackground">@color/white</color>
+
+    <!-- Surface -->
+    <color name="colorSurface">@color/white</color>
+
+    <!-- Error -->
+    <color name="colorError">@color/monza</color>
+
+    <!-- On Primary -->
+    <color name="colorOnPrimary">@color/white</color>
+
+    <!-- On Secondary -->
+    <color name="colorOnSecondary">@color/black</color>
+
+    <!-- On Background -->
+    <color name="colorOnBackground">@color/black</color>
+
+    <!-- On Surface -->
+    <color name="colorOnSurface">@color/black</color>
+
+    <!-- On Error -->
+    <color name="colorOnError">@color/white</color>
+
+    <!-- High Emphasis Text -->
+    <color name="colorHighEmphasisText">#D4000000</color>
+
+    <!-- Medium Emphasis Text -->
+    <color name="colorMediumEmphasisText">#99000000</color>
+
+    <!-- Disabled Text -->
+    <color name="colorDisabledText">#61000000</color>
+
+    <!-- Iconography -->
+    <color name="colorIconography">@color/lynch</color>
+
+    <!-- Highlight Control -->
+    <color name="colorControlHighlight">@color/ripple_cornflower_blue</color>
+
+    <!-- Snackbar Background -->
+    <color name="colorSnackbarBackground">@color/dark_grey_11_overlay</color>
+
+    <!-- Snackbar Text -->
+    <color name="colorSnackbarText">#9AFFFFFF</color>
+
+    <!-- Dialog Background -->
+    <color name="colorDialogBackground">@color/white</color>
+
+    <!-- Material Toolbar Background -->
+    <color name="colorToolbarBackground">@color/colorSurface</color>
+
+    <!-- Divider -->
+    <color name="colorDivider">#10000000</color>
+
 </resources>

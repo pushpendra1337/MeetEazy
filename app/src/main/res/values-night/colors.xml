@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!-- Background -->
+    <color name="colorBackground">@color/dark_grey_0_overlay</color>
+
+    <!-- Surface -->
+    <color name="colorSurface">@color/dark_grey_0_overlay</color>
+
+    <!-- High Emphasis Text -->
+    <color name="colorHighEmphasisText">#D4FFFFFF</color>
+
+    <!-- Medium Emphasis Text -->
+    <color name="colorMediumEmphasisText">#99FFFFFF</color>
+
+    <!-- Disabled Text -->
+    <color name="colorDisabledText">#61FFFFFF</color>
+
+    <!-- Snackbar Background -->
+    <color name="colorSnackbarBackground">@color/white</color>
+
+    <!-- Snackbar Text -->
+    <color name="colorSnackbarText">#99000000</color>
+
+    <!-- Dialog Background -->
+    <color name="colorDialogBackground">@color/dark_grey_16_overlay</color>
+
+    <!-- Material Toolbar Background -->
+    <color name="colorToolbarBackground">@color/dark_grey_9_overlay</color>
+
+    <!-- Divider -->
+    <color name="colorDivider">#10FFFFFF</color>
+
+</resources>
