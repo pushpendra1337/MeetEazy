@@ -48,5 +48,11 @@
 
     <!-- Common Dialog Buttons -->
     <string name="dialog_button_text_ok">OK</string>
-    
+
+    <!-- Snackbars -->
+    <string name="snackbar_text_error_occurred">An error occurred. Please try again later.</string>
+    <string name="snackbar_text_login_failed_wrong_credentials">Login failed! Please check your credentials and try again.</string>
+    <string name="snackbar_text_email_not_registered">The email address you entered is not associated with any account.</string>
+    <string name="snackbar_text_email_already_exists">The email address is already in use by another account.</string>
+
 </resources>
