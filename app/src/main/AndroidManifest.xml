@@ -30,6 +30,10 @@
         <activity
             android:name=".activities.SignInActivity"
             android:windowSoftInputMode="adjustResize" />
+        <activity
+            android:name=".activities.ResetPasswordActivity"
+            android:windowSoftInputMode="adjustResize" />
     </application>
+
 
 </manifest>
