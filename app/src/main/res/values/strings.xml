@@ -21,4 +21,23 @@
     <string name="button_text_next">Next</string>
     <string name="button_text_get_started">Get Started</string>
 
+    <!-- Sign Up Activity -->
+    <string name="title_sign_up_activity">Create Account</string>
+    <string name="body_text_sign_up_activity">We need a few details to get your account ready</string>
+    <string name="hint_first_name">First Name</string>
+    <string name="hint_last_name">Last Name</string>
+    <string name="hint_email">Email</string>
+    <string name="hint_create_password">Create Password</string>
+    <string name="button_text_sign_up">Sign Up</string>
+    <string name="text_already_have_an_account">Already have an account?</string>
+    <string name="link_text_sign_in">Sign In</string>
+    <string name="error_empty_first_name">First name is required.</string>
+    <string name="error_invalid_first_name">Invalid first name.</string>
+    <string name="error_empty_last_name">Last name is required.</string>
+    <string name="error_invalid_last_name">Invalid last name.</string>
+    <string name="error_empty_email">Please enter your email address.</string>
+    <string name="error_invalid_email">Please enter a valid email address.</string>
+    <string name="error_empty_password">Please enter your password.</string>
+    <string name="error_invalid_password">Your password must be at least 8 characters long, must contain at least 1 uppercase, 1 lowercase, 1 numeric &amp; 1 special character.</string>
+
 </resources>
