@@ -3,6 +3,9 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="net.intensecorp.meeteazy">
 
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+
     <application
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
@@ -21,6 +24,9 @@
         <activity
             android:name=".activities.OnboardingActivity"
             android:screenOrientation="portrait" />
+        <activity
+            android:name=".activities.SignUpActivity"
+            android:windowSoftInputMode="adjustResize" />
     </application>
 
 </manifest>
