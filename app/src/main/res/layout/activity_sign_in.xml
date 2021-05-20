@@ -1,0 +1,196 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/colorBackground"
+    android:scrollbars="none"
+    tools:context=".activities.SignInActivity">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <ImageView
+            android:layout_width="@dimen/logo_width_large"
+            android:layout_height="@dimen/logo_height_large"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginHorizontal="@dimen/margin_16dp"
+            android:layout_marginTop="@dimen/margin_48dp"
+            android:layout_marginBottom="@dimen/margin_12dp"
+            android:contentDescription="@string/content_description_logo"
+            android:src="@drawable/img_logo" />
+
+        <com.google.android.material.textview.MaterialTextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginHorizontal="@dimen/margin_16dp"
+            android:layout_marginBottom="@dimen/margin_8dp"
+            android:includeFontPadding="false"
+            android:text="@string/title_sign_in_activity"
+            android:textAlignment="center"
+            android:textColor="@color/colorHighEmphasisText"
+            android:textSize="@dimen/text_size_huge"
+            android:transitionName="brand_name"
+            app:fontFamily="@font/poppins_semi_bold" />
+
+        <com.google.android.material.textview.MaterialTextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginHorizontal="@dimen/margin_16dp"
+            android:layout_marginBottom="@dimen/margin_40dp"
+            android:includeFontPadding="false"
+            android:text="@string/body_text_sign_in_activity"
+            android:textAlignment="center"
+            android:textColor="@color/colorMediumEmphasisText"
+            android:textSize="@dimen/text_size_small"
+            app:fontFamily="@font/poppins_regular" />
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/textInputLayout_email"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="@dimen/margin_16dp"
+            android:layout_marginBottom="@dimen/margin_16dp"
+            android:hint="@string/hint_email"
+            android:textColorHint="@color/colorMediumEmphasisText"
+            app:boxCornerRadiusBottomEnd="@dimen/corner_radius_medium"
+            app:boxCornerRadiusBottomStart="@dimen/corner_radius_medium"
+            app:boxCornerRadiusTopEnd="@dimen/corner_radius_medium"
+            app:boxCornerRadiusTopStart="@dimen/corner_radius_medium"
+            app:boxStrokeErrorColor="@color/colorError"
+            app:errorEnabled="false"
+            app:errorIconDrawable="@drawable/ic_baseline_error_outline_24"
+            app:errorIconTint="@color/colorError"
+            app:errorTextAppearance="@style/StyleErrorText"
+            app:errorTextColor="@color/colorError"
+            app:hintTextColor="@color/colorPrimary"
+            app:startIconDrawable="@drawable/ic_outline_email_24"
+            app:startIconTint="@color/colorIconography">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/textInputEditText_email"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/poppins_regular"
+                android:inputType="textEmailAddress"
+                android:textSize="@dimen/text_size_medium" />
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/textInputLayout_password"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="@dimen/margin_16dp"
+            android:layout_marginBottom="@dimen/margin_12dp"
+            android:hint="@string/hint_password"
+            android:textColorHint="@color/colorMediumEmphasisText"
+            app:boxCornerRadiusBottomEnd="@dimen/corner_radius_medium"
+            app:boxCornerRadiusBottomStart="@dimen/corner_radius_medium"
+            app:boxCornerRadiusTopEnd="@dimen/corner_radius_medium"
+            app:boxCornerRadiusTopStart="@dimen/corner_radius_medium"
+            app:boxStrokeErrorColor="@color/colorError"
+            app:endIconMode="password_toggle"
+            app:endIconTint="@color/colorIconography"
+            app:errorEnabled="false"
+            app:errorIconDrawable="@drawable/ic_baseline_error_outline_24"
+            app:errorIconTint="@color/colorError"
+            app:errorTextAppearance="@style/StyleErrorText"
+            app:errorTextColor="@color/colorError"
+            app:hintTextColor="@color/colorPrimary"
+            app:startIconDrawable="@drawable/ic_outline_lock_24"
+            app:startIconTint="@color/colorIconography">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/textInputEditText_password"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/poppins_regular"
+                android:inputType="textPassword"
+                android:textSize="@dimen/text_size_medium" />
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textview.MaterialTextView
+            android:id="@+id/textView_forgot_password"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="end"
+            android:layout_marginEnd="@dimen/margin_16dp"
+            android:layout_marginBottom="@dimen/margin_20dp"
+            android:background="@drawable/selector_item_ripple_links"
+            android:includeFontPadding="false"
+            android:padding="@dimen/padding_tiny"
+            android:text="@string/link_text_forgot_password"
+            android:textColor="@color/colorPrimary"
+            android:textSize="@dimen/text_size_medium"
+            app:fontFamily="@font/poppins_regular" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/button_sign_in"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/button_height_large"
+            android:layout_marginHorizontal="@dimen/margin_16dp"
+            android:layout_marginBottom="@dimen/margin_24dp"
+            android:fontFamily="@font/poppins_medium"
+            android:includeFontPadding="false"
+            android:text="@string/button_text_sign_in"
+            android:textColor="@color/colorOnPrimary"
+            android:textSize="@dimen/text_size_large"
+            app:backgroundTint="@color/colorPrimary"
+            app:cornerRadius="@dimen/corner_radius_medium"
+            app:rippleColor="@color/colorPrimaryVariant">
+
+        </com.google.android.material.button.MaterialButton>
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginHorizontal="@dimen/margin_16dp"
+            android:layout_marginBottom="@dimen/margin_16dp"
+            android:gravity="center_horizontal">
+
+            <com.google.android.material.textview.MaterialTextView
+                android:id="@+id/textView_do_not_have_an_account"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:includeFontPadding="false"
+                android:text="@string/text_do_not_have_an_account"
+                android:textColor="@color/colorMediumEmphasisText"
+                android:textSize="@dimen/text_size_medium"
+                app:fontFamily="@font/poppins_regular"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent" />
+
+            <com.google.android.material.textview.MaterialTextView
+                android:id="@+id/textView_sign_up"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/selector_item_ripple_links"
+                android:includeFontPadding="false"
+                android:paddingHorizontal="@dimen/padding_tiny"
+                android:text="@string/link_text_sign_up"
+                android:textColor="@color/colorPrimary"
+                android:textSize="@dimen/text_size_medium"
+                app:fontFamily="@font/poppins_regular"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/textView_do_not_have_an_account"
+                app:layout_constraintTop_toTopOf="parent" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </LinearLayout>
+
+</ScrollView>
+
+
+
