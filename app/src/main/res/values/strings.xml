@@ -108,6 +108,9 @@
     <string name="snackbar_text_email_not_registered">The email address you entered is not associated with any account.</string>
     <string name="snackbar_text_email_already_exists">The email address is already in use by another account.</string>
 
+    <!-- Toolbar Menu -->
+    <string name="item_title_profile">Profile</string>
+
     <!-- Close Button Content Description -->
     <string name="content_description_close">Close</string>
 
