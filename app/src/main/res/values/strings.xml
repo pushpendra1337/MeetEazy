@@ -75,6 +75,14 @@
     <string name="dialog_message_1_email_verification">We\'ve sent a verification email to:</string>
     <string name="dialog_message_2_email_verification">Please check your inbox and click on the verification link to continue.</string>
 
+    <!-- Home Activity -->
+    <string name="toolbar_title_search">Search</string>
+    <string name="toolbar_title_search_in_rooms">Search in rooms</string>
+    <string name="navigation_content_description_search">Search</string>
+    <string name="placeholder_full_name">Full Name</string>
+    <string name="content_description_voice_calll">Voice call</string>
+    <string name="content_description_video_calll">Video call</string>
+
     <!-- Reset Password Dialog -->
     <string name="dialog_title_reset_password">Email has been sent!</string>
     <string name="dialog_message_reset_password">We\'ve sent a password reset link to your email address. Please check your inbox and click on the link to reset your password.</string>
