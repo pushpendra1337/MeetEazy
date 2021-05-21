@@ -40,6 +40,14 @@
     <string name="error_empty_password">Please enter your password.</string>
     <string name="error_invalid_password">Your password must be at least 8 characters long, must contain at least 1 uppercase, 1 lowercase, 1 numeric &amp; 1 special character.</string>
 
+    <!-- Email Verification Activity -->
+    <string name="title_email_verification_activity">Verify Your Email Address</string>
+    <string name="text_hey">Hey </string>
+    <string name="placeholder_first_name">User</string>
+    <string name="body_text_email_verification_activity">You\'re almost ready to start enjoying MeetEazy. Now we need to verify your email address to finish signing up for MeetEazy. Please click on the Verify button and we\'ll send you a verification link to:</string>
+    <string name="placeholder_email">user@example.com</string>
+    <string name="button_text_verify">Verify</string>
+
     <!-- Sign In Activity -->
     <string name="title_sign_in_activity">Welcome Back!</string>
     <string name="body_text_sign_in_activity">Please Sign In to continue</string>
