@@ -1,7 +1,11 @@
 package net.intensecorp.meeteazy.activities;
 
+import android.app.AlertDialog;
+import android.content.Intent;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -26,6 +30,11 @@ import de.hdodenhof.circleimageview.CircleImageView;
 public class HomeActivity extends AppCompatActivity {
 
     private static final String TAG = HomeActivity.class.getSimpleName();
+    private static final String FEEDBACK_EMAIL_TYPE = "text/html";
+    private static final String FEEDBACK_EMAIL_HANDLER_PACKAGE = "com.google.android.gm";
+    private static final String[] FEEDBACK_RECIPIENTS_EMAIL_ADDRESS = {"pushpendray1337@gmail.com"};
+    private static final String FEEDBACK_EMAIL_SUBJECT = "Feedback on MeetEazy app";
+    private AlertDialog mProfileDialog;
     private FirebaseAuth mAuth;
 
     @Override
@@ -58,7 +67,7 @@ public class HomeActivity extends AppCompatActivity {
 
         CircleImageView profilePicture = view.findViewById(R.id.circleImageView_profile_picture);
 
-        profilePicture.setOnClickListener(v -> Toast.makeText(HomeActivity.this, "Profile", Toast.LENGTH_SHORT).show());
+        profilePicture.setOnClickListener(v -> showProfileDialog());
 
         return super.onCreateOptionsMenu(menu);
     }
@@ -86,5 +95,82 @@ public class HomeActivity extends AppCompatActivity {
         userReference.update(Firestore.FIELD_FCM_TOKEN, token)
                 .addOnSuccessListener(aVoid -> Log.d(TAG, "Token successfully updated: " + token))
                 .addOnFailureListener(e -> Log.e(TAG, "Failed to update token: " + e.getMessage()));
+    }
+
+    private void showProfileDialog() {
+        if (mProfileDialog == null) {
+
+            AlertDialog.Builder builder = new AlertDialog.Builder(HomeActivity.this);
+            View view = LayoutInflater.from(this).inflate(R.layout.dialog_profile, findViewById(R.id.scrollView_dialog_container));
+            builder.setView(view);
+            mProfileDialog = builder.create();
+
+            if (mProfileDialog.getWindow() != null) {
+                mProfileDialog.getWindow().setBackgroundDrawable(new ColorDrawable(0));
+            }
+
+            view.findViewById(R.id.linearLayout_profile).setOnClickListener(v -> {
+                dismissProfileDialog();
+
+                startProfileActivity();
+            });
+
+            view.findViewById(R.id.linearLayout_settings).setOnClickListener(v -> {
+                dismissProfileDialog();
+
+                startSettingsActivity();
+            });
+
+            view.findViewById(R.id.linearLayout_about).setOnClickListener(v -> {
+                dismissProfileDialog();
+
+                startAboutActivity();
+            });
+
+            view.findViewById(R.id.linearLayout_feedback).setOnClickListener(v -> {
+                dismissProfileDialog();
+
+                sendEmail();
+            });
+
+            view.findViewById(R.id.button_sign_out).setOnClickListener(v -> {
+                dismissProfileDialog();
+                Toast.makeText(HomeActivity.this, "Sign Out", Toast.LENGTH_SHORT).show();
+            });
+
+            view.findViewById(R.id.imageView_close).setOnClickListener(v -> dismissProfileDialog());
+        }
+
+        mProfileDialog.show();
+    }
+
+    private void dismissProfileDialog() {
+        if (mProfileDialog != null) {
+            mProfileDialog.dismiss();
+        }
+    }
+
+    private void startProfileActivity() {
+        Intent profileIntent = new Intent(getApplicationContext(), ProfileActivity.class);
+        startActivity(profileIntent);
+    }
+
+    private void startSettingsActivity() {
+        Intent settingsIntent = new Intent(getApplicationContext(), SettingsActivity.class);
+        startActivity(settingsIntent);
+    }
+
+    private void startAboutActivity() {
+        Intent aboutIntent = new Intent(getApplicationContext(), AboutActivity.class);
+        startActivity(aboutIntent);
+    }
+
+    private void sendEmail() {
+        Intent emailIntent = new Intent(Intent.ACTION_SEND);
+        emailIntent.putExtra(Intent.EXTRA_EMAIL, FEEDBACK_RECIPIENTS_EMAIL_ADDRESS);
+        emailIntent.putExtra(Intent.EXTRA_SUBJECT, FEEDBACK_EMAIL_SUBJECT);
+        emailIntent.setType(FEEDBACK_EMAIL_TYPE);
+        emailIntent.setPackage(FEEDBACK_EMAIL_HANDLER_PACKAGE);
+        startActivity(emailIntent);
     }
 }
