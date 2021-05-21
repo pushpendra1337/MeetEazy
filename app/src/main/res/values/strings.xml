@@ -92,6 +92,13 @@
     <string name="content_description_feedback">Feedback</string>
     <string name="dialog_button_text_sign_out">Sign Out</string>
 
+    <!-- Sign Out Dialog -->
+    <string name="content_description_sign_out">Sign out</string>
+    <string name="dialog_title_sign_out">Are you sure?</string>
+    <string name="dialog_message_sign_out">Do you really want to sign out?</string>
+    <string name="dialog_button_text_yes">Yes</string>
+    <string name="dialog_button_text_no">No</string>
+
     <!-- Common Dialog Buttons -->
     <string name="dialog_button_text_ok">OK</string>
 
