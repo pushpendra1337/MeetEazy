@@ -64,18 +64,8 @@
     <string name="text_remembered_password">Remembered Password?</string>
     <string name="button_text_send_link">Send Link</string>
 
-    <!-- No Internet Dialog -->
-    <string name="dialog_title_no_internet">Whoops!</string>
-    <string name="dialog_message_no_internet">You aren\'t connected to internet. Make sure that Wi-Fi or mobile data is turned on, then try again.</string>
-    <string name="content_description_no_internet">No internet</string>
-    <string name="dialog_button_text_settings">Settings</string>
-
-    <!-- Email Verification Dialog -->
-    <string name="dialog_title_email_verification">Email has been sent!</string>
-    <string name="dialog_message_1_email_verification">We\'ve sent a verification email to:</string>
-    <string name="dialog_message_2_email_verification">Please check your inbox and click on the verification link to continue.</string>
-
     <!-- Home Activity -->
+    <string name="item_title_profile">Profile</string>
     <string name="toolbar_title_search">Search</string>
     <string name="toolbar_title_search_in_rooms">Search in rooms</string>
     <string name="navigation_content_description_search">Search</string>
@@ -83,10 +73,22 @@
     <string name="content_description_voice_calll">Voice call</string>
     <string name="content_description_video_calll">Video call</string>
 
+    <!-- No Internet Dialog -->
+    <string name="content_description_no_internet">No internet</string>
+    <string name="dialog_title_no_internet">Whoops!</string>
+    <string name="dialog_message_no_internet">You aren\'t connected to internet. Make sure that Wi-Fi or mobile data is turned on, then try again.</string>
+    <string name="dialog_button_text_ok">OK</string>
+    <string name="dialog_button_text_settings">Settings</string>
+
+    <!-- Email Verification Dialog -->
+    <string name="content_description_email_sent">Email sent</string>
+    <string name="dialog_title_email_verification">Email has been sent!</string>
+    <string name="dialog_message_1_email_verification">We\'ve sent a verification email to:</string>
+    <string name="dialog_message_2_email_verification">Please check your inbox and click on the verification link to continue.</string>
+
     <!-- Reset Password Dialog -->
     <string name="dialog_title_reset_password">Email has been sent!</string>
     <string name="dialog_message_reset_password">We\'ve sent a password reset link to your email address. Please check your inbox and click on the link to reset your password.</string>
-    <string name="content_description_email_sent">Email sent</string>
     <string name="dialog_button_text_change_email">Change Email</string>
 
     <!-- Profile Dialog -->
@@ -99,6 +101,7 @@
     <string name="content_description_about">About</string>
     <string name="content_description_feedback">Feedback</string>
     <string name="dialog_button_text_sign_out">Sign Out</string>
+    <string name="content_description_close">Close</string>
 
     <!-- Sign Out Dialog -->
     <string name="content_description_sign_out">Sign out</string>
@@ -107,19 +110,10 @@
     <string name="dialog_button_text_yes">Yes</string>
     <string name="dialog_button_text_no">No</string>
 
-    <!-- Common Dialog Buttons -->
-    <string name="dialog_button_text_ok">OK</string>
-
     <!-- Snackbars -->
     <string name="snackbar_text_error_occurred">An error occurred. Please try again later.</string>
     <string name="snackbar_text_login_failed_wrong_credentials">Login failed! Please check your credentials and try again.</string>
     <string name="snackbar_text_email_not_registered">The email address you entered is not associated with any account.</string>
     <string name="snackbar_text_email_already_exists">The email address is already in use by another account.</string>
-
-    <!-- Toolbar Menu -->
-    <string name="item_title_profile">Profile</string>
-
-    <!-- Close Button Content Description -->
-    <string name="content_description_close">Close</string>
 
 </resources>
