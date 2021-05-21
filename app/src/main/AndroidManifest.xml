@@ -56,6 +56,9 @@
         <!-- Settings Activity -->
         <activity android:name=".activities.SettingsActivity" />
 
+        <!-- About Activity -->
+        <activity android:name=".activities.AboutActivity" />
+
     </application>
 
 </manifest>
