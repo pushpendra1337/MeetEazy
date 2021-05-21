@@ -20,7 +20,7 @@
         <LinearLayout
             android:id="@+id/linearLayout_logo"
             android:layout_width="match_parent"
-            android:layout_height="64dp"
+            android:layout_height="@dimen/dialog_titlebar_height"
             android:orientation="horizontal"
             android:padding="@dimen/padding_medium"
             app:layout_constraintEnd_toEndOf="parent"
@@ -73,7 +73,7 @@
         <LinearLayout
             android:id="@+id/linearLayout_profile"
             android:layout_width="0dp"
-            android:layout_height="56dp"
+            android:layout_height="@dimen/one_line_list_item_height"
             android:background="?selectableItemBackground"
             android:orientation="horizontal"
             android:paddingHorizontal="@dimen/padding_compact"
@@ -104,7 +104,7 @@
         <LinearLayout
             android:id="@+id/linearLayout_settings"
             android:layout_width="0dp"
-            android:layout_height="56dp"
+            android:layout_height="@dimen/one_line_list_item_height"
             android:background="?selectableItemBackground"
             android:orientation="horizontal"
             android:paddingHorizontal="@dimen/padding_compact"
@@ -135,7 +135,7 @@
         <LinearLayout
             android:id="@+id/linearLayout_about"
             android:layout_width="0dp"
-            android:layout_height="56dp"
+            android:layout_height="@dimen/one_line_list_item_height"
             android:background="?selectableItemBackground"
             android:orientation="horizontal"
             android:paddingHorizontal="@dimen/padding_compact"
@@ -166,7 +166,7 @@
         <LinearLayout
             android:id="@+id/linearLayout_feedback"
             android:layout_width="0dp"
-            android:layout_height="56dp"
+            android:layout_height="@dimen/one_line_list_item_height"
             android:background="?selectableItemBackground"
             android:orientation="horizontal"
             android:paddingHorizontal="@dimen/padding_compact"
