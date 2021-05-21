@@ -14,6 +14,8 @@
         android:theme="@style/Theme.MeetEazy"
         android:usesCleartextTraffic="true"
         tools:ignore="AllowBackup">
+
+        <!-- Splash Screen Activity -->
         <activity android:name=".activities.SplashScreenActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -21,20 +23,36 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <!-- Onboarding Activity -->
         <activity
             android:name=".activities.OnboardingActivity"
             android:screenOrientation="portrait" />
+
+        <!-- Sign Up Activity -->
         <activity
             android:name=".activities.SignUpActivity"
             android:windowSoftInputMode="adjustResize" />
+
+        <!-- Email Verification Activity -->
         <activity android:name=".activities.EmailVerificationActivity" />
+
+        <!-- Sign In Activity -->
         <activity
             android:name=".activities.SignInActivity"
             android:windowSoftInputMode="adjustResize" />
+
+        <!-- Reset Password Activity -->
         <activity
             android:name=".activities.ResetPasswordActivity"
             android:windowSoftInputMode="adjustResize" />
+
+        <!-- Home Activity -->
         <activity android:name=".activities.HomeActivity" />
+
+        <!-- Profile Activity -->
+        <activity android:name=".activities.ProfileActivity" />
+
     </application>
 
 </manifest>
