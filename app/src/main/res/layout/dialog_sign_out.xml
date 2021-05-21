@@ -58,7 +58,7 @@
             app:layout_constraintTop_toBottomOf="@id/textView_title" />
 
         <com.google.android.material.button.MaterialButton
-            android:id="@+id/button_ok"
+            android:id="@+id/button_yes"
             style="@style/Widget.MaterialComponents.Button.OutlinedButton"
             android:layout_width="0dp"
             android:layout_height="@dimen/button_height_medium"
@@ -69,12 +69,12 @@
             android:text="@string/dialog_button_text_yes"
             android:textSize="@dimen/text_size_medium"
             app:cornerRadius="@dimen/corner_radius_medium"
-            app:layout_constraintEnd_toStartOf="@id/button_settings"
+            app:layout_constraintEnd_toStartOf="@id/button_no"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/textView_message" />
 
         <com.google.android.material.button.MaterialButton
-            android:id="@+id/button_settings"
+            android:id="@+id/button_no"
             style="@style/Widget.MaterialComponents.Button.UnelevatedButton"
             android:layout_width="0dp"
             android:layout_height="@dimen/button_height_medium"
@@ -88,7 +88,7 @@
             android:textSize="@dimen/text_size_medium"
             app:cornerRadius="@dimen/corner_radius_medium"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@id/button_ok"
+            app:layout_constraintStart_toEndOf="@id/button_yes"
             app:layout_constraintTop_toBottomOf="@id/textView_message"
             app:rippleColor="@color/colorPrimaryVariant" />
 
