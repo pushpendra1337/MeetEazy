@@ -53,6 +53,9 @@
         <!-- Profile Activity -->
         <activity android:name=".activities.ProfileActivity" />
 
+        <!-- Settings Activity -->
+        <activity android:name=".activities.SettingsActivity" />
+
     </application>
 
 </manifest>
