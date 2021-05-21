@@ -27,13 +27,14 @@
         <activity
             android:name=".activities.SignUpActivity"
             android:windowSoftInputMode="adjustResize" />
+        <activity android:name=".activities.EmailVerificationActivity" />
         <activity
             android:name=".activities.SignInActivity"
             android:windowSoftInputMode="adjustResize" />
         <activity
             android:name=".activities.ResetPasswordActivity"
             android:windowSoftInputMode="adjustResize" />
+        <activity android:name=".activities.HomeActivity" />
     </application>
-
 
 </manifest>
