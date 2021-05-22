@@ -17,11 +17,13 @@ import com.google.android.material.appbar.MaterialToolbar;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.messaging.FirebaseMessaging;
 
 import net.intensecorp.meeteazy.R;
 import net.intensecorp.meeteazy.utils.Firestore;
+import net.intensecorp.meeteazy.utils.SharedPrefsManager;
 
 import java.util.Objects;
 
@@ -35,7 +37,11 @@ public class HomeActivity extends AppCompatActivity {
     private static final String[] FEEDBACK_RECIPIENTS_EMAIL_ADDRESS = {"pushpendray1337@gmail.com"};
     private static final String FEEDBACK_EMAIL_SUBJECT = "Feedback on MeetEazy app";
     private AlertDialog mProfileDialog;
+    private AlertDialog mSignOutDialog;
+    private AlertDialog mProgressDialog;
     private FirebaseAuth mAuth;
+    private FirebaseMessaging mMessaging;
+    private DocumentReference mUserReference;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,6 +54,12 @@ public class HomeActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
 
         mAuth = FirebaseAuth.getInstance();
+        mMessaging = FirebaseMessaging.getInstance();
+
+        FirebaseFirestore store = FirebaseFirestore.getInstance();
+        String uid = Objects.requireNonNull(mAuth.getCurrentUser()).getUid();
+
+        mUserReference = store.collection(Firestore.COLLECTION_USERS).document(uid);
 
         if (isUserValid()) {
             getFcmToken();
@@ -78,8 +90,7 @@ public class HomeActivity extends AppCompatActivity {
     }
 
     private void getFcmToken() {
-        FirebaseMessaging.getInstance()
-                .getToken()
+        mMessaging.getToken()
                 .addOnSuccessListener(s -> {
                     Log.d(TAG, "FCM token: " + s);
 
@@ -89,10 +100,8 @@ public class HomeActivity extends AppCompatActivity {
     }
 
     private void setFcmToken(String token) {
-        FirebaseFirestore store = FirebaseFirestore.getInstance();
-        String uid = Objects.requireNonNull(mAuth.getCurrentUser()).getUid();
-        DocumentReference userReference = store.collection(Firestore.COLLECTION_USERS).document(uid);
-        userReference.update(Firestore.FIELD_FCM_TOKEN, token)
+
+        mUserReference.update(Firestore.FIELD_FCM_TOKEN, token)
                 .addOnSuccessListener(aVoid -> Log.d(TAG, "Token successfully updated: " + token))
                 .addOnFailureListener(e -> Log.e(TAG, "Failed to update token: " + e.getMessage()));
     }
@@ -135,7 +144,8 @@ public class HomeActivity extends AppCompatActivity {
 
             view.findViewById(R.id.button_sign_out).setOnClickListener(v -> {
                 dismissProfileDialog();
-                Toast.makeText(HomeActivity.this, "Sign Out", Toast.LENGTH_SHORT).show();
+
+                showSignOutDialog();
             });
 
             view.findViewById(R.id.imageView_close).setOnClickListener(v -> dismissProfileDialog());
@@ -148,6 +158,79 @@ public class HomeActivity extends AppCompatActivity {
         if (mProfileDialog != null) {
             mProfileDialog.dismiss();
         }
+    }
+
+    private void showSignOutDialog() {
+        if (mSignOutDialog == null) {
+
+            AlertDialog.Builder builder = new AlertDialog.Builder(HomeActivity.this);
+            View view = LayoutInflater.from(this).inflate(R.layout.dialog_sign_out, findViewById(R.id.scrollView_dialog_container));
+            builder.setView(view);
+            mSignOutDialog = builder.create();
+
+            if (mSignOutDialog.getWindow() != null) {
+                mSignOutDialog.getWindow().setBackgroundDrawable(new ColorDrawable(0));
+            }
+
+            view.findViewById(R.id.button_no).setOnClickListener(v -> dismissSignOutDialog());
+
+            view.findViewById(R.id.button_yes).setOnClickListener(v -> {
+                dismissSignOutDialog();
+
+                signOut();
+            });
+        }
+
+        mSignOutDialog.show();
+    }
+
+    private void dismissSignOutDialog() {
+        if (mSignOutDialog != null) {
+            mSignOutDialog.dismiss();
+        }
+    }
+
+    private void showProgressDialog() {
+        if (mProgressDialog == null) {
+
+            AlertDialog.Builder builder = new AlertDialog.Builder(HomeActivity.this);
+            View view = LayoutInflater.from(this).inflate(R.layout.dialog_progress, findViewById(R.id.constraintLayout_progress_dialog_container));
+            builder.setView(view).setCancelable(false);
+            mProgressDialog = builder.create();
+
+            if (mProgressDialog.getWindow() != null) {
+                mProgressDialog.getWindow().setBackgroundDrawable(new ColorDrawable(0));
+            }
+        }
+        mProgressDialog.show();
+    }
+
+    private void dismissProgressDialog() {
+        if (mProgressDialog != null) {
+            mProgressDialog.dismiss();
+        }
+    }
+
+    private void signOut() {
+        showProgressDialog();
+
+        mUserReference
+                .update(Firestore.FIELD_FCM_TOKEN, FieldValue.delete())
+                .addOnSuccessListener(aVoid -> Log.d(TAG, "Token successfully deleted from database"))
+                .addOnFailureListener(e -> Log.e(TAG, "Failed to delete token from database: " + e.getMessage()));
+
+        mMessaging.deleteToken()
+                .addOnSuccessListener(aVoid -> Log.d(TAG, "Token successfully deleted from device"))
+                .addOnFailureListener(e -> Log.e(TAG, "Failed to delete token from device: " + e.getMessage()));
+
+        mAuth.signOut();
+
+        SharedPrefsManager sharedPrefsManager = new SharedPrefsManager(HomeActivity.this, SharedPrefsManager.PREF_USER_DATA);
+        sharedPrefsManager.invalidateSession();
+
+        dismissProgressDialog();
+
+        startSignInActivity();
     }
 
     private void startProfileActivity() {
@@ -166,11 +249,22 @@ public class HomeActivity extends AppCompatActivity {
     }
 
     private void sendEmail() {
+        startComposeEmailActivity();
+    }
+
+    private void startComposeEmailActivity() {
         Intent emailIntent = new Intent(Intent.ACTION_SEND);
         emailIntent.putExtra(Intent.EXTRA_EMAIL, FEEDBACK_RECIPIENTS_EMAIL_ADDRESS);
         emailIntent.putExtra(Intent.EXTRA_SUBJECT, FEEDBACK_EMAIL_SUBJECT);
         emailIntent.setType(FEEDBACK_EMAIL_TYPE);
         emailIntent.setPackage(FEEDBACK_EMAIL_HANDLER_PACKAGE);
         startActivity(emailIntent);
+    }
+
+    private void startSignInActivity() {
+        Intent signInIntent = new Intent(HomeActivity.this, SignInActivity.class);
+        signInIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+        startActivity(signInIntent);
+        finish();
     }
 }
