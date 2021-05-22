@@ -22,4 +22,149 @@
         app:layout_constraintTop_toBottomOf="@id/toolbar"
         tools:listitem="@layout/list_item_user" />
 
+    <ProgressBar
+        android:id="@+id/progressBar_loading"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/margin_16dp"
+        android:progressTint="@color/colorPrimary"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <LinearLayout
+        android:id="@+id/linearLayout_error_no_internet"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/margin_16dp"
+        android:gravity="center_horizontal"
+        android:orientation="vertical"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <ImageView
+            android:layout_width="@dimen/error_image_width"
+            android:layout_height="@dimen/error_image_height"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginHorizontal="@dimen/margin_16dp"
+            android:contentDescription="@string/content_description_no_internet"
+            android:src="@drawable/img_no_internet"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <com.google.android.material.textview.MaterialTextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginHorizontal="@dimen/margin_16dp"
+            android:layout_marginTop="@dimen/margin_4dp"
+            android:includeFontPadding="false"
+            android:text="@string/error_title_no_internet"
+            android:textAlignment="center"
+            android:textColor="@color/colorHighEmphasisText"
+            android:textSize="@dimen/text_size_large"
+            app:fontFamily="@font/poppins_semi_bold" />
+
+        <com.google.android.material.textview.MaterialTextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginHorizontal="@dimen/margin_16dp"
+            android:layout_marginTop="@dimen/margin_12dp"
+            android:fontFamily="@font/poppins_regular"
+            android:includeFontPadding="false"
+            android:text="@string/error_message_no_internet"
+            android:textAlignment="center"
+            android:textColor="@color/colorMediumEmphasisText"
+            android:textSize="@dimen/text_size_small" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/button_try_again"
+            style="@style/Widget.MaterialComponents.Button.UnelevatedButton"
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/button_height_medium"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginHorizontal="@dimen/margin_16dp"
+            android:layout_marginTop="@dimen/margin_20dp"
+            android:backgroundTint="@color/colorPrimary"
+            android:fontFamily="@font/poppins_medium"
+            android:includeFontPadding="false"
+            android:text="@string/button_text_try_again"
+            android:textColor="@color/colorOnPrimary"
+            android:textSize="@dimen/text_size_medium"
+            app:cornerRadius="@dimen/corner_radius_medium"
+            app:rippleColor="@color/colorPrimaryVariant" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/linearLayout_error_no_users"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/margin_16dp"
+        android:gravity="center_horizontal"
+        android:orientation="vertical"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <ImageView
+            android:layout_width="@dimen/error_image_width"
+            android:layout_height="@dimen/error_image_height"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginHorizontal="@dimen/margin_16dp"
+            android:contentDescription="@string/content_description_no_user"
+            android:src="@drawable/img_no_user"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <com.google.android.material.textview.MaterialTextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginHorizontal="@dimen/margin_16dp"
+            android:layout_marginTop="@dimen/margin_4dp"
+            android:includeFontPadding="false"
+            android:text="@string/error_title_no_user"
+            android:textAlignment="center"
+            android:textColor="@color/colorHighEmphasisText"
+            android:textSize="@dimen/text_size_large"
+            app:fontFamily="@font/poppins_semi_bold" />
+
+        <com.google.android.material.textview.MaterialTextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="@dimen/margin_16dp"
+            android:layout_marginTop="@dimen/margin_12dp"
+            android:fontFamily="@font/poppins_regular"
+            android:includeFontPadding="false"
+            android:text="@string/error_message_no_user"
+            android:textAlignment="center"
+            android:textColor="@color/colorMediumEmphasisText"
+            android:textSize="@dimen/text_size_small" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/button_refresh"
+            style="@style/Widget.MaterialComponents.Button.UnelevatedButton"
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/button_height_medium"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginHorizontal="@dimen/margin_16dp"
+            android:layout_marginTop="@dimen/margin_20dp"
+            android:backgroundTint="@color/colorPrimary"
+            android:fontFamily="@font/poppins_medium"
+            android:includeFontPadding="false"
+            android:text="@string/button_text_refresh"
+            android:textColor="@color/colorOnPrimary"
+            android:textSize="@dimen/text_size_medium"
+            app:cornerRadius="@dimen/corner_radius_medium"
+            app:rippleColor="@color/colorPrimaryVariant" />
+
+    </LinearLayout>
+
 </androidx.constraintlayout.widget.ConstraintLayout>
