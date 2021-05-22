@@ -19,9 +19,9 @@ public class OnboardingActivity extends AppCompatActivity {
 
     private int mCurrentSlidePos;
     private ViewPager mOnboardingSlider;
-    private MaterialButton mGetStartedButton;
     private MaterialButton mSkipButton;
     private MaterialButton mNextButton;
+    private MaterialButton mGetStartedButton;
     ViewPager.OnPageChangeListener mChangeListener = new ViewPager.OnPageChangeListener() {
         @Override
         public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
@@ -103,7 +103,7 @@ public class OnboardingActivity extends AppCompatActivity {
     }
 
     private void startSignUpActivity() {
-        Intent signUpIntent = new Intent(getApplicationContext(), SignUpActivity.class);
+        Intent signUpIntent = new Intent(OnboardingActivity.this, SignUpActivity.class);
         signUpIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(signUpIntent);
         finish();

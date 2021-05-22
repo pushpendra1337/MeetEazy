@@ -31,9 +31,9 @@ public class EmailVerificationActivity extends AppCompatActivity {
     private FirebaseUser mUser;
     private String mEmail;
     private SharedPrefsManager mSharedPrefsManager;
-    private AlertDialog mProgressDialog;
-    private AlertDialog mNoInternetDialog;
     private AlertDialog mEmailVerificationDialog;
+    private AlertDialog mNoInternetDialog;
+    private AlertDialog mProgressDialog;
 
     @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
@@ -79,6 +79,7 @@ public class EmailVerificationActivity extends AppCompatActivity {
                             Log.d(TAG, "Email address verified: " + mUser.getEmail());
 
                             dismissEmailVerificationDialog();
+
                             startHomeActivity();
                         }
                     })
@@ -88,6 +89,7 @@ public class EmailVerificationActivity extends AppCompatActivity {
 
             mAuth.signOut();
             mSharedPrefsManager.invalidateSession();
+
             startSignInActivity();
         }
     }
@@ -97,7 +99,7 @@ public class EmailVerificationActivity extends AppCompatActivity {
 
         showProgressDialog();
 
-        if (new NetworkInfoUtility(getApplicationContext()).isConnectedToInternet()) {
+        if (new NetworkInfoUtility(EmailVerificationActivity.this).isConnectedToInternet()) {
 
             mUser = mAuth.getCurrentUser();
 
@@ -108,15 +110,18 @@ public class EmailVerificationActivity extends AppCompatActivity {
                             Log.d(TAG, "Email sent to: " + mUser.getEmail());
 
                             dismissProgressDialog();
+
                             showEmailVerificationDialog();
                         })
                         .addOnFailureListener(e -> {
 
-                            if (!new NetworkInfoUtility(getApplicationContext()).isConnectedToInternet()) {
+                            if (!new NetworkInfoUtility(EmailVerificationActivity.this).isConnectedToInternet()) {
                                 dismissProgressDialog();
+
                                 showNoInternetDialog();
                             } else {
                                 dismissProgressDialog();
+
                                 new SnackbarUtility(EmailVerificationActivity.this).snackbar(R.string.snackbar_text_error_occurred);
                             }
 
@@ -124,78 +129,8 @@ public class EmailVerificationActivity extends AppCompatActivity {
                         });
         } else {
             dismissProgressDialog();
+
             showNoInternetDialog();
-        }
-    }
-
-    private void startHomeActivity() {
-        Intent homeIntent = new Intent(getApplicationContext(), HomeActivity.class);
-        homeIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        startActivity(homeIntent);
-        finish();
-    }
-
-    private void startSignInActivity() {
-        Intent signInIntent = new Intent(getApplicationContext(), SignInActivity.class);
-        signInIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
-        startActivity(signInIntent);
-        finish();
-    }
-
-    private void startWirelessSettingsActivity() {
-        Intent wirelessSettingsIntent = new Intent(Settings.ACTION_WIRELESS_SETTINGS);
-        wirelessSettingsIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        startActivity(wirelessSettingsIntent);
-    }
-
-    private void showProgressDialog() {
-        if (mProgressDialog == null) {
-
-            AlertDialog.Builder builder = new AlertDialog.Builder(EmailVerificationActivity.this);
-            View view = LayoutInflater.from(this).inflate(R.layout.dialog_progress, findViewById(R.id.constraintLayout_progress_dialog_container));
-            builder.setView(view).setCancelable(false);
-            mProgressDialog = builder.create();
-
-            if (mProgressDialog.getWindow() != null) {
-                mProgressDialog.getWindow().setBackgroundDrawable(new ColorDrawable(0));
-            }
-        }
-
-        mProgressDialog.show();
-    }
-
-    private void dismissProgressDialog() {
-        if (mProgressDialog != null) {
-            mProgressDialog.dismiss();
-        }
-    }
-
-    private void showNoInternetDialog() {
-        if (mNoInternetDialog == null) {
-
-            AlertDialog.Builder builder = new AlertDialog.Builder(EmailVerificationActivity.this);
-            View view = LayoutInflater.from(this).inflate(R.layout.dialog_no_internet, findViewById(R.id.scrollView_dialog_container));
-            builder.setView(view);
-            mNoInternetDialog = builder.create();
-
-            if (mNoInternetDialog.getWindow() != null) {
-                mNoInternetDialog.getWindow().setBackgroundDrawable(new ColorDrawable(0));
-            }
-
-            view.findViewById(R.id.button_ok).setOnClickListener(v -> dismissNoInternetDialog());
-
-            view.findViewById(R.id.button_settings).setOnClickListener(v -> {
-                dismissNoInternetDialog();
-                startWirelessSettingsActivity();
-            });
-        }
-
-        mNoInternetDialog.show();
-    }
-
-    private void dismissNoInternetDialog() {
-        if (mNoInternetDialog != null) {
-            mNoInternetDialog.dismiss();
         }
     }
 
@@ -225,5 +160,77 @@ public class EmailVerificationActivity extends AppCompatActivity {
         if (mEmailVerificationDialog != null) {
             mEmailVerificationDialog.dismiss();
         }
+    }
+
+    private void showNoInternetDialog() {
+        if (mNoInternetDialog == null) {
+
+            AlertDialog.Builder builder = new AlertDialog.Builder(EmailVerificationActivity.this);
+            View view = LayoutInflater.from(this).inflate(R.layout.dialog_no_internet, findViewById(R.id.scrollView_dialog_container));
+            builder.setView(view);
+            mNoInternetDialog = builder.create();
+
+            if (mNoInternetDialog.getWindow() != null) {
+                mNoInternetDialog.getWindow().setBackgroundDrawable(new ColorDrawable(0));
+            }
+
+            view.findViewById(R.id.button_ok).setOnClickListener(v -> dismissNoInternetDialog());
+
+            view.findViewById(R.id.button_settings).setOnClickListener(v -> {
+                dismissNoInternetDialog();
+
+                startWirelessSettingsActivity();
+            });
+        }
+
+        mNoInternetDialog.show();
+    }
+
+    private void dismissNoInternetDialog() {
+        if (mNoInternetDialog != null) {
+            mNoInternetDialog.dismiss();
+        }
+    }
+
+    private void showProgressDialog() {
+        if (mProgressDialog == null) {
+
+            AlertDialog.Builder builder = new AlertDialog.Builder(EmailVerificationActivity.this);
+            View view = LayoutInflater.from(this).inflate(R.layout.dialog_progress, findViewById(R.id.constraintLayout_progress_dialog_container));
+            builder.setView(view).setCancelable(false);
+            mProgressDialog = builder.create();
+
+            if (mProgressDialog.getWindow() != null) {
+                mProgressDialog.getWindow().setBackgroundDrawable(new ColorDrawable(0));
+            }
+        }
+
+        mProgressDialog.show();
+    }
+
+    private void dismissProgressDialog() {
+        if (mProgressDialog != null) {
+            mProgressDialog.dismiss();
+        }
+    }
+
+    private void startHomeActivity() {
+        Intent homeIntent = new Intent(EmailVerificationActivity.this, HomeActivity.class);
+        homeIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        startActivity(homeIntent);
+        finish();
+    }
+
+    private void startSignInActivity() {
+        Intent signInIntent = new Intent(EmailVerificationActivity.this, SignInActivity.class);
+        signInIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+        startActivity(signInIntent);
+        finish();
+    }
+
+    private void startWirelessSettingsActivity() {
+        Intent wirelessSettingsIntent = new Intent(Settings.ACTION_WIRELESS_SETTINGS);
+        wirelessSettingsIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        startActivity(wirelessSettingsIntent);
     }
 }

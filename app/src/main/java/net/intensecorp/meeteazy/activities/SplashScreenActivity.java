@@ -104,7 +104,7 @@ public class SplashScreenActivity extends AppCompatActivity {
     }
 
     private void startOnboardingActivity() {
-        Intent onboardingIntent = new Intent(getApplicationContext(), OnboardingActivity.class);
+        Intent onboardingIntent = new Intent(SplashScreenActivity.this, OnboardingActivity.class);
         onboardingIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
         startActivity(onboardingIntent);
         finish();

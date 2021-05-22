@@ -39,10 +39,10 @@ public class ResetPasswordActivity extends AppCompatActivity {
     private static final String TAG = ResetPasswordActivity.class.getSimpleName();
     private TextInputLayout mEmailLayout;
     private TextInputEditText mEmailField;
-    private AlertDialog mProgressDialog;
-    private AlertDialog mNoInternetDialog;
-    private AlertDialog mResetPasswordDialog;
     private FirebaseAuth mAuth;
+    private AlertDialog mNoInternetDialog;
+    private AlertDialog mProgressDialog;
+    private AlertDialog mResetPasswordDialog;
 
     @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
@@ -102,25 +102,29 @@ public class ResetPasswordActivity extends AppCompatActivity {
 
             showProgressDialog();
 
-            if (new NetworkInfoUtility(getApplicationContext()).isConnectedToInternet()) {
+            if (new NetworkInfoUtility(ResetPasswordActivity.this).isConnectedToInternet()) {
 
                 mAuth.sendPasswordResetEmail(getEmail())
                         .addOnSuccessListener(aVoid -> {
                             Log.d(TAG, "Email sent to: " + getEmail());
 
                             dismissProgressDialog();
+
                             showResetPasswordDialog();
                         })
                         .addOnFailureListener(e -> {
 
                             if (e instanceof FirebaseAuthInvalidUserException) {
                                 dismissProgressDialog();
+
                                 new SnackbarUtility(ResetPasswordActivity.this).snackbar(R.string.snackbar_text_email_not_registered);
-                            } else if (!new NetworkInfoUtility(getApplicationContext()).isConnectedToInternet()) {
+                            } else if (!new NetworkInfoUtility(ResetPasswordActivity.this).isConnectedToInternet()) {
                                 dismissProgressDialog();
+
                                 showNoInternetDialog();
                             } else {
                                 dismissProgressDialog();
+
                                 new SnackbarUtility(ResetPasswordActivity.this).snackbar(R.string.snackbar_text_error_occurred);
                             }
 
@@ -128,22 +132,10 @@ public class ResetPasswordActivity extends AppCompatActivity {
                         });
             } else {
                 dismissProgressDialog();
+
                 showNoInternetDialog();
             }
         }
-    }
-
-    private void startSignInActivity() {
-        Intent signInIntent = new Intent(getApplicationContext(), SignInActivity.class);
-        signInIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
-        startActivity(signInIntent);
-        finish();
-    }
-
-    private void startWirelessSettingsActivity() {
-        Intent wirelessSettingsIntent = new Intent(Settings.ACTION_WIRELESS_SETTINGS);
-        wirelessSettingsIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        startActivity(wirelessSettingsIntent);
     }
 
     private void putFocusOn(View view) {
@@ -159,27 +151,6 @@ public class ResetPasswordActivity extends AppCompatActivity {
             view.clearFocus();
             InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
             inputMethodManager.hideSoftInputFromWindow(view.getWindowToken(), 0);
-        }
-    }
-
-    private void showProgressDialog() {
-        if (mProgressDialog == null) {
-
-            AlertDialog.Builder builder = new AlertDialog.Builder(ResetPasswordActivity.this);
-            View view = LayoutInflater.from(this).inflate(R.layout.dialog_progress, findViewById(R.id.constraintLayout_progress_dialog_container));
-            builder.setView(view).setCancelable(false);
-            mProgressDialog = builder.create();
-
-            if (mProgressDialog.getWindow() != null) {
-                mProgressDialog.getWindow().setBackgroundDrawable(new ColorDrawable(0));
-            }
-        }
-        mProgressDialog.show();
-    }
-
-    private void dismissProgressDialog() {
-        if (mProgressDialog != null) {
-            mProgressDialog.dismiss();
         }
     }
 
@@ -199,15 +170,39 @@ public class ResetPasswordActivity extends AppCompatActivity {
 
             view.findViewById(R.id.button_settings).setOnClickListener(v -> {
                 dismissNoInternetDialog();
+
                 startWirelessSettingsActivity();
             });
         }
+
         mNoInternetDialog.show();
     }
 
     private void dismissNoInternetDialog() {
         if (mNoInternetDialog != null) {
             mNoInternetDialog.dismiss();
+        }
+    }
+
+    private void showProgressDialog() {
+        if (mProgressDialog == null) {
+
+            AlertDialog.Builder builder = new AlertDialog.Builder(ResetPasswordActivity.this);
+            View view = LayoutInflater.from(this).inflate(R.layout.dialog_progress, findViewById(R.id.constraintLayout_progress_dialog_container));
+            builder.setView(view).setCancelable(false);
+            mProgressDialog = builder.create();
+
+            if (mProgressDialog.getWindow() != null) {
+                mProgressDialog.getWindow().setBackgroundDrawable(new ColorDrawable(0));
+            }
+        }
+
+        mProgressDialog.show();
+    }
+
+    private void dismissProgressDialog() {
+        if (mProgressDialog != null) {
+            mProgressDialog.dismiss();
         }
     }
 
@@ -225,6 +220,7 @@ public class ResetPasswordActivity extends AppCompatActivity {
 
             view.findViewById(R.id.button_ok).setOnClickListener(v -> {
                 dismissResetPasswordDialog();
+
                 startSignInActivity();
             });
 
@@ -235,6 +231,7 @@ public class ResetPasswordActivity extends AppCompatActivity {
                 Objects.requireNonNull(mEmailLayout.getEditText()).getText().clear();
             });
         }
+
         mResetPasswordDialog.show();
     }
 
@@ -242,6 +239,19 @@ public class ResetPasswordActivity extends AppCompatActivity {
         if (mResetPasswordDialog != null) {
             mResetPasswordDialog.dismiss();
         }
+    }
+
+    private void startSignInActivity() {
+        Intent signInIntent = new Intent(getApplicationContext(), SignInActivity.class);
+        signInIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+        startActivity(signInIntent);
+        finish();
+    }
+
+    private void startWirelessSettingsActivity() {
+        Intent wirelessSettingsIntent = new Intent(Settings.ACTION_WIRELESS_SETTINGS);
+        wirelessSettingsIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        startActivity(wirelessSettingsIntent);
     }
 
     public class ValidationWatcher implements TextWatcher {

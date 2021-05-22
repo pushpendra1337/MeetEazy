@@ -36,12 +36,12 @@ public class HomeActivity extends AppCompatActivity {
     private static final String FEEDBACK_EMAIL_HANDLER_PACKAGE = "com.google.android.gm";
     private static final String[] FEEDBACK_RECIPIENTS_EMAIL_ADDRESS = {"pushpendray1337@gmail.com"};
     private static final String FEEDBACK_EMAIL_SUBJECT = "Feedback on MeetEazy app";
-    private AlertDialog mProfileDialog;
-    private AlertDialog mSignOutDialog;
-    private AlertDialog mProgressDialog;
     private FirebaseAuth mAuth;
     private FirebaseMessaging mMessaging;
     private DocumentReference mUserReference;
+    private AlertDialog mProfileDialog;
+    private AlertDialog mProgressDialog;
+    private AlertDialog mSignOutDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -100,10 +100,31 @@ public class HomeActivity extends AppCompatActivity {
     }
 
     private void setFcmToken(String token) {
-
         mUserReference.update(Firestore.FIELD_FCM_TOKEN, token)
                 .addOnSuccessListener(aVoid -> Log.d(TAG, "Token successfully updated: " + token))
                 .addOnFailureListener(e -> Log.e(TAG, "Failed to update token: " + e.getMessage()));
+    }
+
+    private void signOut() {
+        showProgressDialog();
+
+        mUserReference
+                .update(Firestore.FIELD_FCM_TOKEN, FieldValue.delete())
+                .addOnSuccessListener(aVoid -> Log.d(TAG, "Token successfully deleted from database"))
+                .addOnFailureListener(e -> Log.e(TAG, "Failed to delete token from database: " + e.getMessage()));
+
+        mMessaging.deleteToken()
+                .addOnSuccessListener(aVoid -> Log.d(TAG, "Token successfully deleted from device"))
+                .addOnFailureListener(e -> Log.e(TAG, "Failed to delete token from device: " + e.getMessage()));
+
+        mAuth.signOut();
+
+        SharedPrefsManager sharedPrefsManager = new SharedPrefsManager(HomeActivity.this, SharedPrefsManager.PREF_USER_DATA);
+        sharedPrefsManager.invalidateSession();
+
+        dismissProgressDialog();
+
+        startSignInActivity();
     }
 
     private void showProfileDialog() {
@@ -139,7 +160,7 @@ public class HomeActivity extends AppCompatActivity {
             view.findViewById(R.id.linearLayout_feedback).setOnClickListener(v -> {
                 dismissProfileDialog();
 
-                sendEmail();
+                startComposeEmailActivity();
             });
 
             view.findViewById(R.id.button_sign_out).setOnClickListener(v -> {
@@ -157,6 +178,28 @@ public class HomeActivity extends AppCompatActivity {
     private void dismissProfileDialog() {
         if (mProfileDialog != null) {
             mProfileDialog.dismiss();
+        }
+    }
+
+    private void showProgressDialog() {
+        if (mProgressDialog == null) {
+
+            AlertDialog.Builder builder = new AlertDialog.Builder(HomeActivity.this);
+            View view = LayoutInflater.from(this).inflate(R.layout.dialog_progress, findViewById(R.id.constraintLayout_progress_dialog_container));
+            builder.setView(view).setCancelable(false);
+            mProgressDialog = builder.create();
+
+            if (mProgressDialog.getWindow() != null) {
+                mProgressDialog.getWindow().setBackgroundDrawable(new ColorDrawable(0));
+            }
+        }
+
+        mProgressDialog.show();
+    }
+
+    private void dismissProgressDialog() {
+        if (mProgressDialog != null) {
+            mProgressDialog.dismiss();
         }
     }
 
@@ -190,66 +233,9 @@ public class HomeActivity extends AppCompatActivity {
         }
     }
 
-    private void showProgressDialog() {
-        if (mProgressDialog == null) {
-
-            AlertDialog.Builder builder = new AlertDialog.Builder(HomeActivity.this);
-            View view = LayoutInflater.from(this).inflate(R.layout.dialog_progress, findViewById(R.id.constraintLayout_progress_dialog_container));
-            builder.setView(view).setCancelable(false);
-            mProgressDialog = builder.create();
-
-            if (mProgressDialog.getWindow() != null) {
-                mProgressDialog.getWindow().setBackgroundDrawable(new ColorDrawable(0));
-            }
-        }
-        mProgressDialog.show();
-    }
-
-    private void dismissProgressDialog() {
-        if (mProgressDialog != null) {
-            mProgressDialog.dismiss();
-        }
-    }
-
-    private void signOut() {
-        showProgressDialog();
-
-        mUserReference
-                .update(Firestore.FIELD_FCM_TOKEN, FieldValue.delete())
-                .addOnSuccessListener(aVoid -> Log.d(TAG, "Token successfully deleted from database"))
-                .addOnFailureListener(e -> Log.e(TAG, "Failed to delete token from database: " + e.getMessage()));
-
-        mMessaging.deleteToken()
-                .addOnSuccessListener(aVoid -> Log.d(TAG, "Token successfully deleted from device"))
-                .addOnFailureListener(e -> Log.e(TAG, "Failed to delete token from device: " + e.getMessage()));
-
-        mAuth.signOut();
-
-        SharedPrefsManager sharedPrefsManager = new SharedPrefsManager(HomeActivity.this, SharedPrefsManager.PREF_USER_DATA);
-        sharedPrefsManager.invalidateSession();
-
-        dismissProgressDialog();
-
-        startSignInActivity();
-    }
-
-    private void startProfileActivity() {
-        Intent profileIntent = new Intent(getApplicationContext(), ProfileActivity.class);
-        startActivity(profileIntent);
-    }
-
-    private void startSettingsActivity() {
-        Intent settingsIntent = new Intent(getApplicationContext(), SettingsActivity.class);
-        startActivity(settingsIntent);
-    }
-
     private void startAboutActivity() {
-        Intent aboutIntent = new Intent(getApplicationContext(), AboutActivity.class);
+        Intent aboutIntent = new Intent(HomeActivity.this, AboutActivity.class);
         startActivity(aboutIntent);
-    }
-
-    private void sendEmail() {
-        startComposeEmailActivity();
     }
 
     private void startComposeEmailActivity() {
@@ -259,6 +245,16 @@ public class HomeActivity extends AppCompatActivity {
         emailIntent.setType(FEEDBACK_EMAIL_TYPE);
         emailIntent.setPackage(FEEDBACK_EMAIL_HANDLER_PACKAGE);
         startActivity(emailIntent);
+    }
+
+    private void startProfileActivity() {
+        Intent profileIntent = new Intent(HomeActivity.this, ProfileActivity.class);
+        startActivity(profileIntent);
+    }
+
+    private void startSettingsActivity() {
+        Intent settingsIntent = new Intent(HomeActivity.this, SettingsActivity.class);
+        startActivity(settingsIntent);
     }
 
     private void startSignInActivity() {

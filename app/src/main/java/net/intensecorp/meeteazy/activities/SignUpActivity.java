@@ -52,11 +52,11 @@ public class SignUpActivity extends AppCompatActivity {
     private TextInputEditText mEmailField;
     private TextInputLayout mPasswordLayout;
     private TextInputEditText mPasswordField;
-    private AlertDialog mProgressDialog;
-    private AlertDialog mNoInternetDialog;
     private FirebaseAuth mAuth;
     private FirebaseFirestore mStore;
     private FirebaseUser mUser;
+    private AlertDialog mNoInternetDialog;
+    private AlertDialog mProgressDialog;
 
     @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
@@ -186,7 +186,7 @@ public class SignUpActivity extends AppCompatActivity {
 
             showProgressDialog();
 
-            if (new NetworkInfoUtility(getApplicationContext()).isConnectedToInternet()) {
+            if (new NetworkInfoUtility(SignUpActivity.this).isConnectedToInternet()) {
 
                 mAuth.createUserWithEmailAndPassword(getEmail(), getPassword())
                         .addOnSuccessListener(authResult -> {
@@ -202,12 +202,15 @@ public class SignUpActivity extends AppCompatActivity {
 
                             if (e instanceof FirebaseAuthUserCollisionException) {
                                 dismissProgressDialog();
+
                                 new SnackbarUtility(SignUpActivity.this).snackbar(R.string.snackbar_text_email_already_exists);
-                            } else if (!new NetworkInfoUtility(getApplicationContext()).isConnectedToInternet()) {
+                            } else if (!new NetworkInfoUtility(SignUpActivity.this).isConnectedToInternet()) {
                                 dismissProgressDialog();
+
                                 showNoInternetDialog();
                             } else {
                                 dismissProgressDialog();
+
                                 new SnackbarUtility(SignUpActivity.this).snackbar(R.string.snackbar_text_error_occurred);
                             }
 
@@ -215,6 +218,7 @@ public class SignUpActivity extends AppCompatActivity {
                         });
             } else {
                 dismissProgressDialog();
+
                 showNoInternetDialog();
             }
         }
@@ -240,6 +244,7 @@ public class SignUpActivity extends AppCompatActivity {
                     sharedPrefsManager.setUserDataPrefs(getFirstName(), getLastName(), getEmail(), Firestore.DEFAULT_VALUE_ABOUT, Firestore.DEFAULT_VALUE_PROFILE_PICTURE_URL);
 
                     dismissProgressDialog();
+
                     startEmailVerificationActivity();
                 })
                 .addOnFailureListener(e -> {
@@ -258,42 +263,23 @@ public class SignUpActivity extends AppCompatActivity {
                     Log.d(TAG, "User deleted: " + user.getUid());
 
                     dismissProgressDialog();
+
                     new SnackbarUtility(SignUpActivity.this).snackbar(R.string.snackbar_text_error_occurred);
                 })
                 .addOnFailureListener(e -> {
 
-                    if (!new NetworkInfoUtility(getApplicationContext()).isConnectedToInternet()) {
+                    if (!new NetworkInfoUtility(SignUpActivity.this).isConnectedToInternet()) {
                         dismissProgressDialog();
+
                         showNoInternetDialog();
                     } else {
                         dismissProgressDialog();
+
                         new SnackbarUtility(SignUpActivity.this).snackbar(R.string.snackbar_text_error_occurred);
                     }
 
                     Log.e(TAG, "Failed to delete user: " + e.getMessage());
                 });
-    }
-
-    private void startSignInActivity() {
-        Intent signInIntent = new Intent(getApplicationContext(), SignInActivity.class);
-        signInIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
-        startActivity(signInIntent);
-        finish();
-    }
-
-    private void startEmailVerificationActivity() {
-        Intent emailVerificationIntent = new Intent(getApplicationContext(), EmailVerificationActivity.class);
-        emailVerificationIntent.putExtra(Extras.EXTRA_FIRST_NAME, getFirstName());
-        emailVerificationIntent.putExtra(Extras.EXTRA_EMAIL, getEmail());
-        emailVerificationIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP | Intent.FLAG_ACTIVITY_NO_HISTORY);
-        startActivity(emailVerificationIntent);
-        finish();
-    }
-
-    private void startWirelessSettingsActivity() {
-        Intent wirelessSettingsIntent = new Intent(Settings.ACTION_WIRELESS_SETTINGS);
-        wirelessSettingsIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        startActivity(wirelessSettingsIntent);
     }
 
     private void putFocusOn(View view) {
@@ -309,27 +295,6 @@ public class SignUpActivity extends AppCompatActivity {
             view.clearFocus();
             InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
             inputMethodManager.hideSoftInputFromWindow(view.getWindowToken(), 0);
-        }
-    }
-
-    private void showProgressDialog() {
-        if (mProgressDialog == null) {
-
-            AlertDialog.Builder builder = new AlertDialog.Builder(SignUpActivity.this);
-            View view = LayoutInflater.from(this).inflate(R.layout.dialog_progress, findViewById(R.id.constraintLayout_progress_dialog_container));
-            builder.setView(view).setCancelable(false);
-            mProgressDialog = builder.create();
-
-            if (mProgressDialog.getWindow() != null) {
-                mProgressDialog.getWindow().setBackgroundDrawable(new ColorDrawable(0));
-            }
-        }
-        mProgressDialog.show();
-    }
-
-    private void dismissProgressDialog() {
-        if (mProgressDialog != null) {
-            mProgressDialog.dismiss();
         }
     }
 
@@ -349,9 +314,11 @@ public class SignUpActivity extends AppCompatActivity {
 
             view.findViewById(R.id.button_settings).setOnClickListener(v -> {
                 dismissNoInternetDialog();
+
                 startWirelessSettingsActivity();
             });
         }
+
         mNoInternetDialog.show();
     }
 
@@ -359,6 +326,50 @@ public class SignUpActivity extends AppCompatActivity {
         if (mNoInternetDialog != null) {
             mNoInternetDialog.dismiss();
         }
+    }
+
+    private void showProgressDialog() {
+        if (mProgressDialog == null) {
+
+            AlertDialog.Builder builder = new AlertDialog.Builder(SignUpActivity.this);
+            View view = LayoutInflater.from(this).inflate(R.layout.dialog_progress, findViewById(R.id.constraintLayout_progress_dialog_container));
+            builder.setView(view).setCancelable(false);
+            mProgressDialog = builder.create();
+
+            if (mProgressDialog.getWindow() != null) {
+                mProgressDialog.getWindow().setBackgroundDrawable(new ColorDrawable(0));
+            }
+        }
+
+        mProgressDialog.show();
+    }
+
+    private void dismissProgressDialog() {
+        if (mProgressDialog != null) {
+            mProgressDialog.dismiss();
+        }
+    }
+
+    private void startEmailVerificationActivity() {
+        Intent emailVerificationIntent = new Intent(SignUpActivity.this, EmailVerificationActivity.class);
+        emailVerificationIntent.putExtra(Extras.EXTRA_FIRST_NAME, getFirstName());
+        emailVerificationIntent.putExtra(Extras.EXTRA_EMAIL, getEmail());
+        emailVerificationIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP | Intent.FLAG_ACTIVITY_NO_HISTORY);
+        startActivity(emailVerificationIntent);
+        finish();
+    }
+
+    private void startSignInActivity() {
+        Intent signInIntent = new Intent(SignUpActivity.this, SignInActivity.class);
+        signInIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+        startActivity(signInIntent);
+        finish();
+    }
+
+    private void startWirelessSettingsActivity() {
+        Intent wirelessSettingsIntent = new Intent(Settings.ACTION_WIRELESS_SETTINGS);
+        wirelessSettingsIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        startActivity(wirelessSettingsIntent);
     }
 
     public class ValidationWatcher implements TextWatcher {
