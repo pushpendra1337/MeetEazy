@@ -54,6 +54,10 @@
     <!-- Onboarding Slider Image Height -->
     <dimen name="onboarding_slider_image_height">400dp</dimen>
 
+    <!-- Home Activity Error Image -->
+    <dimen name="error_image_height">250dp</dimen>
+    <dimen name="error_image_width">250dp</dimen>
+
     <!-- Dialog -->
     <dimen name="dialog_image_height">150dp</dimen>
     <dimen name="dialog_titlebar_height">64dp</dimen>
