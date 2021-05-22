@@ -67,14 +67,20 @@
     <!-- Home Activity -->
     <string name="item_title_profile">Profile</string>
     <string name="toolbar_title_search">Search</string>
-    <string name="toolbar_title_search_in_rooms">Search in rooms</string>
     <string name="navigation_content_description_search">Search</string>
+    <string name="content_description_no_internet">No internet</string>
+    <string name="error_title_no_internet">You\'re offline</string>
+    <string name="error_message_no_internet">You aren\'t connected to internet. Please check your connection and try again.</string>
+    <string name="button_text_try_again">Try Again</string>
+    <string name="content_description_no_user">No user found</string>
+    <string name="error_title_no_user">No user found</string>
+    <string name="error_message_no_user">There is no user available right now.</string>
+    <string name="button_text_refresh">Refresh</string>
     <string name="placeholder_full_name">Full Name</string>
     <string name="content_description_voice_calll">Voice call</string>
     <string name="content_description_video_calll">Video call</string>
 
     <!-- No Internet Dialog -->
-    <string name="content_description_no_internet">No internet</string>
     <string name="dialog_title_no_internet">Whoops!</string>
     <string name="dialog_message_no_internet">You aren\'t connected to internet. Make sure that Wi-Fi or mobile data is turned on, then try again.</string>
     <string name="dialog_button_text_ok">OK</string>
