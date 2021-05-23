@@ -130,6 +130,12 @@
     <!-- Material Toolbar Background -->
     <color name="colorToolbarBackground">@color/colorSurface</color>
 
+    <!-- Swipe Refresh Layout Progress Spinner Background -->
+    <color name="colorSwipeRefreshLayoutProgressSpinnerBackground">@color/white</color>
+
+    <!-- Swipe Refresh Layout Progress Spinner -->
+    <color name="colorSwipeRefreshLayoutProgressSpinner">@color/colorPrimary</color>
+
     <!-- Divider -->
     <color name="colorDivider">#10000000</color>
 

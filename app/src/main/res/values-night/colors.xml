@@ -28,6 +28,13 @@
     <!-- Material Toolbar Background -->
     <color name="colorToolbarBackground">@color/dark_grey_9_overlay</color>
 
+    <!-- Swipe Refresh Layout Progress Spinner Background -->
+    <color name="colorSwipeRefreshLayoutProgressSpinnerBackground">@color/dark_grey_7_overlay
+    </color>
+
+    <!-- Swipe Refresh Layout Progress Spinner -->
+    <color name="colorSwipeRefreshLayoutProgressSpinner">@color/colorPrimary</color>
+
     <!-- Divider -->
     <color name="colorDivider">#10FFFFFF</color>
 
