@@ -66,14 +66,19 @@
     <dimen name="toolbar_height">48dp</dimen>
 
     <!-- Toolbar Item Profile Picture -->
-    <dimen name="toolbar_item_profile_picture_border_width">1dp</dimen>
-    <dimen name="end_margin_toolbar_item_profile_picture">10dp</dimen>
+    <dimen name="toolbar_item_profile_picture_height">28dp</dimen>
+    <dimen name="toolbar_item_profile_picture_width">28dp</dimen>1
+    <dimen name="end_margin_toolbar_item_profile_picture">6dp</dimen>
     <dimen name="padding_toolbar_item_profile_picture">6dp</dimen>
+    <dimen name="toolbar_item_profile_picture_border_width">1dp</dimen>
 
     <!-- List Item -->
     <dimen name="one_line_list_item_height">56dp</dimen>
     <dimen name="two_line_list_item_height">72dp</dimen>
     <dimen name="two_line_list_item_image_height">40dp</dimen>
     <dimen name="two_line_list_item_image_width">40dp</dimen>
+
+    <!-- Call Button -->
+    <dimen name="call_button_padding">6dp</dimen>
 
 </resources>
