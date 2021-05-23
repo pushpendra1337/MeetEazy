@@ -40,7 +40,8 @@
 
     <!-- Email Verification Activity -->
     <string name="title_email_verification_activity">Verify Your Email Address</string>
-    <string name="text_hey">Hey </string>
+    <string name="text_hey">Hey</string>
+    <string name="text_whitespace">&#160;</string>
     <string name="placeholder_first_name">User</string>
     <string name="body_text_email_verification_activity">You\'re almost ready to start enjoying MeetEazy. Now we need to verify your email address to finish signing up for MeetEazy. Please click on the Verify button and we\'ll send you a verification link to:</string>
     <string name="placeholder_email">user@example.com</string>
