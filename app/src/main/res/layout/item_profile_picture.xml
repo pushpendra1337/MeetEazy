@@ -8,8 +8,8 @@
 
     <de.hdodenhof.circleimageview.CircleImageView
         android:id="@+id/circleImageView_profile_picture"
-        android:layout_width="@dimen/margin_24dp"
-        android:layout_height="@dimen/margin_24dp"
+        android:layout_width="@dimen/toolbar_item_profile_picture_width"
+        android:layout_height="@dimen/toolbar_item_profile_picture_height"
         android:layout_marginEnd="@dimen/end_margin_toolbar_item_profile_picture"
         android:background="?attr/selectableItemBackgroundBorderless"
         android:clickable="true"
