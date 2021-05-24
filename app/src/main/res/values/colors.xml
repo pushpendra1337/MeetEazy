@@ -34,6 +34,12 @@
     <!-- Lynch -->
     <color name="lynch">#7682A0</color>
 
+    <!-- Lynch -->
+    <color name="fern">#5BB974</color>
+
+    <!-- Lynch -->
+    <color name="punch">#D93025</color>
+
     <!-- Ripple Cornflower Blue -->
     <color name="ripple_cornflower_blue">#4D6C63FF</color>
 
@@ -138,5 +144,14 @@
 
     <!-- Divider -->
     <color name="colorDivider">#10000000</color>
+
+    <!-- End/Reject Call Button Background -->
+    <color name="colorEndOrRejectCallButtonBackground">@color/punch</color>
+
+    <!-- Answer Call Button Background -->
+    <color name="colorAnswerCallButtonBackground">@color/fern</color>
+
+    <!-- Call Button Foreground -->
+    <color name="colorCallButtonIcon">@color/white</color>
 
 </resources>
