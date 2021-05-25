@@ -1,6 +1,5 @@
 package net.intensecorp.meeteazy.adapters;
 
-import android.annotation.SuppressLint;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,6 +14,7 @@ import com.google.android.material.textview.MaterialTextView;
 import net.intensecorp.meeteazy.R;
 import net.intensecorp.meeteazy.listener.UsersListener;
 import net.intensecorp.meeteazy.models.User;
+import net.intensecorp.meeteazy.utils.FormatterUtility;
 
 import java.util.List;
 
@@ -64,20 +64,18 @@ public class UsersAdapter extends RecyclerView.Adapter<UsersAdapter.UserViewHold
             videoCallButton = itemView.findViewById(R.id.imageView_video_call);
         }
 
-        @SuppressLint("UseCompatLoadingForDrawables")
         private void setUserData(User user) {
-            fullNameView.setText(String.format("%s %s", user.mFirstName, user.mLastName));
+            fullNameView.setText(FormatterUtility.getFullName(user.mFirstName, user.mLastName));
             emailView.setText(user.mEmail);
 
-            if (user.mProfilePictureUrl == null) {
-                profilePictureView.setImageDrawable(itemView.getResources().getDrawable(R.drawable.img_profile_picture, itemView.getContext().getTheme()));
-            } else {
-                Glide
-                        .with(itemView.getContext())
+            if (user.mProfilePictureUrl != null) {
+                Glide.with(itemView.getContext())
                         .load(user.mProfilePictureUrl)
                         .centerCrop()
                         .placeholder(R.drawable.img_profile_picture)
                         .into(profilePictureView);
+            } else {
+                profilePictureView.setImageResource(R.drawable.img_profile_picture);
             }
 
             voiceCallButton.setOnClickListener(v -> mUsersListener.initiateVoiceCall(user));
