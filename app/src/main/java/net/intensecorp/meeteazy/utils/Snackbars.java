@@ -16,12 +16,12 @@ import com.google.android.material.textview.MaterialTextView;
 
 import net.intensecorp.meeteazy.R;
 
-public class SnackbarUtility {
+public class Snackbars {
 
     private final Activity mActivity;
     private Snackbar mSnackbar;
 
-    public SnackbarUtility(Activity activity) {
+    public Snackbars(Activity activity) {
         this.mActivity = activity;
     }
 
@@ -56,4 +56,3 @@ public class SnackbarUtility {
         mSnackbar.show();
     }
 }
-
