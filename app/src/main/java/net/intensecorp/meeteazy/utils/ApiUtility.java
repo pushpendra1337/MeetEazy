@@ -1,14 +1,13 @@
-package net.intensecorp.meeteazy.api;
+package net.intensecorp.meeteazy.utils;
 
 import java.util.HashMap;
 
-public class ApiMessaging {
+public class ApiUtility {
 
     private static final String HEADER_AUTHORIZATION = "Authorization";
     private static final String HEADER_CONTENT_TYPE = "Content-Type";
 
-    // Paste your Authorization Key here
-    private static final String AUTHORIZATION_KEY = "your_authorization_key";
+    private static final String AUTHORIZATION_KEY = "key=AAAAaKi555Q:APA91bHiPMazAftZK4dGMOYy-sPFgvAI7BN-nl-5YOar-kX_HwP6OU0VdmdO_KjzjDIbsDahLAvyDde61M4SvhBZnBbcy9CNb-LXUMLrKg0ahbDMfmX2o-tmplkwFviE88Im0jPoS10g";
     private static final String CONTENT_TYPE_JSON = "application/json";
 
     public static final String JSON_OBJECT_DATA = "data";
@@ -35,10 +34,10 @@ public class ApiMessaging {
     public static final String TYPE_GROUP_VIDEO_CALL = "groupVideoCall";
 
     public static HashMap<String, String> getMessageHeaders() {
-        HashMap<String, String> headers = new HashMap<>();
-        headers.put(HEADER_AUTHORIZATION, AUTHORIZATION_KEY);
-        headers.put(HEADER_CONTENT_TYPE, CONTENT_TYPE_JSON);
+        HashMap<String, String> messageHeaders = new HashMap<>();
+        messageHeaders.put(HEADER_AUTHORIZATION, AUTHORIZATION_KEY);
+        messageHeaders.put(HEADER_CONTENT_TYPE, CONTENT_TYPE_JSON);
 
-        return headers;
+        return messageHeaders;
     }
 }
