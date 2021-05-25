@@ -15,7 +15,8 @@ public class SharedPrefsManager {
     public static final String PREF_LAST_NAME = "PREF_LAST_NAME";
     public static final String PREF_EMAIL = "PREF_EMAIL";
     public static final String PREF_ABOUT = "PREF_ABOUT";
-    public static final String PREF_PROFILE_IMAGE_URL = "PREF_PROFILE_IMAGE_URL";
+    public static final String PREF_PROFILE_PICTURE_URL = "PREF_PROFILE_PICTURE_URL";
+    public static final String PREF_FCM_TOKEN = "PREF_FCM_TOKEN";
     public static final String PREF_SIGNED_IN = "PREF_SIGNED_IN";
     private final SharedPreferences mSharedPreferences;
     private final SharedPreferences.Editor mSharedPrefsEditor;
@@ -41,18 +42,27 @@ public class SharedPrefsManager {
         storedUserData.put(PREF_LAST_NAME, mSharedPreferences.getString(PREF_LAST_NAME, null));
         storedUserData.put(PREF_EMAIL, mSharedPreferences.getString(PREF_EMAIL, null));
         storedUserData.put(PREF_ABOUT, mSharedPreferences.getString(PREF_ABOUT, null));
-        storedUserData.put(PREF_PROFILE_IMAGE_URL, mSharedPreferences.getString(PREF_PROFILE_IMAGE_URL, null));
+        storedUserData.put(PREF_PROFILE_PICTURE_URL, mSharedPreferences.getString(PREF_PROFILE_PICTURE_URL, null));
         return storedUserData;
     }
 
-    public void setUserDataPrefs(String firstName, String lastName, String email, String about, String profileImageUrl) {
+    public void setUserDataPrefs(String firstName, String lastName, String email, String about, String profilePictureUrl) {
         mSharedPrefsEditor.putBoolean(PREF_SIGNED_IN, true);
         mSharedPrefsEditor.putString(PREF_FIRST_NAME, firstName);
         mSharedPrefsEditor.putString(PREF_LAST_NAME, lastName);
         mSharedPrefsEditor.putString(PREF_EMAIL, email);
         mSharedPrefsEditor.putString(PREF_ABOUT, about);
-        mSharedPrefsEditor.putString(PREF_PROFILE_IMAGE_URL, profileImageUrl);
+        mSharedPrefsEditor.putString(PREF_PROFILE_PICTURE_URL, profilePictureUrl);
 
+        mSharedPrefsEditor.apply();
+    }
+
+    public String getFcmTokenPref() {
+        return mSharedPreferences.getString(PREF_FCM_TOKEN, null);
+    }
+
+    public void setFcmTokenPref(String fcmToken) {
+        mSharedPrefsEditor.putString(PREF_FCM_TOKEN, fcmToken);
         mSharedPrefsEditor.apply();
     }
 
