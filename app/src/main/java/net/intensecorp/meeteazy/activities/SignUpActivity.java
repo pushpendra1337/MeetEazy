@@ -32,9 +32,9 @@ import net.intensecorp.meeteazy.R;
 import net.intensecorp.meeteazy.utils.Extras;
 import net.intensecorp.meeteazy.utils.Firestore;
 import net.intensecorp.meeteazy.utils.NetworkInfoUtility;
-import net.intensecorp.meeteazy.utils.RegExUtility;
+import net.intensecorp.meeteazy.utils.Patterns;
 import net.intensecorp.meeteazy.utils.SharedPrefsManager;
-import net.intensecorp.meeteazy.utils.SnackbarUtility;
+import net.intensecorp.meeteazy.utils.Snackbars;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -90,7 +90,7 @@ public class SignUpActivity extends AppCompatActivity {
 
     private String getFirstName() {
         String firstName = Objects.requireNonNull(mFirstNameLayout.getEditText()).getText().toString().trim();
-        Matcher firstNameMatcher = RegExUtility.FIRST_NAME_PATTERN.matcher(firstName);
+        Matcher firstNameMatcher = Patterns.FIRST_NAME_PATTERN.matcher(firstName);
 
         if (firstName.isEmpty()) {
             mFirstNameLayout.setError(getString(R.string.error_empty_first_name));
@@ -110,7 +110,7 @@ public class SignUpActivity extends AppCompatActivity {
 
     private String getLastName() {
         String lastName = Objects.requireNonNull(mLastNameLayout.getEditText()).getText().toString().trim();
-        Matcher lastNameMatcher = RegExUtility.LAST_NAME_PATTERN.matcher(lastName);
+        Matcher lastNameMatcher = Patterns.LAST_NAME_PATTERN.matcher(lastName);
 
         if (lastName.isEmpty()) {
             mLastNameLayout.setError(getString(R.string.error_empty_last_name));
@@ -143,7 +143,7 @@ public class SignUpActivity extends AppCompatActivity {
 
     private boolean isEmailValid() {
         if (getEmail() != null) {
-            Matcher emailMatcher = RegExUtility.EMAIL_PATTERN.matcher(getEmail());
+            Matcher emailMatcher = Patterns.EMAIL_PATTERN.matcher(getEmail());
 
             if (emailMatcher.matches()) {
                 mEmailLayout.setErrorEnabled(false);
@@ -160,7 +160,7 @@ public class SignUpActivity extends AppCompatActivity {
 
     private String getPassword() {
         String password = Objects.requireNonNull(mPasswordLayout.getEditText()).getText().toString().trim();
-        Matcher passwordMatcher = RegExUtility.PASSWORD_PATTERN.matcher(password);
+        Matcher passwordMatcher = Patterns.PASSWORD_PATTERN.matcher(password);
 
         if (password.isEmpty()) {
             mPasswordLayout.setError(getString(R.string.error_empty_password));
@@ -203,7 +203,7 @@ public class SignUpActivity extends AppCompatActivity {
                             if (e instanceof FirebaseAuthUserCollisionException) {
                                 dismissProgressDialog();
 
-                                new SnackbarUtility(SignUpActivity.this).snackbar(R.string.snackbar_text_email_already_exists);
+                                new Snackbars(SignUpActivity.this).snackbar(R.string.snackbar_text_email_already_exists);
                             } else if (!new NetworkInfoUtility(SignUpActivity.this).isConnectedToInternet()) {
                                 dismissProgressDialog();
 
@@ -211,7 +211,7 @@ public class SignUpActivity extends AppCompatActivity {
                             } else {
                                 dismissProgressDialog();
 
-                                new SnackbarUtility(SignUpActivity.this).snackbar(R.string.snackbar_text_error_occurred);
+                                new Snackbars(SignUpActivity.this).snackbar(R.string.snackbar_text_error_occurred);
                             }
 
                             Log.e(TAG, "Sign up failed: " + e.getMessage());
@@ -264,7 +264,7 @@ public class SignUpActivity extends AppCompatActivity {
 
                     dismissProgressDialog();
 
-                    new SnackbarUtility(SignUpActivity.this).snackbar(R.string.snackbar_text_error_occurred);
+                    new Snackbars(SignUpActivity.this).snackbar(R.string.snackbar_text_error_occurred);
                 })
                 .addOnFailureListener(e -> {
 
@@ -275,7 +275,7 @@ public class SignUpActivity extends AppCompatActivity {
                     } else {
                         dismissProgressDialog();
 
-                        new SnackbarUtility(SignUpActivity.this).snackbar(R.string.snackbar_text_error_occurred);
+                        new Snackbars(SignUpActivity.this).snackbar(R.string.snackbar_text_error_occurred);
                     }
 
                     Log.e(TAG, "Failed to delete user: " + e.getMessage());

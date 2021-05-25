@@ -33,9 +33,9 @@ import net.intensecorp.meeteazy.R;
 import net.intensecorp.meeteazy.utils.Extras;
 import net.intensecorp.meeteazy.utils.Firestore;
 import net.intensecorp.meeteazy.utils.NetworkInfoUtility;
-import net.intensecorp.meeteazy.utils.RegExUtility;
+import net.intensecorp.meeteazy.utils.Patterns;
 import net.intensecorp.meeteazy.utils.SharedPrefsManager;
-import net.intensecorp.meeteazy.utils.SnackbarUtility;
+import net.intensecorp.meeteazy.utils.Snackbars;
 
 import java.util.Objects;
 import java.util.regex.Matcher;
@@ -95,7 +95,7 @@ public class SignInActivity extends AppCompatActivity {
 
     private boolean isEmailValid() {
         if (getEmail() != null) {
-            Matcher emailMatcher = RegExUtility.EMAIL_PATTERN.matcher(getEmail());
+            Matcher emailMatcher = Patterns.EMAIL_PATTERN.matcher(getEmail());
 
             if (emailMatcher.matches()) {
                 mEmailLayout.setErrorEnabled(false);
@@ -144,11 +144,11 @@ public class SignInActivity extends AppCompatActivity {
                             if (e instanceof FirebaseAuthInvalidUserException) {
                                 dismissProgressDialog();
 
-                                new SnackbarUtility(SignInActivity.this).snackbar(R.string.snackbar_text_email_not_registered);
+                                new Snackbars(SignInActivity.this).snackbar(R.string.snackbar_text_email_not_registered);
                             } else if (e instanceof FirebaseAuthInvalidCredentialsException) {
                                 dismissProgressDialog();
 
-                                new SnackbarUtility(SignInActivity.this).snackbar(R.string.snackbar_text_login_failed_wrong_credentials);
+                                new Snackbars(SignInActivity.this).snackbar(R.string.snackbar_text_login_failed_wrong_credentials);
                             } else if (!new NetworkInfoUtility(SignInActivity.this).isConnectedToInternet()) {
                                 dismissProgressDialog();
 
@@ -156,7 +156,7 @@ public class SignInActivity extends AppCompatActivity {
                             } else {
                                 dismissProgressDialog();
 
-                                new SnackbarUtility(SignInActivity.this).snackbar(R.string.snackbar_text_error_occurred);
+                                new Snackbars(SignInActivity.this).snackbar(R.string.snackbar_text_error_occurred);
                             }
 
                             Log.e(TAG, "Sign in failed: " + e.getMessage());
@@ -205,7 +205,7 @@ public class SignInActivity extends AppCompatActivity {
 
                     dismissProgressDialog();
 
-                    new SnackbarUtility(SignInActivity.this).snackbar(R.string.snackbar_text_error_occurred);
+                    new Snackbars(SignInActivity.this).snackbar(R.string.snackbar_text_error_occurred);
 
                     Log.e(TAG, "Failed to get user data: " + e.getMessage());
                 });

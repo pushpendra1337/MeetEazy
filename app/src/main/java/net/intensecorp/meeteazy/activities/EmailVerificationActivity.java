@@ -22,7 +22,7 @@ import net.intensecorp.meeteazy.R;
 import net.intensecorp.meeteazy.utils.Extras;
 import net.intensecorp.meeteazy.utils.NetworkInfoUtility;
 import net.intensecorp.meeteazy.utils.SharedPrefsManager;
-import net.intensecorp.meeteazy.utils.SnackbarUtility;
+import net.intensecorp.meeteazy.utils.Snackbars;
 
 public class EmailVerificationActivity extends AppCompatActivity {
 
@@ -122,7 +122,7 @@ public class EmailVerificationActivity extends AppCompatActivity {
                             } else {
                                 dismissProgressDialog();
 
-                                new SnackbarUtility(EmailVerificationActivity.this).snackbar(R.string.snackbar_text_error_occurred);
+                                new Snackbars(EmailVerificationActivity.this).snackbar(R.string.snackbar_text_error_occurred);
                             }
 
                             Log.e(TAG, "Email not sent: " + e.getMessage());
