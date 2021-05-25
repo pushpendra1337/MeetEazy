@@ -262,20 +262,20 @@ public class HomeActivity extends AppCompatActivity implements UsersListener {
     }
 
     @Override
-    public void initiateVideoCall(User user) {
-        if (user.mFcmToken == null || user.mFcmToken.trim().isEmpty()) {
-            Toast.makeText(HomeActivity.this, user.mFirstName + " " + user.mLastName + " is not available", Toast.LENGTH_SHORT).show();
-        } else {
-            Toast.makeText(HomeActivity.this, "Video meeting with " + user.mFirstName + " " + user.mLastName, Toast.LENGTH_SHORT).show();
-        }
-    }
-
-    @Override
     public void initiateVoiceCall(User user) {
         if (user.mFcmToken == null || user.mFcmToken.trim().isEmpty()) {
             Toast.makeText(HomeActivity.this, user.mFirstName + " " + user.mLastName + " is not available", Toast.LENGTH_SHORT).show();
         } else {
-            Toast.makeText(HomeActivity.this, "Voice meeting with " + user.mFirstName + " " + user.mLastName, Toast.LENGTH_SHORT).show();
+            startOutgoingCallActivity(ApiUtility.TYPE_VOICE_CALL, user);
+        }
+    }
+
+    @Override
+    public void initiateVideoCall(User user) {
+        if (user.mFcmToken == null || user.mFcmToken.trim().isEmpty()) {
+            Toast.makeText(HomeActivity.this, user.mFirstName + " " + user.mLastName + " is not available", Toast.LENGTH_SHORT).show();
+        } else {
+            startOutgoingCallActivity(ApiUtility.TYPE_VIDEO_CALL, user);
         }
     }
 
@@ -458,6 +458,13 @@ public class HomeActivity extends AppCompatActivity implements UsersListener {
         emailIntent.setType(FEEDBACK_EMAIL_TYPE);
         emailIntent.setPackage(FEEDBACK_EMAIL_HANDLER_PACKAGE);
         startActivity(emailIntent);
+    }
+
+    private void startOutgoingCallActivity(String callType, User user) {
+        Intent outgoingCallIntent = new Intent(HomeActivity.this, OutgoingCallActivity.class);
+        outgoingCallIntent.putExtra(Extras.EXTRA_CALL_TYPE, callType);
+        outgoingCallIntent.putExtra(Extras.EXTRA_CALLEE, user);
+        startActivity(outgoingCallIntent);
     }
 
     private void startProfileActivity() {
