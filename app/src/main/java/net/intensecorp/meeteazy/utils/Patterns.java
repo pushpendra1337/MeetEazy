@@ -2,7 +2,7 @@ package net.intensecorp.meeteazy.utils;
 
 import java.util.regex.Pattern;
 
-public class RegExUtility {
+public class Patterns {
 
     public static final Pattern FIRST_NAME_PATTERN = Pattern.compile("^\\p{L}{1,50}");
 
