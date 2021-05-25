@@ -152,19 +152,19 @@ public class HomeActivity extends AppCompatActivity implements UsersListener {
 
     private void getFcmToken() {
         mMessaging.getToken()
-                .addOnSuccessListener(s -> {
-                    Log.d(TAG, "FCM token: " + s);
+                .addOnSuccessListener(token -> {
+                    Log.d(TAG, "FCM token: " + token);
 
-                    setFcmToken(s);
+                    setFcmToken(token);
                     SharedPrefsManager sharedPrefsManager = new SharedPrefsManager(HomeActivity.this, SharedPrefsManager.PREF_USER_DATA);
-                    sharedPrefsManager.setFcmTokenPref(s);
+                    sharedPrefsManager.setFcmTokenPref(token);
                 })
                 .addOnFailureListener(e -> Log.e(TAG, "Failed to get token: " + e.getMessage()));
     }
 
-    private void setFcmToken(String token) {
-        mUserReference.update(Firestore.FIELD_FCM_TOKEN, token)
-                .addOnSuccessListener(aVoid -> Log.d(TAG, "Token successfully updated: " + token))
+    private void setFcmToken(String fcmToken) {
+        mUserReference.update(Firestore.FIELD_FCM_TOKEN, fcmToken)
+                .addOnSuccessListener(aVoid -> Log.d(TAG, "Token successfully updated: " + fcmToken))
                 .addOnFailureListener(e -> Log.e(TAG, "Failed to update token: " + e.getMessage()));
     }
 
