@@ -184,9 +184,9 @@ public class SignInActivity extends AppCompatActivity {
                     String lastName = documentSnapshot.getString(Firestore.FIELD_LAST_NAME);
                     String email = documentSnapshot.getString(Firestore.FIELD_EMAIL);
                     String about = documentSnapshot.getString(Firestore.FIELD_ABOUT);
-                    String profileImageUrl = documentSnapshot.getString(Firestore.FIELD_PROFILE_PICTURE_URL);
+                    String profilePictureUrl = documentSnapshot.getString(Firestore.FIELD_PROFILE_PICTURE_URL);
 
-                    sharedPrefsManager.setUserDataPrefs(firstName, lastName, email, about, profileImageUrl);
+                    sharedPrefsManager.setUserDataPrefs(firstName, lastName, email, about, profilePictureUrl);
 
                     if (mAuth.getCurrentUser().isEmailVerified()) {
                         dismissProgressDialog();
