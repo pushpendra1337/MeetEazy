@@ -30,8 +30,10 @@ import com.google.firebase.messaging.FirebaseMessaging;
 
 import net.intensecorp.meeteazy.R;
 import net.intensecorp.meeteazy.adapters.UsersAdapter;
+import net.intensecorp.meeteazy.utils.ApiUtility;
 import net.intensecorp.meeteazy.listener.UsersListener;
 import net.intensecorp.meeteazy.models.User;
+import net.intensecorp.meeteazy.utils.Extras;
 import net.intensecorp.meeteazy.utils.Firestore;
 import net.intensecorp.meeteazy.utils.NetworkInfoUtility;
 import net.intensecorp.meeteazy.utils.SharedPrefsManager;
@@ -154,6 +156,8 @@ public class HomeActivity extends AppCompatActivity implements UsersListener {
                     Log.d(TAG, "FCM token: " + s);
 
                     setFcmToken(s);
+                    SharedPrefsManager sharedPrefsManager = new SharedPrefsManager(HomeActivity.this, SharedPrefsManager.PREF_USER_DATA);
+                    sharedPrefsManager.setFcmTokenPref(s);
                 })
                 .addOnFailureListener(e -> Log.e(TAG, "Failed to get token: " + e.getMessage()));
     }
