@@ -1,5 +1,6 @@
 package net.intensecorp.meeteazy.services;
 
+import android.content.Intent;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
@@ -11,6 +12,9 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
 
+import net.intensecorp.meeteazy.activities.IncomingCallActivity;
+import net.intensecorp.meeteazy.utils.ApiUtility;
+import net.intensecorp.meeteazy.utils.Extras;
 import net.intensecorp.meeteazy.utils.Firestore;
 
 import java.util.Objects;
@@ -24,7 +28,15 @@ public class MessagingService extends FirebaseMessagingService {
     public void onMessageReceived(@NonNull RemoteMessage remoteMessage) {
         super.onMessageReceived(remoteMessage);
 
-        Log.d(TAG, "FCM remote message: " + Objects.requireNonNull(remoteMessage.getNotification()).getBody());
+        Log.d(TAG, "FCM remote message: " + Objects.requireNonNull(remoteMessage.getData()));
+
+        String messageType = remoteMessage.getData().get(ApiUtility.KEY_MESSAGE_TYPE);
+
+        if (messageType != null) {
+            if (messageType.equals(ApiUtility.MESSAGE_TYPE_CALL_REQUEST)) {
+                startIncomingCallActivity(remoteMessage);
+            }
+        }
     }
 
     @Override
@@ -44,12 +56,23 @@ public class MessagingService extends FirebaseMessagingService {
         return user != null && user.isEmailVerified();
     }
 
-    private void setFcmToken(String token) {
+    private void setFcmToken(String fcmToken) {
         FirebaseFirestore store = FirebaseFirestore.getInstance();
         String uid = Objects.requireNonNull(mAuth.getCurrentUser()).getUid();
         DocumentReference userReference = store.collection(Firestore.COLLECTION_USERS).document(uid);
-        userReference.update(Firestore.FIELD_FCM_TOKEN, token)
-                .addOnSuccessListener(aVoid -> Log.d(TAG, "Token successfully updated: " + token))
+        userReference.update(Firestore.FIELD_FCM_TOKEN, fcmToken)
+                .addOnSuccessListener(aVoid -> Log.d(TAG, "Token successfully updated: " + fcmToken))
                 .addOnFailureListener(e -> Log.e(TAG, "Failed to update token: " + e.getMessage()));
+    }
+
+    private void startIncomingCallActivity(RemoteMessage remoteMessage) {
+        Intent incomingCallIntent = new Intent(getApplicationContext(), IncomingCallActivity.class);
+        incomingCallIntent.putExtra(Extras.EXTRA_CALL_TYPE, remoteMessage.getData().get(ApiUtility.KEY_CALL_TYPE));
+        incomingCallIntent.putExtra(Extras.EXTRA_CALLER_FIRST_NAME, remoteMessage.getData().get(ApiUtility.KEY_CALLER_FIRST_NAME));
+        incomingCallIntent.putExtra(Extras.EXTRA_CALLER_LAST_NAME, remoteMessage.getData().get(ApiUtility.KEY_CALLER_LAST_NAME));
+        incomingCallIntent.putExtra(Extras.EXTRA_CALLER_EMAIL, remoteMessage.getData().get(ApiUtility.KEY_CALLER_EMAIL));
+        incomingCallIntent.putExtra(Extras.EXTRA_CALLER_PROFILE_PICTURE_URL, remoteMessage.getData().get(ApiUtility.KEY_CALLER_PROFILE_PICTURE_URL));
+        incomingCallIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        startActivity(incomingCallIntent);
     }
 }
