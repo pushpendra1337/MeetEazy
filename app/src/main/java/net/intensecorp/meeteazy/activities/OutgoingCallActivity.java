@@ -1,12 +1,17 @@
 package net.intensecorp.meeteazy.activities;
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import com.bumptech.glide.Glide;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -34,6 +39,26 @@ import retrofit2.Response;
 public class OutgoingCallActivity extends AppCompatActivity {
 
     private static final String TAG = OutgoingCallActivity.class.getSimpleName();
+    BroadcastReceiver mCallResponseReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            String responseType = intent.getStringExtra(Extras.EXTRA_RESPONSE_TYPE);
+
+            if (responseType != null) {
+
+                switch (responseType) {
+                    case ApiUtility.RESPONSE_TYPE_REJECTED:
+                        finish();
+                        break;
+                    case ApiUtility.RESPONSE_TYPE_ANSWERED:
+                        Toast.makeText(OutgoingCallActivity.this, "Call answered", Toast.LENGTH_SHORT).show();
+                        break;
+                    default:
+                        break;
+                }
+            }
+        }
+    };
     private SharedPrefsManager mSharedPrefsManager;
 
     @Override
@@ -90,6 +115,18 @@ public class OutgoingCallActivity extends AppCompatActivity {
         });
 
         craftCallInitiateRequestMessageBody(callee.mFcmToken, outgoingCallType);
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        LocalBroadcastManager.getInstance(getApplicationContext()).registerReceiver(mCallResponseReceiver, new IntentFilter(ApiUtility.MESSAGE_TYPE_CALL_RESPONSE));
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        LocalBroadcastManager.getInstance(getApplicationContext()).unregisterReceiver(mCallResponseReceiver);
     }
 
     public void craftCallInitiateRequestMessageBody(String calleeFcmToken, String callType) {
