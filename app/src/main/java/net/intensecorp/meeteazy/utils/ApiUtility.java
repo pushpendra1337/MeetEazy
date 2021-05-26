@@ -14,6 +14,8 @@ public class ApiUtility {
     public static final String JSON_OBJECT_REGISTRATION_IDS = "registration_ids";
 
     public static final String KEY_MESSAGE_TYPE = "messageType";
+    public static final String KEY_REQUEST_TYPE = "requestType";
+    public static final String KEY_RESPONSE_TYPE = "responseType";
     public static final String KEY_CALL_TYPE = "callType";
     public static final String KEY_CALLER_FIRST_NAME = "callerFirstName";
     public static final String KEY_CALLER_LAST_NAME = "callerLastName";
@@ -25,13 +27,14 @@ public class ApiUtility {
 
     public static final String MESSAGE_TYPE_CALL_REQUEST = "callRequest";
     public static final String MESSAGE_TYPE_CALL_RESPONSE = "callResponse";
-    public static final String REQUEST_ENDED = "ended";
-    public static final String RESPONSE_ANSWERED = "answered";
-    public static final String RESPONSE_REJECTED = "rejected";
-    public static final String TYPE_VOICE_CALL = "voiceCall";
-    public static final String TYPE_VIDEO_CALL = "videoCall";
-    public static final String TYPE_GROUP_VOICE_CALL = "groupVoiceCall";
-    public static final String TYPE_GROUP_VIDEO_CALL = "groupVideoCall";
+    public static final String REQUEST_TYPE_ENDED = "ended";
+    public static final String REQUEST_TYPE_INITIATED = "initiated";
+    public static final String RESPONSE_TYPE_ANSWERED = "answered";
+    public static final String RESPONSE_TYPE_REJECTED = "rejected";
+    public static final String CALL_TYPE_VOICE = "voiceCall";
+    public static final String CALL_TYPE_VIDEO = "videoCall";
+    public static final String CALL_TYPE_GROUP_VOICE = "groupVoiceCall";
+    public static final String CALL_TYPE_GROUP_VIDEO = "groupVideoCall";
 
     public static HashMap<String, String> getMessageHeaders() {
         HashMap<String, String> messageHeaders = new HashMap<>();

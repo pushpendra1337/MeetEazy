@@ -30,9 +30,9 @@ import com.google.firebase.messaging.FirebaseMessaging;
 
 import net.intensecorp.meeteazy.R;
 import net.intensecorp.meeteazy.adapters.UsersAdapter;
-import net.intensecorp.meeteazy.utils.ApiUtility;
 import net.intensecorp.meeteazy.listener.UsersListener;
 import net.intensecorp.meeteazy.models.User;
+import net.intensecorp.meeteazy.utils.ApiUtility;
 import net.intensecorp.meeteazy.utils.Extras;
 import net.intensecorp.meeteazy.utils.Firestore;
 import net.intensecorp.meeteazy.utils.NetworkInfoUtility;
@@ -266,7 +266,7 @@ public class HomeActivity extends AppCompatActivity implements UsersListener {
         if (user.mFcmToken == null || user.mFcmToken.trim().isEmpty()) {
             Toast.makeText(HomeActivity.this, user.mFirstName + " " + user.mLastName + " is not available", Toast.LENGTH_SHORT).show();
         } else {
-            startOutgoingCallActivity(ApiUtility.TYPE_VOICE_CALL, user);
+            startOutgoingCallActivity(ApiUtility.CALL_TYPE_VOICE, user);
         }
     }
 
@@ -275,7 +275,7 @@ public class HomeActivity extends AppCompatActivity implements UsersListener {
         if (user.mFcmToken == null || user.mFcmToken.trim().isEmpty()) {
             Toast.makeText(HomeActivity.this, user.mFirstName + " " + user.mLastName + " is not available", Toast.LENGTH_SHORT).show();
         } else {
-            startOutgoingCallActivity(ApiUtility.TYPE_VIDEO_CALL, user);
+            startOutgoingCallActivity(ApiUtility.CALL_TYPE_VIDEO, user);
         }
     }
 
