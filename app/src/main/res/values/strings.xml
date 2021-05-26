@@ -86,8 +86,15 @@
     <string name="placeholder_count">Many</string>
     <string name="text_others">Others</string>
     <string name="content_description_end_call">End call</string>
-    <string name="text_call_type_voice" tools:ignore="TypographyEllipsis">"Outgoing voice call..."</string>
-    <string name="text_call_type_video" tools:ignore="TypographyEllipsis">"Outgoing video call..."</string>
+    <string name="text_outgoing_call_type_voice" tools:ignore="TypographyEllipsis">"Outgoing voice call..."</string>
+    <string name="text_outgoing_call_type_video" tools:ignore="TypographyEllipsis">"Outgoing video call..."</string>
+
+    <!-- Incoming Call Activity -->
+    <string name="placeholder_incoming_call_type" tools:ignore="TypographyEllipsis">Incoming call...</string>
+    <string name="content_description_reject_call">Reject call</string>
+    <string name="content_description_answer_call">Answer call</string>
+    <string name="text_incoming_call_type_voice" tools:ignore="TypographyEllipsis">"Incoming voice call..."</string>
+    <string name="text_incoming_call_type_video" tools:ignore="TypographyEllipsis">"Incoming video call..."</string>
 
     <!-- No Internet Dialog -->
     <string name="dialog_title_no_internet">Whoops!</string>
