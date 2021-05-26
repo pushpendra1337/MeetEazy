@@ -41,31 +41,31 @@ public class OutgoingCallActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_outgoing_call);
 
-        ImageView callTypeIcon = findViewById(R.id.imageView_call_type);
-        MaterialTextView callTypeView = findViewById(R.id.textView_call_type);
+        ImageView outgoingCallTypeIconView = findViewById(R.id.imageView_outgoing_call_type);
+        MaterialTextView outgoingCallTypeView = findViewById(R.id.textView_outgoing_call_type);
         CircleImageView calleeProfilePictureView = findViewById(R.id.circleImageView_callee_profile_picture);
         MaterialTextView calleeFullNameView = findViewById(R.id.textView_callee_full_name);
         MaterialTextView calleeEmailView = findViewById(R.id.textView_callee_email);
         FloatingActionButton endCallButton = findViewById(R.id.floatingActionButton_end_call);
 
         Intent outgoingCallIntent = getIntent();
-        String callType = outgoingCallIntent.getStringExtra(Extras.EXTRA_CALL_TYPE);
+        String outgoingCallType = outgoingCallIntent.getStringExtra(Extras.EXTRA_CALL_TYPE);
         User callee = (User) outgoingCallIntent.getSerializableExtra(Extras.EXTRA_CALLEE);
 
         mSharedPrefsManager = new SharedPrefsManager(OutgoingCallActivity.this, SharedPrefsManager.PREF_USER_DATA);
 
-        switch (callType) {
+        switch (outgoingCallType) {
             case ApiUtility.TYPE_VOICE_CALL:
-                callTypeIcon.setImageResource(R.drawable.ic_baseline_mic_24);
-                callTypeView.setText(R.string.text_call_type_voice);
+                outgoingCallTypeIconView.setImageResource(R.drawable.ic_baseline_mic_24);
+                outgoingCallTypeView.setText(R.string.text_outgoing_call_type_voice);
                 break;
             case ApiUtility.TYPE_VIDEO_CALL:
-                callTypeIcon.setImageResource(R.drawable.ic_baseline_videocam_24);
-                callTypeView.setText(R.string.text_call_type_video);
+                outgoingCallTypeIconView.setImageResource(R.drawable.ic_baseline_videocam_24);
+                outgoingCallTypeView.setText(R.string.text_outgoing_call_type_video);
                 break;
         }
 
-        if (callee.mProfilePictureUrl != null) {
+        if (!callee.mProfilePictureUrl.equals("null")) {
 
             Glide.with(OutgoingCallActivity.this)
                     .load(callee.mProfilePictureUrl)
@@ -82,8 +82,8 @@ public class OutgoingCallActivity extends AppCompatActivity {
 
         endCallButton.setOnClickListener(v -> finish());
 
-        if (callType != null && callee != null) {
-            craftCallRequestMessageBody(callee.mFcmToken, callType);
+        if (outgoingCallType != null && callee != null) {
+            craftCallRequestMessageBody(callee.mFcmToken, outgoingCallType);
         }
     }
 
@@ -101,7 +101,7 @@ public class OutgoingCallActivity extends AppCompatActivity {
 
             HashMap<String, String> userData = mSharedPrefsManager.getUserDataPrefs();
             String callerFirstName = userData.get(SharedPrefsManager.PREF_FIRST_NAME);
-            String callerLastName = userData.get(SharedPrefsManager.PREF_FIRST_NAME);
+            String callerLastName = userData.get(SharedPrefsManager.PREF_LAST_NAME);
             String callerEmail = userData.get(SharedPrefsManager.PREF_EMAIL);
             String callerProfilePictureUrl = userData.get(SharedPrefsManager.PREF_PROFILE_PICTURE_URL);
             String callerFcmToken = userData.get(SharedPrefsManager.PREF_FCM_TOKEN);
