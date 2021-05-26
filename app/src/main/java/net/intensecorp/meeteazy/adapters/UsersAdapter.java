@@ -68,7 +68,7 @@ public class UsersAdapter extends RecyclerView.Adapter<UsersAdapter.UserViewHold
             fullNameView.setText(FormatterUtility.getFullName(user.mFirstName, user.mLastName));
             emailView.setText(user.mEmail);
 
-            if (user.mProfilePictureUrl != null) {
+            if (!user.mProfilePictureUrl.equals("null")) {
                 Glide.with(itemView.getContext())
                         .load(user.mProfilePictureUrl)
                         .centerCrop()
