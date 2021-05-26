@@ -1,0 +1,170 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/colorBackground"
+    tools:context=".activities.IncomingCallActivity">
+
+    <LinearLayout
+        android:id="@+id/linearLayout_call_type"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="@dimen/margin_16dp"
+        android:layout_marginTop="@dimen/margin_48dp"
+        android:orientation="horizontal"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <ImageView
+            android:id="@+id/imageView_incoming_call_type"
+            android:layout_width="@dimen/call_type_icon_width"
+            android:layout_height="@dimen/call_type_icon_height"
+            android:contentDescription="@string/content_description_call_type"
+            android:src="@drawable/ic_baseline_call_24"
+            app:tint="@color/colorIconography" />
+
+        <com.google.android.material.textview.MaterialTextView
+            android:id="@+id/textView_incoming_call_type"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginStart="@dimen/margin_4dp"
+            android:includeFontPadding="false"
+            android:text="@string/placeholder_incoming_call_type"
+            android:textColor="@color/colorMediumEmphasisText"
+            android:textSize="@dimen/text_size_small"
+            android:visibility="visible"
+            app:fontFamily="@font/poppins_regular" />
+
+    </LinearLayout>
+
+    <de.hdodenhof.circleimageview.CircleImageView
+        android:id="@+id/circleImageView_caller_profile_picture"
+        android:layout_width="@dimen/call_activity_profile_picture_width"
+        android:layout_height="@dimen/call_activity_profile_picture_height"
+        android:layout_marginTop="@dimen/margin_48dp"
+        android:src="@drawable/img_profile_picture"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/linearLayout_call_type" />
+
+    <com.google.android.material.textview.MaterialTextView
+        android:id="@+id/textView_caller_full_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="@dimen/margin_16dp"
+        android:layout_marginTop="@dimen/margin_16dp"
+        android:includeFontPadding="false"
+        android:text="@string/placeholder_full_name"
+        android:textColor="@color/colorHighEmphasisText"
+        android:textSize="@dimen/text_size_huge"
+        app:fontFamily="@font/poppins_medium"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/circleImageView_caller_profile_picture" />
+
+    <com.google.android.material.textview.MaterialTextView
+        android:id="@+id/textView_caller_email"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="@dimen/margin_16dp"
+        android:layout_marginTop="@dimen/margin_4dp"
+        android:layout_marginBottom="@dimen/margin_16dp"
+        android:includeFontPadding="false"
+        android:text="@string/placeholder_email"
+        android:textColor="@color/colorMediumEmphasisText"
+        android:textSize="@dimen/text_size_small"
+        app:fontFamily="@font/poppins_regular"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/textView_caller_full_name" />
+
+    <LinearLayout
+        android:id="@+id/linearLayout_plus_many_others"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="@dimen/margin_16dp"
+        android:layout_marginTop="@dimen/margin_4dp"
+        android:layout_marginBottom="@dimen/margin_16dp"
+        android:orientation="horizontal"
+        android:visibility="gone"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/textView_caller_full_name">
+
+        <com.google.android.material.textview.MaterialTextView
+            android:id="@+id/textView_plus"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:includeFontPadding="false"
+            android:text="@string/text_plus"
+            android:textColor="@color/colorMediumEmphasisText"
+            android:textSize="@dimen/text_size_compact"
+            app:fontFamily="@font/poppins_regular" />
+
+        <com.google.android.material.textview.MaterialTextView
+            android:id="@+id/textView_count"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:includeFontPadding="false"
+            android:text="@string/placeholder_count"
+            android:textColor="@color/colorMediumEmphasisText"
+            android:textSize="@dimen/text_size_compact"
+            app:fontFamily="@font/poppins_regular" />
+
+        <com.google.android.material.textview.MaterialTextView
+            android:id="@+id/textView_whitespace"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:includeFontPadding="false"
+            android:text="@string/text_whitespace"
+            android:textColor="@color/colorMediumEmphasisText"
+            android:textSize="@dimen/text_size_compact"
+            app:fontFamily="@font/poppins_regular" />
+
+        <com.google.android.material.textview.MaterialTextView
+            android:id="@+id/textView_others"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:includeFontPadding="false"
+            android:text="@string/text_others"
+            android:textColor="@color/colorMediumEmphasisText"
+            android:textSize="@dimen/text_size_compact"
+            app:fontFamily="@font/poppins_regular" />
+
+    </LinearLayout>
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/floatingActionButton_reject_call"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="@dimen/margin_16dp"
+        android:layout_marginTop="@dimen/margin_16dp"
+        android:layout_marginBottom="@dimen/margin_48dp"
+        android:contentDescription="@string/content_description_reject_call"
+        android:src="@drawable/ic_baseline_call_end_24"
+        android:tint="@color/colorCallButtonIcon"
+        app:backgroundTint="@color/colorEndOrRejectCallButtonBackground"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/floatingActionButton_answer_call"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/floatingActionButton_answer_call"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="@dimen/margin_16dp"
+        android:layout_marginTop="@dimen/margin_16dp"
+        android:layout_marginBottom="@dimen/margin_48dp"
+        android:contentDescription="@string/content_description_answer_call"
+        android:src="@drawable/ic_baseline_call_24"
+        android:tint="@color/colorCallButtonIcon"
+        app:backgroundTint="@color/colorAnswerCallButtonBackground"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/floatingActionButton_reject_call" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
