@@ -55,6 +55,11 @@
             android:name=".activities.OutgoingCallActivity"
             android:screenOrientation="portrait" />
 
+        <!-- Incoming Call Activity -->
+        <activity
+            android:name=".activities.IncomingCallActivity"
+            android:screenOrientation="portrait" />
+
         <!-- Profile Activity -->
         <activity android:name=".activities.ProfileActivity" />
 
