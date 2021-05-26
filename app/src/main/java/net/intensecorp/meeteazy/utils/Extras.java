@@ -9,4 +9,7 @@ public class Extras {
     public static final String EXTRA_CALLER_LAST_NAME = "net.intensecorp.meeeteazy.utils.extra.CALLER_LAST_NAME";
     public static final String EXTRA_CALLER_EMAIL = "net.intensecorp.meeeteazy.utils.extra.CALLER_EMAIL";
     public static final String EXTRA_CALLER_PROFILE_PICTURE_URL = "net.intensecorp.meeeteazy.utils.extra.CALLER_PROFILE_PICTURE_URL";
+    public static final String EXTRA_CALLER_FCM_TOKEN = "net.intensecorp.meeeteazy.utils.extra.CALLER_FCM_TOKEN";
+    public static final String EXTRA_RESPONSE_TYPE = "net.intensecorp.meeeteazy.utils.extra.RESPONSE_TYPE";
+    public static final String EXTRA_REQUEST_TYPE = "net.intensecorp.meeeteazy.utils.extra.REQUEST_TYPE";
 }
