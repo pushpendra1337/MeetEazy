@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -33,8 +34,35 @@ public class MessagingService extends FirebaseMessagingService {
         String messageType = remoteMessage.getData().get(ApiUtility.KEY_MESSAGE_TYPE);
 
         if (messageType != null) {
-            if (messageType.equals(ApiUtility.MESSAGE_TYPE_CALL_REQUEST)) {
-                startIncomingCallActivity(remoteMessage);
+            switch (messageType) {
+                case ApiUtility.MESSAGE_TYPE_CALL_REQUEST:
+                    String requestType = remoteMessage.getData().get(ApiUtility.KEY_REQUEST_TYPE);
+
+                    if (requestType != null) {
+                        switch (requestType) {
+                            case ApiUtility.REQUEST_TYPE_INITIATED:
+                                startIncomingCallActivity(remoteMessage);
+                                break;
+                            case ApiUtility.REQUEST_TYPE_ENDED:
+                                Intent incomingCallIntent = new Intent(ApiUtility.MESSAGE_TYPE_CALL_REQUEST);
+                                incomingCallIntent.putExtra(Extras.EXTRA_REQUEST_TYPE, requestType);
+                                LocalBroadcastManager.getInstance(getApplicationContext()).sendBroadcast(incomingCallIntent);
+                                break;
+                            default:
+                                break;
+                        }
+                    }
+                    break;
+
+                case ApiUtility.MESSAGE_TYPE_CALL_RESPONSE:
+                    String responseType = remoteMessage.getData().get(ApiUtility.KEY_RESPONSE_TYPE);
+                    Intent outgoingCallIntent = new Intent(ApiUtility.MESSAGE_TYPE_CALL_RESPONSE);
+                    outgoingCallIntent.putExtra(Extras.EXTRA_RESPONSE_TYPE, responseType);
+                    LocalBroadcastManager.getInstance(getApplicationContext()).sendBroadcast(outgoingCallIntent);
+                    break;
+
+                default:
+                    break;
             }
         }
     }
@@ -72,6 +100,7 @@ public class MessagingService extends FirebaseMessagingService {
         incomingCallIntent.putExtra(Extras.EXTRA_CALLER_LAST_NAME, remoteMessage.getData().get(ApiUtility.KEY_CALLER_LAST_NAME));
         incomingCallIntent.putExtra(Extras.EXTRA_CALLER_EMAIL, remoteMessage.getData().get(ApiUtility.KEY_CALLER_EMAIL));
         incomingCallIntent.putExtra(Extras.EXTRA_CALLER_PROFILE_PICTURE_URL, remoteMessage.getData().get(ApiUtility.KEY_CALLER_PROFILE_PICTURE_URL));
+        incomingCallIntent.putExtra(Extras.EXTRA_CALLER_FCM_TOKEN, remoteMessage.getData().get(ApiUtility.KEY_CALLER_FCM_TOKEN));
         incomingCallIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         startActivity(incomingCallIntent);
     }
