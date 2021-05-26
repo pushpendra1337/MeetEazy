@@ -1,12 +1,16 @@
 package net.intensecorp.meeteazy.activities;
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.ImageView;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import com.bumptech.glide.Glide;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -30,6 +34,18 @@ import retrofit2.Response;
 public class IncomingCallActivity extends AppCompatActivity {
 
     private static final String TAG = IncomingCallActivity.class.getSimpleName();
+    BroadcastReceiver mCallEndRequestReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            String requestType = intent.getStringExtra(Extras.EXTRA_REQUEST_TYPE);
+
+            if (requestType != null) {
+                if (ApiUtility.REQUEST_TYPE_ENDED.equals(requestType)) {
+                    finish();
+                }
+            }
+        }
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -85,6 +101,18 @@ public class IncomingCallActivity extends AppCompatActivity {
         rejectCallButton.setOnClickListener(v -> craftCallResponseMessageBody(callerFcmToken, ApiUtility.RESPONSE_TYPE_REJECTED));
 
         answerCallButton.setOnClickListener(v -> craftCallResponseMessageBody(callerFcmToken, ApiUtility.RESPONSE_TYPE_ANSWERED));
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        LocalBroadcastManager.getInstance(getApplicationContext()).registerReceiver(mCallEndRequestReceiver, new IntentFilter(ApiUtility.MESSAGE_TYPE_CALL_REQUEST));
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        LocalBroadcastManager.getInstance(getApplicationContext()).unregisterReceiver(mCallEndRequestReceiver);
     }
 
     public void craftCallResponseMessageBody(String callerFcmToken, String responseType) {
