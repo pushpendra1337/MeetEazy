@@ -14,9 +14,9 @@ import com.google.android.material.textview.MaterialTextView;
 
 import net.intensecorp.meeteazy.R;
 import net.intensecorp.meeteazy.api.ApiClient;
-import net.intensecorp.meeteazy.utils.ApiUtility;
 import net.intensecorp.meeteazy.api.ApiService;
 import net.intensecorp.meeteazy.models.User;
+import net.intensecorp.meeteazy.utils.ApiUtility;
 import net.intensecorp.meeteazy.utils.Extras;
 import net.intensecorp.meeteazy.utils.FormatterUtility;
 import net.intensecorp.meeteazy.utils.SharedPrefsManager;
@@ -55,18 +55,22 @@ public class OutgoingCallActivity extends AppCompatActivity {
         mSharedPrefsManager = new SharedPrefsManager(OutgoingCallActivity.this, SharedPrefsManager.PREF_USER_DATA);
 
         switch (outgoingCallType) {
-            case ApiUtility.TYPE_VOICE_CALL:
+            case ApiUtility.CALL_TYPE_VOICE:
                 outgoingCallTypeIconView.setImageResource(R.drawable.ic_baseline_mic_24);
                 outgoingCallTypeView.setText(R.string.text_outgoing_call_type_voice);
                 break;
-            case ApiUtility.TYPE_VIDEO_CALL:
+
+            case ApiUtility.CALL_TYPE_VIDEO:
                 outgoingCallTypeIconView.setImageResource(R.drawable.ic_baseline_videocam_24);
                 outgoingCallTypeView.setText(R.string.text_outgoing_call_type_video);
                 break;
+
+            default:
+                Log.e(TAG, "Outgoing Call type unknown.");
+                break;
         }
 
-        if (!callee.mProfilePictureUrl.equals("null")) {
-
+        if (callee.mProfilePictureUrl != null) {
             Glide.with(OutgoingCallActivity.this)
                     .load(callee.mProfilePictureUrl)
                     .centerCrop()
@@ -80,15 +84,15 @@ public class OutgoingCallActivity extends AppCompatActivity {
 
         calleeEmailView.setText(callee.mEmail);
 
-        endCallButton.setOnClickListener(v -> finish());
+        endCallButton.setOnClickListener(v -> {
+            craftCallEndRequestMessageBody(callee.mFcmToken);
+            finish();
+        });
 
-        if (outgoingCallType != null && callee != null) {
-            craftCallRequestMessageBody(callee.mFcmToken, outgoingCallType);
-        }
+        craftCallInitiateRequestMessageBody(callee.mFcmToken, outgoingCallType);
     }
 
-
-    public void craftCallRequestMessageBody(String calleeFcmToken, String callType) {
+    public void craftCallInitiateRequestMessageBody(String calleeFcmToken, String callType) {
 
         try {
             JSONArray calleeFcmTokensArray = new JSONArray();
@@ -97,16 +101,15 @@ public class OutgoingCallActivity extends AppCompatActivity {
             JSONObject body = new JSONObject();
             JSONObject data = new JSONObject();
 
-            String messageType = ApiUtility.MESSAGE_TYPE_CALL_REQUEST;
-
             HashMap<String, String> userData = mSharedPrefsManager.getUserDataPrefs();
             String callerFirstName = userData.get(SharedPrefsManager.PREF_FIRST_NAME);
             String callerLastName = userData.get(SharedPrefsManager.PREF_LAST_NAME);
             String callerEmail = userData.get(SharedPrefsManager.PREF_EMAIL);
             String callerProfilePictureUrl = userData.get(SharedPrefsManager.PREF_PROFILE_PICTURE_URL);
-            String callerFcmToken = userData.get(SharedPrefsManager.PREF_FCM_TOKEN);
+            String callerFcmToken = mSharedPrefsManager.getFcmTokenPref();
 
-            data.put(ApiUtility.KEY_MESSAGE_TYPE, messageType);
+            data.put(ApiUtility.KEY_MESSAGE_TYPE, ApiUtility.MESSAGE_TYPE_CALL_REQUEST);
+            data.put(ApiUtility.KEY_REQUEST_TYPE, ApiUtility.REQUEST_TYPE_INITIATED);
             data.put(ApiUtility.KEY_CALL_TYPE, callType);
             data.put(ApiUtility.KEY_CALLER_FIRST_NAME, callerFirstName);
             data.put(ApiUtility.KEY_CALLER_LAST_NAME, callerLastName);
@@ -117,14 +120,36 @@ public class OutgoingCallActivity extends AppCompatActivity {
             body.put(ApiUtility.JSON_OBJECT_DATA, data);
             body.put(ApiUtility.JSON_OBJECT_REGISTRATION_IDS, calleeFcmTokensArray);
 
-            sendMessage(body.toString(), messageType);
+            sendCallRequestMessage(body.toString(), ApiUtility.REQUEST_TYPE_INITIATED);
 
         } catch (Exception exception) {
-            Log.d(TAG, "Message can't be crafted: " + exception.getMessage());
+            Log.d(TAG, "Message body can't be crafted: " + exception.getMessage());
         }
     }
 
-    private void sendMessage(String messageBody, String messageType) {
+    public void craftCallEndRequestMessageBody(String calleeFcmToken) {
+
+        try {
+            JSONArray calleeFcmTokensArray = new JSONArray();
+            calleeFcmTokensArray.put(calleeFcmToken);
+
+            JSONObject body = new JSONObject();
+            JSONObject data = new JSONObject();
+
+            data.put(ApiUtility.KEY_MESSAGE_TYPE, ApiUtility.MESSAGE_TYPE_CALL_REQUEST);
+            data.put(ApiUtility.KEY_REQUEST_TYPE, ApiUtility.REQUEST_TYPE_ENDED);
+
+            body.put(ApiUtility.JSON_OBJECT_DATA, data);
+            body.put(ApiUtility.JSON_OBJECT_REGISTRATION_IDS, calleeFcmTokensArray);
+
+            sendCallRequestMessage(body.toString(), ApiUtility.REQUEST_TYPE_ENDED);
+
+        } catch (Exception exception) {
+            Log.d(TAG, "Message body can't be crafted: " + exception.getMessage());
+        }
+    }
+
+    private void sendCallRequestMessage(String messageBody, String requestType) {
         ApiClient.getClient()
                 .create(ApiService.class)
                 .sendRemoteMessage(ApiUtility.getMessageHeaders(), messageBody)
@@ -132,8 +157,15 @@ public class OutgoingCallActivity extends AppCompatActivity {
                     @Override
                     public void onResponse(@NonNull Call<String> call, @NonNull Response<String> response) {
                         if (response.isSuccessful()) {
-                            if (messageType.equals(ApiUtility.MESSAGE_TYPE_CALL_REQUEST)) {
-                                Log.d(TAG, "Call request message sent successfully");
+                            switch (requestType) {
+                                case ApiUtility.REQUEST_TYPE_INITIATED:
+                                    Log.d(TAG, "Call initiate request message sent successfully.");
+                                    break;
+
+                                case ApiUtility.REQUEST_TYPE_ENDED:
+                                    Log.d(TAG, "Call end request message sent successfully.");
+                                    finish();
+                                    break;
                             }
                         } else {
                             Log.d(TAG, "Response of sent message: " + response.message());
