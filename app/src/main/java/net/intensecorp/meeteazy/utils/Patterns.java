@@ -1,5 +1,6 @@
 package net.intensecorp.meeteazy.utils;
 
+import java.util.Random;
 import java.util.regex.Pattern;
 
 public class Patterns {
@@ -16,4 +17,24 @@ public class Patterns {
             + "([a-zA-Z]+[\\w-]+\\.)+[a-zA-Z]{2,4})$");
 
     public static final Pattern PASSWORD_PATTERN = Pattern.compile("^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[(@#$%^&+=])(?=\\S+$).{8,}$");
+
+    private static final String ENGLISH_ALPHABET = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+
+    public static String generateRoomId() {
+
+        String generatedRoomId;
+        StringBuilder stringBuilder = new StringBuilder();
+        Random random = new Random();
+        int length = 9;
+
+        for (int j = 0; j < length; j++) {
+            int index = random.nextInt(ENGLISH_ALPHABET.length());
+            char randomChar = ENGLISH_ALPHABET.charAt(index);
+            stringBuilder.append(randomChar);
+        }
+
+        generatedRoomId = stringBuilder.toString();
+
+        return generatedRoomId;
+    }
 }
