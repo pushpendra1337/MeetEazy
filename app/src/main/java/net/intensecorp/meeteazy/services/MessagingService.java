@@ -46,6 +46,7 @@ public class MessagingService extends FirebaseMessagingService {
                             case ApiUtility.REQUEST_TYPE_ENDED:
                                 Intent incomingCallIntent = new Intent(ApiUtility.MESSAGE_TYPE_CALL_REQUEST);
                                 incomingCallIntent.putExtra(Extras.EXTRA_REQUEST_TYPE, requestType);
+
                                 LocalBroadcastManager.getInstance(getApplicationContext()).sendBroadcast(incomingCallIntent);
                                 break;
                             default:
@@ -56,8 +57,12 @@ public class MessagingService extends FirebaseMessagingService {
 
                 case ApiUtility.MESSAGE_TYPE_CALL_RESPONSE:
                     String responseType = remoteMessage.getData().get(ApiUtility.KEY_RESPONSE_TYPE);
+                    String roomId = remoteMessage.getData().get(ApiUtility.KEY_ROOM_ID);
+
                     Intent outgoingCallIntent = new Intent(ApiUtility.MESSAGE_TYPE_CALL_RESPONSE);
                     outgoingCallIntent.putExtra(Extras.EXTRA_RESPONSE_TYPE, responseType);
+                    outgoingCallIntent.putExtra(Extras.EXTRA_ROOM_ID, roomId);
+
                     LocalBroadcastManager.getInstance(getApplicationContext()).sendBroadcast(outgoingCallIntent);
                     break;
 
@@ -101,6 +106,7 @@ public class MessagingService extends FirebaseMessagingService {
         incomingCallIntent.putExtra(Extras.EXTRA_CALLER_EMAIL, remoteMessage.getData().get(ApiUtility.KEY_CALLER_EMAIL));
         incomingCallIntent.putExtra(Extras.EXTRA_CALLER_PROFILE_PICTURE_URL, remoteMessage.getData().get(ApiUtility.KEY_CALLER_PROFILE_PICTURE_URL));
         incomingCallIntent.putExtra(Extras.EXTRA_CALLER_FCM_TOKEN, remoteMessage.getData().get(ApiUtility.KEY_CALLER_FCM_TOKEN));
+        incomingCallIntent.putExtra(Extras.EXTRA_ROOM_ID, remoteMessage.getData().get(ApiUtility.KEY_ROOM_ID));
         incomingCallIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         startActivity(incomingCallIntent);
     }
