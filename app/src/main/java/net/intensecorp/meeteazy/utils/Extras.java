@@ -12,4 +12,5 @@ public class Extras {
     public static final String EXTRA_CALLER_FCM_TOKEN = "net.intensecorp.meeeteazy.utils.extra.CALLER_FCM_TOKEN";
     public static final String EXTRA_RESPONSE_TYPE = "net.intensecorp.meeeteazy.utils.extra.RESPONSE_TYPE";
     public static final String EXTRA_REQUEST_TYPE = "net.intensecorp.meeeteazy.utils.extra.REQUEST_TYPE";
+    public static final String EXTRA_ROOM_ID = "net.intensecorp.meeeteazy.utils.extra.ROOM_ID";
 }
