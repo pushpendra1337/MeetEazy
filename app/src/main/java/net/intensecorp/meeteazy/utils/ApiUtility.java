@@ -1,5 +1,9 @@
 package net.intensecorp.meeteazy.utils;
 
+import android.util.Log;
+
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.HashMap;
 
 public class ApiUtility {
@@ -22,7 +26,7 @@ public class ApiUtility {
     public static final String KEY_CALLER_EMAIL = "callerEmail";
     public static final String KEY_CALLER_PROFILE_PICTURE_URL = "callerProfilePictureUrl";
     public static final String KEY_MEMBER_COUNT = "memberCount";
-    public static final String KEY_MEETING_ROOM_NAME = "meetingRoomName";
+    public static final String KEY_ROOM_ID = "roomId";
     public static final String KEY_CALLER_FCM_TOKEN = "callerToken";
 
     public static final String MESSAGE_TYPE_CALL_REQUEST = "callRequest";
@@ -36,11 +40,24 @@ public class ApiUtility {
     public static final String CALL_TYPE_GROUP_VOICE = "groupVoiceCall";
     public static final String CALL_TYPE_GROUP_VIDEO = "groupVideoCall";
 
+    private static final String SERVER_URL_JITSI_MEET = "https://meet.jit.si";
+
     public static HashMap<String, String> getMessageHeaders() {
         HashMap<String, String> messageHeaders = new HashMap<>();
         messageHeaders.put(HEADER_AUTHORIZATION, AUTHORIZATION_KEY);
         messageHeaders.put(HEADER_CONTENT_TYPE, CONTENT_TYPE_JSON);
 
         return messageHeaders;
+    }
+
+    public static URL getJitsiMeetServerUrl() {
+        URL serverUrl = null;
+        try {
+            serverUrl = new URL(SERVER_URL_JITSI_MEET);
+            return serverUrl;
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        }
+        return serverUrl;
     }
 }
