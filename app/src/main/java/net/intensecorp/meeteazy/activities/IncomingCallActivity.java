@@ -6,7 +6,6 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
 import android.util.Log;
-import android.widget.ImageView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -62,7 +61,6 @@ public class IncomingCallActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_incoming_call);
 
-        ImageView incomingCallTypeIconView = findViewById(R.id.imageView_incoming_call_type);
         MaterialTextView incomingCallTypeView = findViewById(R.id.textView_incoming_call_type);
         CircleImageView callerProfilePictureView = findViewById(R.id.circleImageView_caller_profile_picture);
         MaterialTextView callerFullNameView = findViewById(R.id.textView_caller_full_name);
@@ -79,20 +77,10 @@ public class IncomingCallActivity extends AppCompatActivity {
         String callerFcmToken = incomingCallIntent.getStringExtra(Extras.EXTRA_CALLER_FCM_TOKEN);
         mRoomId = incomingCallIntent.getStringExtra(Extras.EXTRA_ROOM_ID);
 
-        switch (mIncomingCallType) {
-            case ApiUtility.CALL_TYPE_VOICE:
-                incomingCallTypeIconView.setImageResource(R.drawable.ic_baseline_mic_24);
-                incomingCallTypeView.setText(R.string.text_incoming_call_type_voice);
-                break;
-
-            case ApiUtility.CALL_TYPE_VIDEO:
-                incomingCallTypeIconView.setImageResource(R.drawable.ic_baseline_videocam_24);
-                incomingCallTypeView.setText(R.string.text_incoming_call_type_video);
-                break;
-
-            default:
-                Log.e(TAG, "Incoming Call type unknown.");
-                break;
+        if (mIncomingCallType.equals(ApiUtility.CALL_TYPE_PERSONAL)) {
+            incomingCallTypeView.setText(R.string.text_incoming_call);
+        } else {
+            Log.e(TAG, "Incoming Call type unknown.");
         }
 
         if (!callerProfilePictureUrl.equals("null")) {
@@ -179,17 +167,9 @@ public class IncomingCallActivity extends AppCompatActivity {
                                                 .setRoom(mRoomId)
                                                 .setUserInfo(jitsiMeetUserInfo);
 
-                                        switch (mIncomingCallType) {
-                                            case ApiUtility.CALL_TYPE_VOICE:
-                                                conferenceOptionsBuilder.setAudioOnly(true);
-                                                conferenceOptionsBuilder.setVideoMuted(true);
-                                                break;
-                                            case ApiUtility.CALL_TYPE_VIDEO:
-                                                conferenceOptionsBuilder.setAudioOnly(false);
-                                                conferenceOptionsBuilder.setVideoMuted(false);
-                                                break;
-                                            default:
-                                                break;
+                                        if (mIncomingCallType.equals(ApiUtility.CALL_TYPE_PERSONAL)) {
+                                            conferenceOptionsBuilder.setAudioOnly(true);
+                                            conferenceOptionsBuilder.setVideoMuted(true);
                                         }
 
                                         JitsiMeetActivity.launch(IncomingCallActivity.this, conferenceOptionsBuilder.build());

@@ -6,7 +6,6 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
 import android.util.Log;
-import android.widget.ImageView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -78,18 +77,8 @@ public class OutgoingCallActivity extends AppCompatActivity {
                                     .setWelcomePageEnabled(false)
                                     .setRoom(roomId);
 
-                            switch (mOutgoingCallType) {
-                                case ApiUtility.CALL_TYPE_VOICE:
-                                    conferenceOptionsBuilder.setAudioOnly(true);
-                                    conferenceOptionsBuilder.setVideoMuted(true);
-
-                                    break;
-                                case ApiUtility.CALL_TYPE_VIDEO:
-                                    conferenceOptionsBuilder.setAudioOnly(false);
-                                    conferenceOptionsBuilder.setVideoMuted(false);
-                                    break;
-                                default:
-                                    break;
+                            if (mOutgoingCallType.equals(ApiUtility.CALL_TYPE_PERSONAL)) {
+                                conferenceOptionsBuilder.setVideoMuted(true);
                             }
 
                             JitsiMeetActivity.launch(OutgoingCallActivity.this, conferenceOptionsBuilder.build());
@@ -113,7 +102,6 @@ public class OutgoingCallActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_outgoing_call);
 
-        ImageView outgoingCallTypeIconView = findViewById(R.id.imageView_outgoing_call_type);
         MaterialTextView outgoingCallTypeView = findViewById(R.id.textView_outgoing_call_type);
         CircleImageView calleeProfilePictureView = findViewById(R.id.circleImageView_callee_profile_picture);
         MaterialTextView calleeFullNameView = findViewById(R.id.textView_callee_full_name);
@@ -124,20 +112,10 @@ public class OutgoingCallActivity extends AppCompatActivity {
         mOutgoingCallType = outgoingCallIntent.getStringExtra(Extras.EXTRA_CALL_TYPE);
         User callee = (User) outgoingCallIntent.getSerializableExtra(Extras.EXTRA_CALLEE);
 
-        switch (mOutgoingCallType) {
-            case ApiUtility.CALL_TYPE_VOICE:
-                outgoingCallTypeIconView.setImageResource(R.drawable.ic_baseline_mic_24);
-                outgoingCallTypeView.setText(R.string.text_outgoing_call_type_voice);
-                break;
-
-            case ApiUtility.CALL_TYPE_VIDEO:
-                outgoingCallTypeIconView.setImageResource(R.drawable.ic_baseline_videocam_24);
-                outgoingCallTypeView.setText(R.string.text_outgoing_call_type_video);
-                break;
-
-            default:
-                Log.e(TAG, "Outgoing Call type unknown.");
-                break;
+        if (mOutgoingCallType.equals(ApiUtility.CALL_TYPE_PERSONAL)) {
+            outgoingCallTypeView.setText(R.string.text_outgoing_call);
+        } else {
+            Log.e(TAG, "Outgoing Call type unknown.");
         }
 
         if (!callee.mProfilePictureUrl.equals("null")) {
