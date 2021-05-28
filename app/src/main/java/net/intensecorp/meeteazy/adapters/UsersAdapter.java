@@ -51,8 +51,7 @@ public class UsersAdapter extends RecyclerView.Adapter<UsersAdapter.UserViewHold
         private MaterialTextView fullNameView;
         private MaterialTextView emailView;
         private CircleImageView profilePictureView;
-        private ImageView videoCallButton;
-        private ImageView voiceCallButton;
+        private ImageView callButton;
 
         public UserViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -60,8 +59,7 @@ public class UsersAdapter extends RecyclerView.Adapter<UsersAdapter.UserViewHold
             fullNameView = itemView.findViewById(R.id.textView_full_name);
             emailView = itemView.findViewById(R.id.textView_email);
             profilePictureView = itemView.findViewById(R.id.circleImageView_user_profile_picture);
-            voiceCallButton = itemView.findViewById(R.id.imageView_voice_call);
-            videoCallButton = itemView.findViewById(R.id.imageView_video_call);
+            callButton = itemView.findViewById(R.id.imageView_call);
         }
 
         private void setUserData(User user) {
@@ -78,9 +76,7 @@ public class UsersAdapter extends RecyclerView.Adapter<UsersAdapter.UserViewHold
                 profilePictureView.setImageResource(R.drawable.img_profile_picture);
             }
 
-            voiceCallButton.setOnClickListener(v -> mUsersListener.initiateVoiceCall(user));
-
-            videoCallButton.setOnClickListener(v -> mUsersListener.initiateVideoCall(user));
+            callButton.setOnClickListener(v -> mUsersListener.initiatePersonalCall(user));
         }
     }
 }
