@@ -19,10 +19,9 @@
         app:layout_constraintTop_toTopOf="parent">
 
         <ImageView
-            android:id="@+id/imageView_outgoing_call_type"
             android:layout_width="@dimen/call_type_icon_width"
             android:layout_height="@dimen/call_type_icon_height"
-            android:contentDescription="@string/content_description_call_type"
+            android:contentDescription="@string/content_description_call"
             android:src="@drawable/ic_baseline_call_24"
             app:tint="@color/colorIconography" />
 
@@ -33,7 +32,7 @@
             android:layout_gravity="center"
             android:layout_marginStart="@dimen/margin_4dp"
             android:includeFontPadding="false"
-            android:text="@string/placeholder_outgoing_call_type"
+            android:text="@string/text_outgoing_call"
             android:textColor="@color/colorMediumEmphasisText"
             android:textSize="@dimen/text_size_small"
             android:visibility="visible"
