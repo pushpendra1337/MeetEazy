@@ -4,7 +4,5 @@ import net.intensecorp.meeteazy.models.User;
 
 public interface UsersListener {
 
-    void initiateVideoCall(User user);
-
-    void initiateVoiceCall(User user);
+    void initiatePersonalCall(User user);
 }
