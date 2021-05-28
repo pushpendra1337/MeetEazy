@@ -1,7 +1,5 @@
 package net.intensecorp.meeteazy.utils;
 
-import android.util.Log;
-
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.HashMap;
@@ -25,7 +23,6 @@ public class ApiUtility {
     public static final String KEY_CALLER_LAST_NAME = "callerLastName";
     public static final String KEY_CALLER_EMAIL = "callerEmail";
     public static final String KEY_CALLER_PROFILE_PICTURE_URL = "callerProfilePictureUrl";
-    public static final String KEY_MEMBER_COUNT = "memberCount";
     public static final String KEY_ROOM_ID = "roomId";
     public static final String KEY_CALLER_FCM_TOKEN = "callerToken";
 
@@ -35,10 +32,8 @@ public class ApiUtility {
     public static final String REQUEST_TYPE_INITIATED = "initiated";
     public static final String RESPONSE_TYPE_ANSWERED = "answered";
     public static final String RESPONSE_TYPE_REJECTED = "rejected";
-    public static final String CALL_TYPE_VOICE = "voiceCall";
-    public static final String CALL_TYPE_VIDEO = "videoCall";
-    public static final String CALL_TYPE_GROUP_VOICE = "groupVoiceCall";
-    public static final String CALL_TYPE_GROUP_VIDEO = "groupVideoCall";
+    public static final String CALL_TYPE_PERSONAL = "personalCall";
+    public static final String CALL_TYPE_GROUP = "groupCall";
 
     private static final String SERVER_URL_JITSI_MEET = "https://meet.jit.si";
 
