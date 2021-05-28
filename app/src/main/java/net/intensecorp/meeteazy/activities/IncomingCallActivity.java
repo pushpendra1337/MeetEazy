@@ -7,6 +7,7 @@ import android.content.IntentFilter;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -22,9 +23,16 @@ import net.intensecorp.meeteazy.api.ApiService;
 import net.intensecorp.meeteazy.utils.ApiUtility;
 import net.intensecorp.meeteazy.utils.Extras;
 import net.intensecorp.meeteazy.utils.FormatterUtility;
+import net.intensecorp.meeteazy.utils.SharedPrefsManager;
 
+import org.jitsi.meet.sdk.JitsiMeetActivity;
+import org.jitsi.meet.sdk.JitsiMeetConferenceOptions;
+import org.jitsi.meet.sdk.JitsiMeetUserInfo;
 import org.json.JSONArray;
 import org.json.JSONObject;
+
+import java.net.URL;
+import java.util.HashMap;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 import retrofit2.Call;
@@ -46,6 +54,8 @@ public class IncomingCallActivity extends AppCompatActivity {
             }
         }
     };
+    private String mRoomId;
+    private String mIncomingCallType;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,14 +71,15 @@ public class IncomingCallActivity extends AppCompatActivity {
         FloatingActionButton answerCallButton = findViewById(R.id.floatingActionButton_answer_call);
 
         Intent incomingCallIntent = getIntent();
-        String incomingCallType = incomingCallIntent.getStringExtra(Extras.EXTRA_CALL_TYPE);
+        mIncomingCallType = incomingCallIntent.getStringExtra(Extras.EXTRA_CALL_TYPE);
         String callerFirstName = incomingCallIntent.getStringExtra(Extras.EXTRA_CALLER_FIRST_NAME);
         String callerLastName = incomingCallIntent.getStringExtra(Extras.EXTRA_CALLER_LAST_NAME);
         String callerEmail = incomingCallIntent.getStringExtra(Extras.EXTRA_CALLER_EMAIL);
         String callerProfilePictureUrl = incomingCallIntent.getStringExtra(Extras.EXTRA_CALLER_PROFILE_PICTURE_URL);
         String callerFcmToken = incomingCallIntent.getStringExtra(Extras.EXTRA_CALLER_FCM_TOKEN);
+        mRoomId = incomingCallIntent.getStringExtra(Extras.EXTRA_ROOM_ID);
 
-        switch (incomingCallType) {
+        switch (mIncomingCallType) {
             case ApiUtility.CALL_TYPE_VOICE:
                 incomingCallTypeIconView.setImageResource(R.drawable.ic_baseline_mic_24);
                 incomingCallTypeView.setText(R.string.text_incoming_call_type_voice);
@@ -84,7 +95,7 @@ public class IncomingCallActivity extends AppCompatActivity {
                 break;
         }
 
-        if (callerProfilePictureUrl != null) {
+        if (!callerProfilePictureUrl.equals("null")) {
             Glide.with(IncomingCallActivity.this)
                     .load(callerProfilePictureUrl)
                     .centerCrop()
@@ -147,7 +158,49 @@ public class IncomingCallActivity extends AppCompatActivity {
                         if (response.isSuccessful()) {
                             switch (responseType) {
                                 case ApiUtility.RESPONSE_TYPE_ANSWERED:
-                                    Log.d(TAG, "Call answered response message sent successfully.");
+
+                                    try {
+                                        SharedPrefsManager sharedPrefsManager = new SharedPrefsManager(IncomingCallActivity.this, SharedPrefsManager.PREF_USER_DATA);
+                                        HashMap<String, String> userData = sharedPrefsManager.getUserDataPrefs();
+                                        String firstName = userData.get(SharedPrefsManager.PREF_FIRST_NAME);
+                                        String lastName = userData.get(SharedPrefsManager.PREF_LAST_NAME);
+                                        String email = userData.get(SharedPrefsManager.PREF_EMAIL);
+                                        URL profilePictureUrl = new URL(userData.get(SharedPrefsManager.PREF_PROFILE_PICTURE_URL));
+                                        String fullName = FormatterUtility.getFullName(firstName, lastName);
+
+                                        JitsiMeetUserInfo jitsiMeetUserInfo = new JitsiMeetUserInfo();
+                                        jitsiMeetUserInfo.setDisplayName(fullName);
+                                        jitsiMeetUserInfo.setEmail(email);
+                                        jitsiMeetUserInfo.setAvatar(profilePictureUrl);
+
+                                        JitsiMeetConferenceOptions.Builder conferenceOptionsBuilder = new JitsiMeetConferenceOptions.Builder()
+                                                .setServerURL(ApiUtility.getJitsiMeetServerUrl())
+                                                .setWelcomePageEnabled(false)
+                                                .setRoom(mRoomId)
+                                                .setUserInfo(jitsiMeetUserInfo);
+
+                                        switch (mIncomingCallType) {
+                                            case ApiUtility.CALL_TYPE_VOICE:
+                                                conferenceOptionsBuilder.setAudioOnly(true);
+                                                conferenceOptionsBuilder.setVideoMuted(true);
+                                                break;
+                                            case ApiUtility.CALL_TYPE_VIDEO:
+                                                conferenceOptionsBuilder.setAudioOnly(false);
+                                                conferenceOptionsBuilder.setVideoMuted(false);
+                                                break;
+                                            default:
+                                                break;
+                                        }
+
+                                        JitsiMeetActivity.launch(IncomingCallActivity.this, conferenceOptionsBuilder.build());
+                                        finish();
+                                    } catch (Exception exception) {
+                                        Log.e(TAG, "Failed to attend call: " + exception.getMessage());
+
+                                        Toast.makeText(IncomingCallActivity.this, "Failed to attend call: " + exception.getMessage(), Toast.LENGTH_SHORT).show();
+                                        finish();
+                                    }
+
                                     break;
 
                                 case ApiUtility.RESPONSE_TYPE_REJECTED:
