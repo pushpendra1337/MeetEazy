@@ -262,20 +262,11 @@ public class HomeActivity extends AppCompatActivity implements UsersListener {
     }
 
     @Override
-    public void initiateVoiceCall(User user) {
+    public void initiatePersonalCall(User user) {
         if (user.mFcmToken == null || user.mFcmToken.trim().isEmpty()) {
             Toast.makeText(HomeActivity.this, user.mFirstName + " " + user.mLastName + " is not available", Toast.LENGTH_SHORT).show();
         } else {
-            startOutgoingCallActivity(ApiUtility.CALL_TYPE_VOICE, user);
-        }
-    }
-
-    @Override
-    public void initiateVideoCall(User user) {
-        if (user.mFcmToken == null || user.mFcmToken.trim().isEmpty()) {
-            Toast.makeText(HomeActivity.this, user.mFirstName + " " + user.mLastName + " is not available", Toast.LENGTH_SHORT).show();
-        } else {
-            startOutgoingCallActivity(ApiUtility.CALL_TYPE_VIDEO, user);
+            startOutgoingCallActivity(ApiUtility.CALL_TYPE_PERSONAL, user);
         }
     }
 
