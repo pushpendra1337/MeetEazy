@@ -7,11 +7,10 @@ import android.net.NetworkCapabilities;
 import android.util.Log;
 
 import java.io.IOException;
-import java.util.Calendar;
 
 public class NetworkInfoUtility {
 
-    public static final String COMMAND_PING_GOOGLE = "/system/bin/ping -c 1 8.8.8.8";
+    private static final String COMMAND_PING_GOOGLE = "/system/bin/ping -w 1 -c 1 8.8.8.8";
     private static final String TAG = NetworkInfoUtility.class.getSimpleName();
     private final Context mContext;
 
@@ -34,25 +33,21 @@ public class NetworkInfoUtility {
                 }
             }
         }
+
         return false;
     }
 
     private boolean isOnline() {
-        long t1 = Calendar.getInstance().getTimeInMillis();
-
-        Runtime runtime = Runtime.getRuntime();
         try {
             // Ping to Google server
-            Process ipProcess = runtime.exec(COMMAND_PING_GOOGLE);
+            Process ipProcess = Runtime.getRuntime().exec(COMMAND_PING_GOOGLE);
             int exitValue = ipProcess.waitFor();
             return (exitValue == 0);
         } catch (IOException | InterruptedException e) {
             e.printStackTrace();
             Log.e(TAG, "Ping failed: " + e.getMessage());
-        } finally {
-            long t2 = Calendar.getInstance().getTimeInMillis();
-            Log.i(TAG, "Network check time: " + (t2 - t1) + "ms");
         }
+
         return false;
     }
 }
