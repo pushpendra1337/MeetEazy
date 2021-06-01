@@ -3,7 +3,5 @@
     <solid android:color="@color/colorToolbarBackground" />
     <corners
         android:bottomLeftRadius="@dimen/corner_radius_medium"
-        android:bottomRightRadius="@dimen/corner_radius_medium"
-        android:topLeftRadius="@dimen/corner_radius_medium"
-        android:topRightRadius="@dimen/corner_radius_medium" />
+        android:bottomRightRadius="@dimen/corner_radius_medium" />
 </shape>
