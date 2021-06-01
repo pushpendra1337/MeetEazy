@@ -22,24 +22,4 @@
 
     </style>
 
-    <!-- Helper text style -->
-    <style name="StyleHelperText" parent="ThemeOverlay.MaterialComponents.TextInputEditText.OutlinedBox">
-        <item name="android:textSize">@dimen/text_size_tiny</item>
-        <item name="fontFamily">@font/poppins_regular</item>
-    </style>
-
-    <!-- Error text style -->
-    <style name="StyleErrorText" parent="ThemeOverlay.MaterialComponents.TextInputEditText.OutlinedBox">
-        <item name="android:textSize">@dimen/text_size_tiny</item>
-        <item name="fontFamily">@font/poppins_regular</item>
-    </style>
-
-    <!-- Toolbar title style -->
-    <style name="StyleToolbarTitle">
-        <item name="android:includeFontPadding">false</item>
-        <item name="android:textAlignment">center</item>
-        <item name="android:textSize">@dimen/text_size_medium</item>
-        <item name="titleTextColor">@color/colorPrimary</item>
-    </style>
-
 </resources>
