@@ -29,10 +29,8 @@ import net.intensecorp.meeteazy.models.User;
 import net.intensecorp.meeteazy.utils.ApiUtility;
 import net.intensecorp.meeteazy.utils.Extras;
 import net.intensecorp.meeteazy.utils.FormatterUtility;
-import net.intensecorp.meeteazy.utils.NetworkInfoUtility;
 import net.intensecorp.meeteazy.utils.Patterns;
 import net.intensecorp.meeteazy.utils.SharedPrefsManager;
-import net.intensecorp.meeteazy.utils.Snackbars;
 
 import org.jitsi.meet.sdk.JitsiMeetActivity;
 import org.jitsi.meet.sdk.JitsiMeetConferenceOptions;
@@ -187,12 +185,7 @@ public class OutgoingCallActivity extends AppCompatActivity {
             finish();
         });
 
-        if (new NetworkInfoUtility(OutgoingCallActivity.this).isConnectedToInternet()) {
-            craftCallInitiateRequestMessageBody(callee.mFcmToken, mOutgoingCallType, mCallees);
-        } else {
-            new Snackbars(OutgoingCallActivity.this).snackbar(R.string.snackbar_check_your_internet_connection);
-            finish();
-        }
+        craftCallInitiateRequestMessageBody(callee.mFcmToken, mOutgoingCallType, mCallees);
     }
 
     @Override
