@@ -25,6 +25,7 @@ public class ApiUtility {
     public static final String KEY_CALLER_PROFILE_PICTURE_URL = "callerProfilePictureUrl";
     public static final String KEY_ROOM_ID = "roomId";
     public static final String KEY_CALLER_FCM_TOKEN = "callerToken";
+    public static final String KEY_OTHER_CALLEES_COUNT = "otherCalleesCount";
 
     public static final String MESSAGE_TYPE_CALL_REQUEST = "callRequest";
     public static final String MESSAGE_TYPE_CALL_RESPONSE = "callResponse";
@@ -46,13 +47,13 @@ public class ApiUtility {
     }
 
     public static URL getJitsiMeetServerUrl() {
-        URL serverUrl = null;
+        URL serverUrl;
         try {
             serverUrl = new URL(SERVER_URL_JITSI_MEET);
             return serverUrl;
         } catch (MalformedURLException e) {
             e.printStackTrace();
+            return null;
         }
-        return serverUrl;
     }
 }
