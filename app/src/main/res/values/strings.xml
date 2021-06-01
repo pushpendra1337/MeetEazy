@@ -65,7 +65,9 @@
 
     <!-- Home Activity -->
     <string name="item_title_profile">Profile</string>
+    <string name="item_title_call">Call</string>
     <string name="toolbar_title_search">Search</string>
+    <string name="toolbar_title_selected">selected</string>
     <string name="navigation_content_description_search">Search</string>
     <string name="content_description_no_internet">No internet</string>
     <string name="error_title_no_internet">You\'re offline</string>
@@ -84,11 +86,13 @@
     <string name="text_plus">+</string>
     <string name="placeholder_count">Many</string>
     <string name="text_others">Others</string>
+    <string name="text_other">Other</string>
     <string name="content_description_end_call">End call</string>
 
     <!-- Incoming Call Activity -->
     <string name="text_incoming_call" tools:ignore="TypographyEllipsis">Incoming call...</string>
     <string name="text_incoming_group_call" tools:ignore="TypographyEllipsis">"Incoming group call..."</string>
+    <string name="text_is_calling_you_and">is calling You &amp;</string>
     <string name="content_description_reject_call">Reject call</string>
     <string name="content_description_answer_call">Answer call</string>
 
