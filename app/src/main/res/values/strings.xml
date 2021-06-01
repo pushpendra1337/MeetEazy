@@ -137,5 +137,6 @@
     <string name="snackbar_text_login_failed_wrong_credentials">Login failed! Please check your credentials and try again.</string>
     <string name="snackbar_text_email_not_registered">The email address you entered is not associated with any account.</string>
     <string name="snackbar_text_email_already_exists">The email address is already in use by another account.</string>
+    <string name="snackbar_check_your_internet_connection">Please check your internet connection or try again later.</string>
 
 </resources>
