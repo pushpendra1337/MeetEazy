@@ -146,6 +146,8 @@ public class HomeActivity extends AppCompatActivity implements UsersListener {
             mSwipeRefreshLayout.setRefreshing(true);
             getUsers();
         });
+
+        isBatteryOptimizationEnabled();
     }
 
     @Override
@@ -278,6 +280,15 @@ public class HomeActivity extends AppCompatActivity implements UsersListener {
         }
     }
 
+    private void isBatteryOptimizationEnabled() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            PowerManager powerManager = (PowerManager) getSystemService(POWER_SERVICE);
+            if (!powerManager.isIgnoringBatteryOptimizations(getPackageName())) {
+                showBatteryOptimizationDialog();
+            }
+        }
+    }
+
     @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     public void initiatePersonalCall(User callee) {
@@ -374,6 +385,8 @@ public class HomeActivity extends AppCompatActivity implements UsersListener {
             if (mBatteryOptimizationDialog.getWindow() != null) {
                 mBatteryOptimizationDialog.getWindow().setBackgroundDrawable(new ColorDrawable(0));
             }
+
+            view.findViewById(R.id.button_settings).setOnClickListener(v -> startBatteryOptimizationSettingsActivity());
 
             view.findViewById(R.id.button_cancel).setOnClickListener(v -> dismissBatteryOptimizationDialog());
         }
@@ -526,6 +539,12 @@ public class HomeActivity extends AppCompatActivity implements UsersListener {
     private void startAboutActivity() {
         Intent aboutIntent = new Intent(HomeActivity.this, AboutActivity.class);
         startActivity(aboutIntent);
+    }
+
+    private void startBatteryOptimizationSettingsActivity() {
+        Intent batteryOptimizationSettingsIntent = new Intent(Settings.ACTION_IGNORE_BATTERY_OPTIMIZATION_SETTINGS);
+        batteryOptimizationSettingsIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        startActivity(batteryOptimizationSettingsIntent);
     }
 
     private void startComposeEmailActivity() {
