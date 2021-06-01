@@ -76,10 +76,74 @@
         android:text="@string/placeholder_email"
         android:textColor="@color/colorMediumEmphasisText"
         android:textSize="@dimen/text_size_small"
+        android:visibility="gone"
         app:fontFamily="@font/poppins_regular"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/textView_caller_full_name" />
+
+    <LinearLayout
+        android:id="@+id/linearLayout_is_calling_you_and_other_or_others"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="@dimen/margin_16dp"
+        android:layout_marginTop="@dimen/margin_4dp"
+        android:layout_marginBottom="@dimen/margin_16dp"
+        android:orientation="horizontal"
+        android:visibility="visible"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/textView_caller_full_name">
+
+        <com.google.android.material.textview.MaterialTextView
+            android:id="@+id/textView_is_calling_you_and"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:includeFontPadding="false"
+            android:text="@string/text_is_calling_you_and"
+            android:textColor="@color/colorMediumEmphasisText"
+            android:textSize="@dimen/text_size_compact"
+            app:fontFamily="@font/poppins_regular" />
+
+        <com.google.android.material.textview.MaterialTextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:includeFontPadding="false"
+            android:text="@string/text_whitespace"
+            android:textColor="@color/colorMediumEmphasisText"
+            android:textSize="@dimen/text_size_compact"
+            app:fontFamily="@font/poppins_regular" />
+
+        <com.google.android.material.textview.MaterialTextView
+            android:id="@+id/textView_other_members_count"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:includeFontPadding="false"
+            android:text="@string/placeholder_count"
+            android:textColor="@color/colorMediumEmphasisText"
+            android:textSize="@dimen/text_size_compact"
+            app:fontFamily="@font/poppins_regular" />
+
+        <com.google.android.material.textview.MaterialTextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:includeFontPadding="false"
+            android:text="@string/text_whitespace"
+            android:textColor="@color/colorMediumEmphasisText"
+            android:textSize="@dimen/text_size_compact"
+            app:fontFamily="@font/poppins_regular" />
+
+        <com.google.android.material.textview.MaterialTextView
+            android:id="@+id/textView_others_or_other"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:includeFontPadding="false"
+            android:text="@string/text_others"
+            android:textColor="@color/colorMediumEmphasisText"
+            android:textSize="@dimen/text_size_compact"
+            app:fontFamily="@font/poppins_regular" />
+
+    </LinearLayout>
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/floatingActionButton_reject_call"
