@@ -113,6 +113,12 @@
     <string name="dialog_message_reset_password">We\'ve sent a password reset link to your email address. Please check your inbox and click on the link to reset your password.</string>
     <string name="dialog_button_text_change_email">Change Email</string>
 
+    <!-- Battery Optimization Dialog -->
+    <string name="content_description_disable_battery_optimization">Disable battery optimization</string>
+    <string name="dialog_title_battery_optimization">Disable battery optimization</string>
+    <string name="dialog_message_battery_optimization">To receive notifications, calls and other important alerts, battery optimization must be disabled in settings for MeetEazy.</string>
+    <string name="dialog_button_text_cancel">Cancel</string>
+
     <!-- Profile Dialog -->
     <string name="list_item_text_profile">Profile</string>
     <string name="list_item_text_settings">Settings</string>
