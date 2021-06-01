@@ -83,7 +83,7 @@
         app:layout_constraintTop_toBottomOf="@id/textView_callee_full_name" />
 
     <LinearLayout
-        android:id="@+id/linearLayout_plus_many_others"
+        android:id="@+id/linearLayout_plus_others_or_other"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="@dimen/margin_16dp"
@@ -106,7 +106,7 @@
             app:fontFamily="@font/poppins_regular" />
 
         <com.google.android.material.textview.MaterialTextView
-            android:id="@+id/textView_count"
+            android:id="@+id/textView_other_callees_count"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:includeFontPadding="false"
@@ -116,7 +116,6 @@
             app:fontFamily="@font/poppins_regular" />
 
         <com.google.android.material.textview.MaterialTextView
-            android:id="@+id/textView_whitespace"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:includeFontPadding="false"
@@ -126,7 +125,7 @@
             app:fontFamily="@font/poppins_regular" />
 
         <com.google.android.material.textview.MaterialTextView
-            android:id="@+id/textView_others"
+            android:id="@+id/textView_others_or_other"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:includeFontPadding="false"
