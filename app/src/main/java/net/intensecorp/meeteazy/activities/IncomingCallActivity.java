@@ -6,6 +6,8 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
+import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -65,6 +67,9 @@ public class IncomingCallActivity extends AppCompatActivity {
         CircleImageView callerProfilePictureView = findViewById(R.id.circleImageView_caller_profile_picture);
         MaterialTextView callerFullNameView = findViewById(R.id.textView_caller_full_name);
         MaterialTextView callerEmailView = findViewById(R.id.textView_caller_email);
+        LinearLayout isCallingYouAndManyOthersLayout = findViewById(R.id.linearLayout_is_calling_you_and_other_or_others);
+        MaterialTextView otherCalleesCountView = findViewById(R.id.textView_other_members_count);
+        MaterialTextView othersOrOtherView = findViewById(R.id.textView_others_or_other);
         FloatingActionButton rejectCallButton = findViewById(R.id.floatingActionButton_reject_call);
         FloatingActionButton answerCallButton = findViewById(R.id.floatingActionButton_answer_call);
 
@@ -77,10 +82,25 @@ public class IncomingCallActivity extends AppCompatActivity {
         String callerFcmToken = incomingCallIntent.getStringExtra(Extras.EXTRA_CALLER_FCM_TOKEN);
         mRoomId = incomingCallIntent.getStringExtra(Extras.EXTRA_ROOM_ID);
 
-        if (mIncomingCallType.equals(ApiUtility.CALL_TYPE_PERSONAL)) {
-            incomingCallTypeView.setText(R.string.text_incoming_call);
-        } else {
-            Log.e(TAG, "Incoming Call type unknown.");
+        switch (mIncomingCallType) {
+            case ApiUtility.CALL_TYPE_PERSONAL:
+                incomingCallTypeView.setText(R.string.text_incoming_call);
+                callerEmailView.setText(callerEmail);
+                break;
+
+            case ApiUtility.CALL_TYPE_GROUP:
+                String otherCalleesCount = incomingCallIntent.getStringExtra(Extras.EXTRA_OTHER_CALLEES_COUNT);
+                incomingCallTypeView.setText(R.string.text_incoming_group_call);
+                callerEmailView.setVisibility(View.GONE);
+                otherCalleesCountView.setText(otherCalleesCount);
+                if (otherCalleesCount.equals("1")) {
+                    othersOrOtherView.setText(R.string.text_other);
+                }
+                isCallingYouAndManyOthersLayout.setVisibility(View.VISIBLE);
+                break;
+
+            default:
+                break;
         }
 
         if (!callerProfilePictureUrl.equals("null")) {
