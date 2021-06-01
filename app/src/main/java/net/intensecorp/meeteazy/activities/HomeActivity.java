@@ -3,7 +3,9 @@ package net.intensecorp.meeteazy.activities;
 import android.app.AlertDialog;
 import android.content.Intent;
 import android.graphics.drawable.ColorDrawable;
+import android.os.Build;
 import android.os.Bundle;
+import android.os.PowerManager;
 import android.provider.Settings;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -14,6 +16,7 @@ import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.RecyclerView;
@@ -39,6 +42,7 @@ import net.intensecorp.meeteazy.utils.Extras;
 import net.intensecorp.meeteazy.utils.Firestore;
 import net.intensecorp.meeteazy.utils.NetworkInfoUtility;
 import net.intensecorp.meeteazy.utils.SharedPrefsManager;
+import net.intensecorp.meeteazy.utils.Snackbars;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -66,6 +70,7 @@ public class HomeActivity extends AppCompatActivity implements UsersListener {
     private LinearLayout mNoInternetErrorLayout;
     private LinearLayout mNoUserErrorLayout;
     private SwipeRefreshLayout mSwipeRefreshLayout;
+    private AlertDialog mBatteryOptimizationDialog;
     private AlertDialog mNoInternetDialog;
     private AlertDialog mProfileDialog;
     private AlertDialog mProgressDialog;
@@ -273,49 +278,58 @@ public class HomeActivity extends AppCompatActivity implements UsersListener {
         }
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     public void initiatePersonalCall(User callee) {
-        if (callee.mFcmToken == null || callee.mFcmToken.trim().isEmpty()) {
-            Toast.makeText(HomeActivity.this, callee.mFirstName + " " + callee.mLastName + " is not available", Toast.LENGTH_SHORT).show();
+        if (new NetworkInfoUtility(HomeActivity.this).isConnectedToInternet()) {
+            if (callee.mFcmToken == null || callee.mFcmToken.trim().isEmpty()) {
+                Toast.makeText(HomeActivity.this, callee.mFirstName + " " + callee.mLastName + " is not available", Toast.LENGTH_SHORT).show();
+            } else {
+                startOutgoingCallActivity(callee);
+            }
         } else {
-            startOutgoingCallActivity(callee);
+            new Snackbars(HomeActivity.this).snackbar(R.string.snackbar_check_your_internet_connection);
         }
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     public void initiateGroupCall(List<User> callees) {
-        if (callees.size() > 0) {
-            mMaterialToolbar.setVisibility(View.INVISIBLE);
-            mToolbar.setVisibility(View.VISIBLE);
-            mToolbar.setTitle(callees.size() + " " + getResources().getString(R.string.toolbar_title_selected));
-            mToolbar.setOnMenuItemClickListener(item -> {
-                if (item.getItemId() == R.id.item_call) {
-                    if (callees.size() > 0) {
-                        if (callees.size() == 1) {
-                            startOutgoingCallActivity(callees.get(0));
-                        } else {
-                            startOutgoingCallActivity(callees);
+        if (new NetworkInfoUtility(HomeActivity.this).isConnectedToInternet()) {
+            if (callees.size() > 0) {
+                mMaterialToolbar.setVisibility(View.INVISIBLE);
+                mToolbar.setVisibility(View.VISIBLE);
+                mToolbar.setTitle(callees.size() + " " + getResources().getString(R.string.toolbar_title_selected));
+                mToolbar.setOnMenuItemClickListener(item -> {
+                    if (item.getItemId() == R.id.item_call) {
+                        if (callees.size() > 0) {
+                            if (callees.size() == 1) {
+                                startOutgoingCallActivity(callees.get(0));
+                            } else {
+                                startOutgoingCallActivity(callees);
+                            }
+
+                            mMaterialToolbar.setVisibility(View.VISIBLE);
+                            mToolbar.setVisibility(View.INVISIBLE);
+
+                            UsersAdapter.mSelectedUsers.clear();
+                            mUsersAdapter.notifyDataSetChanged();
                         }
-
-                        mMaterialToolbar.setVisibility(View.VISIBLE);
-                        mToolbar.setVisibility(View.INVISIBLE);
-
-                        UsersAdapter.mSelectedUsers.clear();
-                        mUsersAdapter.notifyDataSetChanged();
                     }
-                }
 
-                return true;
-            });
+                    return true;
+                });
+            } else {
+                UsersAdapter.mSelectedUsers.clear();
+                mMaterialToolbar.setVisibility(View.VISIBLE);
+                mToolbar.setVisibility(View.INVISIBLE);
+                mToolbar.setTitle(null);
+            }
 
+            mUsersAdapter.notifyDataSetChanged();
         } else {
-            UsersAdapter.mSelectedUsers.clear();
-            mMaterialToolbar.setVisibility(View.VISIBLE);
-            mToolbar.setVisibility(View.INVISIBLE);
-            mToolbar.setTitle(null);
+            new Snackbars(HomeActivity.this).snackbar(R.string.snackbar_check_your_internet_connection);
         }
-
-        mUsersAdapter.notifyDataSetChanged();
     }
 
     private void signOut() {
@@ -346,6 +360,30 @@ public class HomeActivity extends AppCompatActivity implements UsersListener {
             dismissProgressDialog();
 
             showNoInternetDialog();
+        }
+    }
+
+    private void showBatteryOptimizationDialog() {
+        if (mBatteryOptimizationDialog == null) {
+
+            AlertDialog.Builder builder = new AlertDialog.Builder(HomeActivity.this);
+            View view = LayoutInflater.from(this).inflate(R.layout.dialog_battery_optimization, findViewById(R.id.scrollView_dialog_container));
+            builder.setView(view);
+            mBatteryOptimizationDialog = builder.create();
+
+            if (mBatteryOptimizationDialog.getWindow() != null) {
+                mBatteryOptimizationDialog.getWindow().setBackgroundDrawable(new ColorDrawable(0));
+            }
+
+            view.findViewById(R.id.button_cancel).setOnClickListener(v -> dismissBatteryOptimizationDialog());
+        }
+
+        mBatteryOptimizationDialog.show();
+    }
+
+    private void dismissBatteryOptimizationDialog() {
+        if (mBatteryOptimizationDialog != null) {
+            mBatteryOptimizationDialog.dismiss();
         }
     }
 
