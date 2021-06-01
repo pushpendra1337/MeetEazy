@@ -15,6 +15,7 @@ import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
@@ -27,6 +28,7 @@ import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.messaging.FirebaseMessaging;
+import com.google.gson.Gson;
 
 import net.intensecorp.meeteazy.R;
 import net.intensecorp.meeteazy.adapters.UsersAdapter;
@@ -58,6 +60,8 @@ public class HomeActivity extends AppCompatActivity implements UsersListener {
     private String mUid;
     private List<User> mUsers;
     private UsersAdapter mUsersAdapter;
+    private MaterialToolbar mMaterialToolbar;
+    private Toolbar mToolbar;
     private ProgressBar mLoadingProgressbar;
     private LinearLayout mNoInternetErrorLayout;
     private LinearLayout mNoUserErrorLayout;
@@ -72,7 +76,8 @@ public class HomeActivity extends AppCompatActivity implements UsersListener {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
 
-        MaterialToolbar toolbar = findViewById(R.id.toolbar);
+        mMaterialToolbar = findViewById(R.id.materialToolbar);
+        mToolbar = findViewById(R.id.toolbar);
         RecyclerView usersRecyclerView = findViewById(R.id.recyclerView_users);
         mLoadingProgressbar = findViewById(R.id.progressBar_loading);
         mNoInternetErrorLayout = findViewById(R.id.linearLayout_error_no_internet);
@@ -81,8 +86,8 @@ public class HomeActivity extends AppCompatActivity implements UsersListener {
         MaterialButton refreshButton = findViewById(R.id.button_refresh);
         mSwipeRefreshLayout = findViewById(R.id.swipeRefreshLayout);
 
-        toolbar.setTitle(R.string.toolbar_title_search);
-        setSupportActionBar(toolbar);
+        mMaterialToolbar.setTitle(R.string.toolbar_title_search);
+        setSupportActionBar(mMaterialToolbar);
 
         mAuth = FirebaseAuth.getInstance();
         mMessaging = FirebaseMessaging.getInstance();
@@ -105,9 +110,16 @@ public class HomeActivity extends AppCompatActivity implements UsersListener {
         mSwipeRefreshLayout.setProgressBackgroundColorSchemeColor(getResources().getColor(R.color.colorSwipeRefreshLayoutProgressSpinnerBackground, getTheme()));
         mSwipeRefreshLayout.setColorSchemeColors(getResources().getColor(R.color.colorSwipeRefreshLayoutProgressSpinner, getTheme()));
 
-        toolbar.setNavigationOnClickListener(v -> Toast.makeText(HomeActivity.this, "Search", Toast.LENGTH_SHORT).show());
+        mMaterialToolbar.setNavigationOnClickListener(v -> Toast.makeText(HomeActivity.this, "Search", Toast.LENGTH_SHORT).show());
 
-        toolbar.setOnClickListener(v -> Toast.makeText(HomeActivity.this, "Search", Toast.LENGTH_SHORT).show());
+        mToolbar.setNavigationOnClickListener(v -> {
+            UsersAdapter.mSelectedUsers.clear();
+            mToolbar.setVisibility(View.INVISIBLE);
+            mMaterialToolbar.setVisibility(View.VISIBLE);
+            mUsersAdapter.notifyDataSetChanged();
+        });
+
+        mMaterialToolbar.setOnClickListener(v -> Toast.makeText(HomeActivity.this, "Search", Toast.LENGTH_SHORT).show());
 
         tryAgainButton.setOnClickListener(v -> {
             if (mNoInternetErrorLayout.getVisibility() == View.VISIBLE) {
@@ -133,7 +145,7 @@ public class HomeActivity extends AppCompatActivity implements UsersListener {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_toolbar, menu);
+        getMenuInflater().inflate(R.menu.menu_material_toolbar, menu);
 
         MenuItem menuItem = menu.findItem(R.id.item_profile);
         View view = menuItem.getActionView();
@@ -262,12 +274,48 @@ public class HomeActivity extends AppCompatActivity implements UsersListener {
     }
 
     @Override
-    public void initiatePersonalCall(User user) {
-        if (user.mFcmToken == null || user.mFcmToken.trim().isEmpty()) {
-            Toast.makeText(HomeActivity.this, user.mFirstName + " " + user.mLastName + " is not available", Toast.LENGTH_SHORT).show();
+    public void initiatePersonalCall(User callee) {
+        if (callee.mFcmToken == null || callee.mFcmToken.trim().isEmpty()) {
+            Toast.makeText(HomeActivity.this, callee.mFirstName + " " + callee.mLastName + " is not available", Toast.LENGTH_SHORT).show();
         } else {
-            startOutgoingCallActivity(ApiUtility.CALL_TYPE_PERSONAL, user);
+            startOutgoingCallActivity(callee);
         }
+    }
+
+    @Override
+    public void initiateGroupCall(List<User> callees) {
+        if (callees.size() > 0) {
+            mMaterialToolbar.setVisibility(View.INVISIBLE);
+            mToolbar.setVisibility(View.VISIBLE);
+            mToolbar.setTitle(callees.size() + " " + getResources().getString(R.string.toolbar_title_selected));
+            mToolbar.setOnMenuItemClickListener(item -> {
+                if (item.getItemId() == R.id.item_call) {
+                    if (callees.size() > 0) {
+                        if (callees.size() == 1) {
+                            startOutgoingCallActivity(callees.get(0));
+                        } else {
+                            startOutgoingCallActivity(callees);
+                        }
+
+                        mMaterialToolbar.setVisibility(View.VISIBLE);
+                        mToolbar.setVisibility(View.INVISIBLE);
+
+                        UsersAdapter.mSelectedUsers.clear();
+                        mUsersAdapter.notifyDataSetChanged();
+                    }
+                }
+
+                return true;
+            });
+
+        } else {
+            UsersAdapter.mSelectedUsers.clear();
+            mMaterialToolbar.setVisibility(View.VISIBLE);
+            mToolbar.setVisibility(View.INVISIBLE);
+            mToolbar.setTitle(null);
+        }
+
+        mUsersAdapter.notifyDataSetChanged();
     }
 
     private void signOut() {
@@ -451,10 +499,19 @@ public class HomeActivity extends AppCompatActivity implements UsersListener {
         startActivity(emailIntent);
     }
 
-    private void startOutgoingCallActivity(String callType, User user) {
+    private void startOutgoingCallActivity(User callee) {
         Intent outgoingCallIntent = new Intent(HomeActivity.this, OutgoingCallActivity.class);
-        outgoingCallIntent.putExtra(Extras.EXTRA_CALL_TYPE, callType);
-        outgoingCallIntent.putExtra(Extras.EXTRA_CALLEE, user);
+        outgoingCallIntent.putExtra(Extras.EXTRA_CALL_TYPE, ApiUtility.CALL_TYPE_PERSONAL);
+        outgoingCallIntent.putExtra(Extras.EXTRA_CALLEE, callee);
+        startActivity(outgoingCallIntent);
+    }
+
+    private void startOutgoingCallActivity(List<User> callees) {
+        Intent outgoingCallIntent = new Intent(HomeActivity.this, OutgoingCallActivity.class);
+        outgoingCallIntent.putExtra(Extras.EXTRA_CALL_TYPE, ApiUtility.CALL_TYPE_GROUP);
+        outgoingCallIntent.putExtra(Extras.EXTRA_CALLEES, new Gson().toJson(callees));
+        outgoingCallIntent.putExtra(Extras.EXTRA_CALLEE, callees.get(0));
+        outgoingCallIntent.putExtra(Extras.EXTRA_OTHER_CALLEES_COUNT, String.valueOf(callees.size() - 1));
         startActivity(outgoingCallIntent);
     }
 
