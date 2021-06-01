@@ -104,6 +104,9 @@ public class MessagingService extends FirebaseMessagingService {
         incomingCallIntent.putExtra(Extras.EXTRA_CALLER_FIRST_NAME, remoteMessage.getData().get(ApiUtility.KEY_CALLER_FIRST_NAME));
         incomingCallIntent.putExtra(Extras.EXTRA_CALLER_LAST_NAME, remoteMessage.getData().get(ApiUtility.KEY_CALLER_LAST_NAME));
         incomingCallIntent.putExtra(Extras.EXTRA_CALLER_EMAIL, remoteMessage.getData().get(ApiUtility.KEY_CALLER_EMAIL));
+        if (Objects.equals(remoteMessage.getData().get(ApiUtility.KEY_CALL_TYPE), ApiUtility.CALL_TYPE_GROUP)) {
+            incomingCallIntent.putExtra(Extras.EXTRA_OTHER_CALLEES_COUNT, remoteMessage.getData().get(ApiUtility.KEY_OTHER_CALLEES_COUNT));
+        }
         incomingCallIntent.putExtra(Extras.EXTRA_CALLER_PROFILE_PICTURE_URL, remoteMessage.getData().get(ApiUtility.KEY_CALLER_PROFILE_PICTURE_URL));
         incomingCallIntent.putExtra(Extras.EXTRA_CALLER_FCM_TOKEN, remoteMessage.getData().get(ApiUtility.KEY_CALLER_FCM_TOKEN));
         incomingCallIntent.putExtra(Extras.EXTRA_ROOM_ID, remoteMessage.getData().get(ApiUtility.KEY_ROOM_ID));
