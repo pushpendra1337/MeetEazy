@@ -7,9 +7,28 @@
     android:background="@color/colorBackground"
     tools:context=".activities.HomeActivity">
 
-    <include
+    <androidx.appcompat.widget.Toolbar
         android:id="@+id/toolbar"
-        layout="@layout/layout_toolbar" />
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/bg_toolbar"
+        android:elevation="@dimen/toolbar_elevation"
+        android:visibility="invisible"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:menu="@menu/menu_toolbar"
+        app:navigationIcon="@drawable/ic_baseline_close_cornflower_blue_24"
+        app:titleTextAppearance="@style/StyleToolbarTitle" />
+
+    <include
+        android:id="@+id/materialToolbar"
+        layout="@layout/layout_material_toolbar"
+        android:visibility="visible"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
         android:id="@+id/swipeRefreshLayout"
@@ -18,7 +37,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/toolbar"
+        app:layout_constraintTop_toBottomOf="@id/materialToolbar"
         app:swipeRefreshLayoutProgressSpinnerBackgroundColor="@color/colorSwipeRefreshLayoutProgressSpinnerBackground">
 
         <androidx.recyclerview.widget.RecyclerView
