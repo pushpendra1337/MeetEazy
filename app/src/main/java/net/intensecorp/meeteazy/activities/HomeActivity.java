@@ -62,8 +62,8 @@ public class HomeActivity extends AppCompatActivity implements UsersListener {
     private FirebaseFirestore mStore;
     private DocumentReference mUserReference;
     private String mUid;
-    private List<User> mUsers;
-    private UsersAdapter mUsersAdapter;
+    private List<User> mContacts;
+    private UsersAdapter mContactsAdapter;
     private MaterialToolbar mMaterialToolbar;
     private Toolbar mToolbar;
     private ProgressBar mLoadingProgressbar;
@@ -83,7 +83,7 @@ public class HomeActivity extends AppCompatActivity implements UsersListener {
 
         mMaterialToolbar = findViewById(R.id.materialToolbar);
         mToolbar = findViewById(R.id.toolbar);
-        RecyclerView usersRecyclerView = findViewById(R.id.recyclerView_users);
+        RecyclerView contactsRecyclerView = findViewById(R.id.recyclerView_users);
         mLoadingProgressbar = findViewById(R.id.progressBar_loading);
         mNoInternetErrorLayout = findViewById(R.id.linearLayout_error_no_internet);
         mNoUserErrorLayout = findViewById(R.id.linearLayout_error_no_user);
@@ -106,11 +106,12 @@ public class HomeActivity extends AppCompatActivity implements UsersListener {
             getFcmToken();
         }
 
-        mUsers = new ArrayList<>();
-        mUsersAdapter = new UsersAdapter(mUsers, this);
-        usersRecyclerView.setAdapter(mUsersAdapter);
 
-        getUsers();
+        mContacts = new ArrayList<>();
+        mContactsAdapter = new UsersAdapter(mContacts, this);
+        contactsRecyclerView.setAdapter(mContactsAdapter);
+
+        getContacts();
 
         mSwipeRefreshLayout.setProgressBackgroundColorSchemeColor(getResources().getColor(R.color.colorSwipeRefreshLayoutProgressSpinnerBackground, getTheme()));
         mSwipeRefreshLayout.setColorSchemeColors(getResources().getColor(R.color.colorSwipeRefreshLayoutProgressSpinner, getTheme()));
@@ -121,17 +122,18 @@ public class HomeActivity extends AppCompatActivity implements UsersListener {
             UsersAdapter.mSelectedUsers.clear();
             mToolbar.setVisibility(View.INVISIBLE);
             mMaterialToolbar.setVisibility(View.VISIBLE);
-            mUsersAdapter.notifyDataSetChanged();
+            mContactsAdapter.notifyDataSetChanged();
         });
 
-        mMaterialToolbar.setOnClickListener(v -> Toast.makeText(HomeActivity.this, "Search", Toast.LENGTH_SHORT).show());
+        mMaterialToolbar.setOnClickListener(v -> {
+        });
 
         tryAgainButton.setOnClickListener(v -> {
             if (mNoInternetErrorLayout.getVisibility() == View.VISIBLE) {
                 mNoInternetErrorLayout.setVisibility(View.GONE);
             }
 
-            getUsers();
+            getContacts();
         });
 
         refreshButton.setOnClickListener(v -> {
@@ -139,12 +141,12 @@ public class HomeActivity extends AppCompatActivity implements UsersListener {
                 mNoUserErrorLayout.setVisibility(View.GONE);
             }
 
-            getUsers();
+            getContacts();
         });
 
         mSwipeRefreshLayout.setOnRefreshListener(() -> {
             mSwipeRefreshLayout.setRefreshing(true);
-            getUsers();
+            getContacts();
         });
 
         isBatteryOptimizationEnabled();
@@ -187,50 +189,93 @@ public class HomeActivity extends AppCompatActivity implements UsersListener {
                 .addOnFailureListener(e -> Log.e(TAG, "Failed to update token: " + e.getMessage()));
     }
 
-    private void getUsers() {
+    private void getContacts() {
         if (mSwipeRefreshLayout.isRefreshing()) {
             mLoadingProgressbar.setVisibility(View.GONE);
         } else {
             mLoadingProgressbar.setVisibility(View.VISIBLE);
         }
 
+        mContacts.clear();
+
         if (new NetworkInfoUtility(HomeActivity.this).isConnectedToInternet()) {
 
-            mUsers.clear();
-
             mStore.collection(Firestore.COLLECTION_USERS)
+                    .document(mUid)
+                    .collection(Firestore.COLLECTION_CONTACTS)
                     .get()
                     .addOnSuccessListener(queryDocumentSnapshots -> {
 
-                        mUsers.clear();
-
-                        if (mSwipeRefreshLayout.isRefreshing()) {
-                            mSwipeRefreshLayout.setRefreshing(false);
-                        }
-
-                        if (mLoadingProgressbar.getVisibility() == View.VISIBLE) {
-                            mLoadingProgressbar.setVisibility(View.GONE);
-                        }
+                        ArrayList<String> contactsUidList = new ArrayList<>();
+                        contactsUidList.clear();
 
                         for (QueryDocumentSnapshot queryDocumentSnapshot : queryDocumentSnapshots) {
-
-                            if (mUid.equals(queryDocumentSnapshot.getId())) {
-                                continue;
-                            }
-
-                            User user = new User();
-                            user.mFirstName = queryDocumentSnapshot.getString(Firestore.FIELD_FIRST_NAME);
-                            user.mLastName = queryDocumentSnapshot.getString(Firestore.FIELD_LAST_NAME);
-                            user.mEmail = queryDocumentSnapshot.getString(Firestore.FIELD_EMAIL);
-                            user.mAbout = queryDocumentSnapshot.getString(Firestore.FIELD_ABOUT);
-                            user.mProfilePictureUrl = queryDocumentSnapshot.getString(Firestore.FIELD_PROFILE_PICTURE_URL);
-                            user.mFcmToken = queryDocumentSnapshot.getString(Firestore.FIELD_FCM_TOKEN);
-
-                            mUsers.add(user);
+                            contactsUidList.add(queryDocumentSnapshot.getId());
                         }
 
-                        if (mUsers.size() > 0) {
-                            mUsersAdapter.notifyDataSetChanged();
+                        if (contactsUidList.size() > 0) {
+
+                            for (int i = 0; i < contactsUidList.size(); i++) {
+
+                                mStore.collection(Firestore.COLLECTION_USERS)
+                                        .document(contactsUidList.get(i))
+                                        .get()
+                                        .addOnSuccessListener(documentSnapshot -> {
+
+                                            if (mSwipeRefreshLayout.isRefreshing()) {
+                                                mSwipeRefreshLayout.setRefreshing(false);
+                                            }
+
+                                            if (mLoadingProgressbar.getVisibility() == View.VISIBLE) {
+                                                mLoadingProgressbar.setVisibility(View.GONE);
+                                            }
+
+                                            User contact = new User();
+                                            contact.mFirstName = documentSnapshot.getString(Firestore.FIELD_FIRST_NAME);
+                                            contact.mLastName = documentSnapshot.getString(Firestore.FIELD_LAST_NAME);
+                                            contact.mEmail = documentSnapshot.getString(Firestore.FIELD_EMAIL);
+                                            contact.mAbout = documentSnapshot.getString(Firestore.FIELD_ABOUT);
+                                            contact.mProfilePictureUrl = documentSnapshot.getString(Firestore.FIELD_PROFILE_PICTURE_URL);
+                                            contact.mFcmToken = documentSnapshot.getString(Firestore.FIELD_FCM_TOKEN);
+
+                                            mContacts.add(contact);
+
+                                            if (mContacts.size() > 0) {
+                                                mContactsAdapter.notifyDataSetChanged();
+                                            } else {
+                                                mNoUserErrorLayout.setVisibility(View.VISIBLE);
+                                            }
+
+                                            if (mNoInternetErrorLayout.getVisibility() == View.VISIBLE) {
+                                                mNoInternetErrorLayout.setVisibility(View.GONE);
+                                            }
+
+                                            if (mNoUserErrorLayout.getVisibility() == View.VISIBLE) {
+                                                mNoUserErrorLayout.setVisibility(View.GONE);
+                                            }
+                                        })
+                                        .addOnFailureListener(e -> {
+                                            if (mSwipeRefreshLayout.isRefreshing()) {
+                                                mSwipeRefreshLayout.setRefreshing(false);
+                                            }
+
+                                            if (mLoadingProgressbar.getVisibility() == View.VISIBLE) {
+                                                mLoadingProgressbar.setVisibility(View.GONE);
+                                            }
+
+                                            if (!new NetworkInfoUtility(HomeActivity.this).isConnectedToInternet()) {
+                                                mNoInternetErrorLayout.setVisibility(View.VISIBLE);
+                                            } else {
+                                                mNoUserErrorLayout.setVisibility(View.VISIBLE);
+                                            }
+
+                                            Log.e(TAG, "Failed to load users: " + e.getMessage());
+                                        });
+                            }
+                        }
+
+                        if (mContacts.size() > 0) {
+                            mContactsAdapter.notifyDataSetChanged();
                         } else {
                             mNoUserErrorLayout.setVisibility(View.VISIBLE);
                         }
@@ -264,9 +309,7 @@ public class HomeActivity extends AppCompatActivity implements UsersListener {
                         Log.e(TAG, "Failed to load users: " + e.getMessage());
                     });
         } else {
-
-            mUsers.clear();
-            mUsersAdapter.notifyDataSetChanged();
+            mContactsAdapter.notifyDataSetChanged();
 
             if (mSwipeRefreshLayout.isRefreshing()) {
                 mSwipeRefreshLayout.setRefreshing(false);
@@ -324,7 +367,7 @@ public class HomeActivity extends AppCompatActivity implements UsersListener {
                             mToolbar.setVisibility(View.INVISIBLE);
 
                             UsersAdapter.mSelectedUsers.clear();
-                            mUsersAdapter.notifyDataSetChanged();
+                            mContactsAdapter.notifyDataSetChanged();
                         }
                     }
 
@@ -337,7 +380,7 @@ public class HomeActivity extends AppCompatActivity implements UsersListener {
                 mToolbar.setTitle(null);
             }
 
-            mUsersAdapter.notifyDataSetChanged();
+            mContactsAdapter.notifyDataSetChanged();
         } else {
             new Snackbars(HomeActivity.this).snackbar(R.string.snackbar_check_your_internet_connection);
         }
