@@ -23,7 +23,9 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.google.android.material.appbar.MaterialToolbar;
+import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.button.MaterialButton;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
@@ -70,6 +72,7 @@ public class HomeActivity extends AppCompatActivity implements UsersListener {
     private LinearLayout mNoInternetErrorLayout;
     private LinearLayout mNoUserErrorLayout;
     private SwipeRefreshLayout mSwipeRefreshLayout;
+    private FloatingActionButton mNewFloatingActionButton;
     private AlertDialog mBatteryOptimizationDialog;
     private AlertDialog mNoInternetDialog;
     private AlertDialog mProfileDialog;
@@ -90,6 +93,7 @@ public class HomeActivity extends AppCompatActivity implements UsersListener {
         MaterialButton tryAgainButton = findViewById(R.id.button_try_again);
         MaterialButton refreshButton = findViewById(R.id.button_refresh);
         mSwipeRefreshLayout = findViewById(R.id.swipeRefreshLayout);
+        mNewFloatingActionButton = findViewById(R.id.floatingActionButton_new);
 
         mMaterialToolbar.setTitle(R.string.toolbar_title_search);
         setSupportActionBar(mMaterialToolbar);
@@ -105,7 +109,6 @@ public class HomeActivity extends AppCompatActivity implements UsersListener {
         if (isUserValid()) {
             getFcmToken();
         }
-
 
         mContacts = new ArrayList<>();
         mContactsAdapter = new UsersAdapter(mContacts, this);
@@ -126,6 +129,7 @@ public class HomeActivity extends AppCompatActivity implements UsersListener {
         });
 
         mMaterialToolbar.setOnClickListener(v -> {
+            // TODO: Search
         });
 
         tryAgainButton.setOnClickListener(v -> {
@@ -148,6 +152,8 @@ public class HomeActivity extends AppCompatActivity implements UsersListener {
             mSwipeRefreshLayout.setRefreshing(true);
             getContacts();
         });
+
+        mNewFloatingActionButton.setOnClickListener(v -> showNewBottomSheetDialog());
 
         isBatteryOptimizationEnabled();
     }
@@ -246,6 +252,10 @@ public class HomeActivity extends AppCompatActivity implements UsersListener {
                                                 mNoUserErrorLayout.setVisibility(View.VISIBLE);
                                             }
 
+                                            if (mNewFloatingActionButton.getVisibility() == View.GONE) {
+                                                mNewFloatingActionButton.setVisibility(View.VISIBLE);
+                                            }
+
                                             if (mNoInternetErrorLayout.getVisibility() == View.VISIBLE) {
                                                 mNoInternetErrorLayout.setVisibility(View.GONE);
                                             }
@@ -265,6 +275,8 @@ public class HomeActivity extends AppCompatActivity implements UsersListener {
 
                                             if (!new NetworkInfoUtility(HomeActivity.this).isConnectedToInternet()) {
                                                 mNoInternetErrorLayout.setVisibility(View.VISIBLE);
+
+                                                mNewFloatingActionButton.setVisibility(View.GONE);
                                             } else {
                                                 mNoUserErrorLayout.setVisibility(View.VISIBLE);
                                             }
@@ -282,6 +294,8 @@ public class HomeActivity extends AppCompatActivity implements UsersListener {
 
                         if (mNoInternetErrorLayout.getVisibility() == View.VISIBLE) {
                             mNoInternetErrorLayout.setVisibility(View.GONE);
+
+                            mNewFloatingActionButton.setVisibility(View.VISIBLE);
                         }
 
                         if (mNoUserErrorLayout.getVisibility() == View.VISIBLE) {
@@ -302,6 +316,8 @@ public class HomeActivity extends AppCompatActivity implements UsersListener {
 
                         if (!new NetworkInfoUtility(HomeActivity.this).isConnectedToInternet()) {
                             mNoInternetErrorLayout.setVisibility(View.VISIBLE);
+
+                            mNewFloatingActionButton.setVisibility(View.GONE);
                         } else {
                             mNoUserErrorLayout.setVisibility(View.VISIBLE);
                         }
@@ -320,6 +336,8 @@ public class HomeActivity extends AppCompatActivity implements UsersListener {
             }
 
             mNoInternetErrorLayout.setVisibility(View.VISIBLE);
+
+            mNewFloatingActionButton.setVisibility(View.GONE);
         }
     }
 
@@ -415,6 +433,39 @@ public class HomeActivity extends AppCompatActivity implements UsersListener {
 
             showNoInternetDialog();
         }
+    }
+
+    private void showNewBottomSheetDialog() {
+        final BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(HomeActivity.this, R.style.StyleBottomSheetDialog);
+        View bottomSheetView = LayoutInflater.from(this).inflate(R.layout.bottom_sheet_dialog_new, findViewById(R.id.linearLayout_bottom_sheet_dialog_container));
+
+        LinearLayout createNewContact = bottomSheetView.findViewById(R.id.linearLayout_create_new_contact);
+        LinearLayout createRoomLayout = bottomSheetView.findViewById(R.id.linearLayout_create_new_room);
+        LinearLayout joinRoomLayout = bottomSheetView.findViewById(R.id.linearLayout_join_a_room);
+
+        createNewContact.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                bottomSheetDialog.dismiss();
+            }
+        });
+
+        createRoomLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                bottomSheetDialog.dismiss();
+            }
+        });
+
+        joinRoomLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                bottomSheetDialog.dismiss();
+            }
+        });
+
+        bottomSheetDialog.setContentView(bottomSheetView);
+        bottomSheetDialog.show();
     }
 
     private void showBatteryOptimizationDialog() {
