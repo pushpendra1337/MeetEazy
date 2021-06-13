@@ -81,6 +81,15 @@
     <string name="placeholder_full_name">Full Name</string>
     <string name="content_description_call">Video call</string>
 
+    <!-- Bottom Sheet Dialog -->
+    <string name="bottom_sheet_dialog_title_choose">Choose</string>
+    <string name="list_item_text_create_new_contact">Create new contact</string>
+    <string name="list_item_text_create_new_room">Create new room</string>
+    <string name="list_item_text_join_a_room">Join a room</string>
+    <string name="content_description_create_new_contact">Create new contact</string>
+    <string name="content_description_join_a_room">Join a room</string>
+    <string name="content_description_create_new_room">Create new room</string>
+
     <!-- Outgoing Call Activity -->
     <string name="text_outgoing_call" tools:ignore="TypographyEllipsis">Outgoing call...</string>
     <string name="text_outgoing_group_call" tools:ignore="TypographyEllipsis">"Outgoing group call..."</string>
