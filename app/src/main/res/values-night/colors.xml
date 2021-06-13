@@ -38,4 +38,7 @@
     <!-- Divider -->
     <color name="colorDivider">#10FFFFFF</color>
 
+    <!-- Bottom Sheet Dialog Background -->
+    <color name="colorBottomSheetDialogBackground">@color/dark_grey_15_overlay</color>
+
 </resources>

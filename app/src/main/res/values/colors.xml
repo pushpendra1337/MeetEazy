@@ -154,4 +154,7 @@
     <!-- Call Button Foreground -->
     <color name="colorCallButtonIcon">@color/white</color>
 
+    <!-- Bottom Sheet Dialog Background -->
+    <color name="colorBottomSheetDialogBackground">@color/white</color>
+
 </resources>
