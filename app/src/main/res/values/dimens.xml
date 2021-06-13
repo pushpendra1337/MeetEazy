@@ -31,6 +31,7 @@
     <!-- Corner Radius -->
     <dimen name="corner_radius_small">4dp</dimen>
     <dimen name="corner_radius_medium">6dp</dimen>
+    <dimen name="corner_radius_large">8dp</dimen>
 
     <!-- Button -->
     <dimen name="button_height_medium">60dp</dimen>
@@ -71,6 +72,9 @@
     <dimen name="end_margin_toolbar_item_profile_picture">6dp</dimen>
     <dimen name="padding_toolbar_item_profile_picture">6dp</dimen>
     <dimen name="toolbar_item_profile_picture_border_width">1dp</dimen>
+
+    <!-- Border height -->
+    <dimen name="border_height">1dp</dimen>
 
     <!-- List Item -->
     <dimen name="one_line_list_item_height">56dp</dimen>
