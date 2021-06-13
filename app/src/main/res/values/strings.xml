@@ -77,6 +77,7 @@
     <string name="error_title_no_user">No user found</string>
     <string name="error_message_no_user">There is no user available right now.</string>
     <string name="button_text_refresh">Refresh</string>
+    <string name="content_description_new">New</string>
     <string name="placeholder_full_name">Full Name</string>
     <string name="content_description_call">Video call</string>
 
