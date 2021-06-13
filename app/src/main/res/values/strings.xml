@@ -135,6 +135,12 @@
     <string name="error_empty_contact_email">Please enter an email address.</string>
     <string name="dialog_btn_text_save">Save</string>
 
+    <!-- Create Room Dialog -->
+    <string name="dialog_title_create_room">Create room</string>
+    <string name="hint_room_id">Room ID</string>
+    <string name="content_description_copy">Copy</string>
+    <string name="dialog_btn_text_create">Create</string>
+
     <!-- Profile Dialog -->
     <string name="list_item_text_profile">Profile</string>
     <string name="list_item_text_settings">Settings</string>
