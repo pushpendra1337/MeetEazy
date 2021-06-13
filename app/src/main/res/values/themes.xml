@@ -50,4 +50,21 @@
         <item name="android:textColor">@color/colorPrimary</item>
     </style>
 
+    <!-- Bottom sheet dialog style -->
+    <style name="StyleBottomSheetDialog" parent="ThemeOverlay.MaterialComponents.BottomSheetDialog">
+        <item name="bottomSheetStyle">@style/StyleBottomSheet</item>
+    </style>
+
+    <!-- Bottom sheet style -->
+    <style name="StyleBottomSheet" parent="Widget.MaterialComponents.BottomSheet">
+        <item name="shapeAppearanceOverlay">@style/StyleShapeBottomSheet</item>
+    </style>
+
+    <!-- Bottom sheet shape style -->
+    <style name="StyleShapeBottomSheet" parent="Widget.MaterialComponents.BottomSheet">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSizeTopLeft">@dimen/corner_radius_large</item>
+        <item name="cornerSizeTopRight">@dimen/corner_radius_large</item>
+    </style>
+
 </resources>
