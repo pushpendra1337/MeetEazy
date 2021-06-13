@@ -1,17 +1,24 @@
 package net.intensecorp.meeteazy.activities;
 
+import android.annotation.SuppressLint;
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.PowerManager;
 import android.provider.Settings;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.WindowManager;
+import android.view.inputmethod.InputMethodManager;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.Toast;
@@ -26,6 +33,8 @@ import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.android.material.textfield.TextInputEditText;
+import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
@@ -43,12 +52,16 @@ import net.intensecorp.meeteazy.utils.ApiUtility;
 import net.intensecorp.meeteazy.utils.Extras;
 import net.intensecorp.meeteazy.utils.Firestore;
 import net.intensecorp.meeteazy.utils.NetworkInfoUtility;
+import net.intensecorp.meeteazy.utils.Patterns;
 import net.intensecorp.meeteazy.utils.SharedPrefsManager;
 import net.intensecorp.meeteazy.utils.Snackbars;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
+import java.util.regex.Matcher;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
@@ -78,7 +91,11 @@ public class HomeActivity extends AppCompatActivity implements UsersListener {
     private AlertDialog mProfileDialog;
     private AlertDialog mProgressDialog;
     private AlertDialog mSignOutDialog;
+    private AlertDialog mCreateContactDialog;
+    private TextInputLayout mContactEmailLayout;
+    private TextInputEditText mContactEmailField;
 
+    @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -360,7 +377,7 @@ public class HomeActivity extends AppCompatActivity implements UsersListener {
                 startOutgoingCallActivity(callee);
             }
         } else {
-            new Snackbars(HomeActivity.this).snackbar(R.string.snackbar_check_your_internet_connection);
+            new Snackbars(HomeActivity.this).snackbar(R.string.snackbar_text_check_your_internet_connection);
         }
     }
 
@@ -400,7 +417,7 @@ public class HomeActivity extends AppCompatActivity implements UsersListener {
 
             mContactsAdapter.notifyDataSetChanged();
         } else {
-            new Snackbars(HomeActivity.this).snackbar(R.string.snackbar_check_your_internet_connection);
+            new Snackbars(HomeActivity.this).snackbar(R.string.snackbar_text_check_your_internet_connection);
         }
     }
 
@@ -435,34 +452,140 @@ public class HomeActivity extends AppCompatActivity implements UsersListener {
         }
     }
 
+    private String getContactEmail() {
+
+        String contactEmail = Objects.requireNonNull(mContactEmailLayout.getEditText()).getText().toString().trim();
+
+        if (contactEmail.isEmpty()) {
+            mContactEmailLayout.setError(getString(R.string.error_empty_contact_email));
+            putFocusOn(mContactEmailField);
+        } else {
+            mContactEmailLayout.setErrorEnabled(false);
+            return contactEmail;
+        }
+        return null;
+    }
+
+    private boolean isContactEmailValid() {
+        if (getContactEmail() != null) {
+            Matcher emailMatcher = Patterns.EMAIL_PATTERN.matcher(getContactEmail());
+
+            if (emailMatcher.matches()) {
+                mContactEmailLayout.setErrorEnabled(false);
+                return true;
+            } else {
+                mContactEmailLayout.setError(getString(R.string.error_invalid_email));
+                putFocusOn(mContactEmailField);
+                return false;
+            }
+        } else {
+            return false;
+        }
+    }
+
+    private void putFocusOn(View view) {
+        if (view.requestFocus()) {
+            getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
+        }
+    }
+
+    private void hideSoftInput() {
+        View view = this.getCurrentFocus();
+
+        if (view != null) {
+            view.clearFocus();
+            InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+            inputMethodManager.hideSoftInputFromWindow(view.getWindowToken(), 0);
+        }
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.O)
+    private void isUserExists() {
+        if (isContactEmailValid() && getContactEmail() != null) {
+            showProgressDialog();
+
+            mStore.collection(Firestore.COLLECTION_USERS)
+                    .whereEqualTo(Firestore.FIELD_EMAIL, getContactEmail())
+                    .get()
+                    .addOnSuccessListener(queryDocumentSnapshots -> {
+                        if (queryDocumentSnapshots.isEmpty()) {
+                            dismissProgressDialog();
+
+                            new Snackbars(HomeActivity.this).snackbar(R.string.snackbar_text_no_user_exists_with_provided_email_address, mNewFloatingActionButton);
+                        } else {
+                            String contactUid = queryDocumentSnapshots.getDocuments().get(0).getId();
+                            isContactAlreadyExists(contactUid);
+                        }
+                    })
+                    .addOnFailureListener(e -> {
+                        dismissProgressDialog();
+
+                        new Snackbars(HomeActivity.this).snackbar(R.string.snackbar_text_error_occurred, mNewFloatingActionButton);
+                    });
+        }
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.O)
+    private void isContactAlreadyExists(String contactUid) {
+        mStore.collection(Firestore.COLLECTION_USERS)
+                .document(mUid)
+                .collection(Firestore.COLLECTION_CONTACTS)
+                .document(contactUid)
+                .get()
+                .addOnSuccessListener(documentSnapshot -> {
+                    if (documentSnapshot.getId().equals(mUid)) {
+                        new Snackbars(HomeActivity.this).snackbar(R.string.snackbar_text_cannot_add_yourself, mNewFloatingActionButton);
+                    } else if (documentSnapshot.exists()) {
+                        dismissProgressDialog();
+
+                        new Snackbars(HomeActivity.this).snackbar(R.string.snackbar_text_contact_already_exists, mNewFloatingActionButton);
+                    } else {
+                        saveContact(contactUid);
+                    }
+                })
+                .addOnFailureListener(e -> {
+                    dismissProgressDialog();
+
+                    new Snackbars(HomeActivity.this).snackbar(R.string.snackbar_text_error_occurred, mNewFloatingActionButton);
+                });
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.O)
+    private void saveContact(String contactUid) {
+        Map<String, Object> contact = new HashMap<>();
+        contact.put(Firestore.FIELD_UID, contactUid);
+
+        mStore.collection(Firestore.COLLECTION_USERS)
+                .document(mUid)
+                .collection(Firestore.COLLECTION_CONTACTS)
+                .document(contactUid)
+                .set(contact)
+                .addOnSuccessListener(aVoid -> {
+                    dismissProgressDialog();
+
+                    new Snackbars(HomeActivity.this).snackbar(R.string.snackbar_text_contact_successfully_saved, mNewFloatingActionButton);
+                    getContacts();
+                })
+                .addOnFailureListener(e -> {
+                    dismissProgressDialog();
+
+                    new Snackbars(HomeActivity.this).snackbar(R.string.snackbar_text_error_occurred, mNewFloatingActionButton);
+                });
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.O)
     private void showNewBottomSheetDialog() {
         final BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(HomeActivity.this, R.style.StyleBottomSheetDialog);
         View bottomSheetView = LayoutInflater.from(this).inflate(R.layout.bottom_sheet_dialog_new, findViewById(R.id.linearLayout_bottom_sheet_dialog_container));
 
-        LinearLayout createNewContact = bottomSheetView.findViewById(R.id.linearLayout_create_new_contact);
-        LinearLayout createRoomLayout = bottomSheetView.findViewById(R.id.linearLayout_create_new_room);
-        LinearLayout joinRoomLayout = bottomSheetView.findViewById(R.id.linearLayout_join_a_room);
-
-        createNewContact.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                bottomSheetDialog.dismiss();
-            }
+        bottomSheetView.findViewById(R.id.linearLayout_create_new_contact).setOnClickListener(v -> {
+            bottomSheetDialog.dismiss();
+            showCreateContactDialog();
         });
 
-        createRoomLayout.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                bottomSheetDialog.dismiss();
-            }
-        });
+        bottomSheetView.findViewById(R.id.linearLayout_create_new_room).setOnClickListener(v -> bottomSheetDialog.dismiss());
 
-        joinRoomLayout.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                bottomSheetDialog.dismiss();
-            }
-        });
+        bottomSheetView.findViewById(R.id.linearLayout_join_a_room).setOnClickListener(v -> bottomSheetDialog.dismiss());
 
         bottomSheetDialog.setContentView(bottomSheetView);
         bottomSheetDialog.show();
@@ -491,6 +614,46 @@ public class HomeActivity extends AppCompatActivity implements UsersListener {
     private void dismissBatteryOptimizationDialog() {
         if (mBatteryOptimizationDialog != null) {
             mBatteryOptimizationDialog.dismiss();
+        }
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.O)
+    private void showCreateContactDialog() {
+        if (mCreateContactDialog == null) {
+
+            AlertDialog.Builder builder = new AlertDialog.Builder(HomeActivity.this);
+            View view = LayoutInflater.from(this).inflate(R.layout.dialog_create_contact, findViewById(R.id.scrollView_dialog_container));
+            builder.setView(view);
+            mCreateContactDialog = builder.create();
+
+            if (mCreateContactDialog.getWindow() != null) {
+                mCreateContactDialog.getWindow().setBackgroundDrawable(new ColorDrawable(0));
+            }
+
+            ImageView closeButton = view.findViewById(R.id.imageView_close);
+            mContactEmailLayout = view.findViewById(R.id.textInputLayout_contact_email);
+            mContactEmailField = view.findViewById(R.id.textInputEditText_contact_email);
+            MaterialButton saveButton = view.findViewById(R.id.button_save);
+
+            mContactEmailField.addTextChangedListener(new ValidationWatcher(mContactEmailField));
+
+            closeButton.setOnClickListener(v -> dismissCreateContactDialog());
+
+            saveButton.setOnClickListener(v -> {
+                hideSoftInput();
+                dismissCreateContactDialog();
+                isUserExists();
+            });
+
+        }
+
+        mCreateContactDialog.show();
+    }
+
+    private void dismissCreateContactDialog() {
+        if (mCreateContactDialog != null) {
+            mCreateContactDialog.dismiss();
+            mCreateContactDialog = null;
         }
     }
 
@@ -536,6 +699,8 @@ public class HomeActivity extends AppCompatActivity implements UsersListener {
                 mProfileDialog.getWindow().setBackgroundDrawable(new ColorDrawable(0));
             }
 
+            view.findViewById(R.id.imageView_close).setOnClickListener(v -> dismissProfileDialog());
+
             view.findViewById(R.id.linearLayout_profile).setOnClickListener(v -> {
                 dismissProfileDialog();
 
@@ -565,8 +730,6 @@ public class HomeActivity extends AppCompatActivity implements UsersListener {
 
                 showSignOutDialog();
             });
-
-            view.findViewById(R.id.imageView_close).setOnClickListener(v -> dismissProfileDialog());
         }
 
         mProfileDialog.show();
@@ -687,5 +850,29 @@ public class HomeActivity extends AppCompatActivity implements UsersListener {
         Intent wirelessSettingsIntent = new Intent(Settings.ACTION_WIRELESS_SETTINGS);
         wirelessSettingsIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         startActivity(wirelessSettingsIntent);
+    }
+
+    public class ValidationWatcher implements TextWatcher {
+
+        private final View view;
+
+        private ValidationWatcher(View view) {
+            this.view = view;
+        }
+
+        public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+        }
+
+        public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+        }
+
+        @SuppressLint("NonConstantResourceId")
+        public void afterTextChanged(Editable editable) {
+            if (view.getId() == R.id.textInputEditText_contact_email) {
+                getContactEmail();
+            }
+        }
     }
 }
