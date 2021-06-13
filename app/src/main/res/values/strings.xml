@@ -129,6 +129,12 @@
     <string name="dialog_message_battery_optimization">To receive notifications, calls and other important alerts, battery optimization must be disabled in settings for MeetEazy.</string>
     <string name="dialog_button_text_cancel">Cancel</string>
 
+    <!-- Create Contact Dialog -->
+    <string name="dialog_title_create_contact">Create contact</string>
+    <string name="hint_contact_email">Contact Email</string>
+    <string name="error_empty_contact_email">Please enter an email address.</string>
+    <string name="dialog_btn_text_save">Save</string>
+
     <!-- Profile Dialog -->
     <string name="list_item_text_profile">Profile</string>
     <string name="list_item_text_settings">Settings</string>
@@ -153,6 +159,6 @@
     <string name="snackbar_text_login_failed_wrong_credentials">Login failed! Please check your credentials and try again.</string>
     <string name="snackbar_text_email_not_registered">The email address you entered is not associated with any account.</string>
     <string name="snackbar_text_email_already_exists">The email address is already in use by another account.</string>
-    <string name="snackbar_check_your_internet_connection">Please check your internet connection or try again later.</string>
+    <string name="snackbar_text_check_your_internet_connection">Please check your internet connection or try again later.</string>
 
 </resources>
