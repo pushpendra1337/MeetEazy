@@ -97,6 +97,9 @@ public class HomeActivity extends AppCompatActivity implements UsersListener {
     private TextInputLayout mContactEmailLayout;
     private TextInputEditText mContactEmailField;
     private AlertDialog mCreateRoomDialog;
+    private AlertDialog mJoinRoomDialog;
+    private TextInputLayout mRoomIdLayout;
+    private TextInputEditText mRoomIdField;
 
     @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
@@ -561,6 +564,37 @@ public class HomeActivity extends AppCompatActivity implements UsersListener {
                 });
     }
 
+    private String getRoomId() {
+        String roomId = Objects.requireNonNull(mRoomIdLayout.getEditText()).getText().toString().toUpperCase().trim();
+
+        if (roomId.isEmpty()) {
+            mRoomIdLayout.setError(getString(R.string.error_empty_room_id));
+            putFocusOn(mRoomIdField);
+        } else {
+            mRoomIdLayout.setErrorEnabled(false);
+            return roomId;
+        }
+
+        return null;
+    }
+
+    private boolean isRoomIdValid() {
+        if (getRoomId() != null) {
+            Matcher roomIdMatcher = Patterns.ROOM_ID_PATTERN.matcher(getRoomId());
+
+            if (roomIdMatcher.matches()) {
+                mRoomIdLayout.setErrorEnabled(false);
+                return true;
+            } else {
+                mRoomIdLayout.setError(getString(R.string.error_invalid_room_id));
+                putFocusOn(mRoomIdField);
+                return false;
+            }
+        } else {
+            return false;
+        }
+    }
+
     private void putFocusOn(View view) {
         if (view.requestFocus()) {
             getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
@@ -592,7 +626,10 @@ public class HomeActivity extends AppCompatActivity implements UsersListener {
             showCreateRoomDialog();
         });
 
-        bottomSheetView.findViewById(R.id.linearLayout_join_a_room).setOnClickListener(v -> bottomSheetDialog.dismiss());
+        bottomSheetView.findViewById(R.id.linearLayout_join_a_room).setOnClickListener(v -> {
+            bottomSheetDialog.dismiss();
+            showJoinRoomDialog();
+        });
 
         bottomSheetDialog.setContentView(bottomSheetView);
         bottomSheetDialog.show();
@@ -644,7 +681,10 @@ public class HomeActivity extends AppCompatActivity implements UsersListener {
 
             mContactEmailField.addTextChangedListener(new ValidationWatcher(mContactEmailField));
 
-            closeButton.setOnClickListener(v -> dismissCreateContactDialog());
+            closeButton.setOnClickListener(v -> {
+                hideSoftInput();
+                dismissCreateContactDialog();
+            });
 
             saveButton.setOnClickListener(v -> {
                 hideSoftInput();
@@ -695,6 +735,7 @@ public class HomeActivity extends AppCompatActivity implements UsersListener {
             });
 
             createButton.setOnClickListener(v -> {
+                hideSoftInput();
                 dismissCreateRoomDialog();
 //                initiateInstantMeeting(generatedRoomId);
             });
@@ -707,6 +748,57 @@ public class HomeActivity extends AppCompatActivity implements UsersListener {
         if (mCreateRoomDialog != null) {
             mCreateRoomDialog.dismiss();
             mCreateRoomDialog = null;
+        }
+    }
+
+    private void showJoinRoomDialog() {
+        if (mJoinRoomDialog == null) {
+
+            AlertDialog.Builder builder = new AlertDialog.Builder(HomeActivity.this);
+            View view = LayoutInflater.from(this).inflate(R.layout.dialog_join_room, findViewById(R.id.scrollView_dialog_container));
+            builder.setView(view);
+            mJoinRoomDialog = builder.create();
+
+            if (mJoinRoomDialog.getWindow() != null) {
+                mJoinRoomDialog.getWindow().setBackgroundDrawable(new ColorDrawable(0));
+            }
+
+            ImageView closeButton = view.findViewById(R.id.imageView_close);
+            mRoomIdLayout = view.findViewById(R.id.textInputLayout_room_id);
+            mRoomIdField = view.findViewById(R.id.textInputEditText_room_id);
+            MaterialButton joinButton = view.findViewById(R.id.button_join);
+
+            closeButton.setOnClickListener(v -> {
+                hideSoftInput();
+                dismissJoinRoomDialog();
+            });
+
+            mRoomIdField.addTextChangedListener(new ValidationWatcher(mRoomIdField));
+
+            mRoomIdLayout.setEndIconOnClickListener(v -> {
+                ClipboardManager clipboardManager = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
+                ClipData clipData = clipboardManager.getPrimaryClip();
+                ClipData.Item item = clipData.getItemAt(0);
+                String pasteData = item.getText().toString().trim().toUpperCase();
+                mRoomIdField.setText(pasteData);
+            });
+
+            joinButton.setOnClickListener(v -> {
+                if (isRoomIdValid()) {
+                    hideSoftInput();
+                    dismissJoinRoomDialog();
+//                    initiateInstantMeeting(getRoomId());
+                }
+            });
+        }
+
+        mJoinRoomDialog.show();
+    }
+
+    private void dismissJoinRoomDialog() {
+        if (mJoinRoomDialog != null) {
+            mJoinRoomDialog.dismiss();
+            mJoinRoomDialog = null;
         }
     }
 
@@ -925,6 +1017,10 @@ public class HomeActivity extends AppCompatActivity implements UsersListener {
         public void afterTextChanged(Editable editable) {
             if (view.getId() == R.id.textInputEditText_contact_email) {
                 getContactEmail();
+            }
+
+            if (view.getId() == R.id.textInputEditText_room_id) {
+                getRoomId();
             }
         }
     }
