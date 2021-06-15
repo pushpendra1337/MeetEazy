@@ -53,11 +53,18 @@ import net.intensecorp.meeteazy.models.User;
 import net.intensecorp.meeteazy.utils.ApiUtility;
 import net.intensecorp.meeteazy.utils.Extras;
 import net.intensecorp.meeteazy.utils.Firestore;
+import net.intensecorp.meeteazy.utils.FormatterUtility;
 import net.intensecorp.meeteazy.utils.NetworkInfoUtility;
 import net.intensecorp.meeteazy.utils.Patterns;
 import net.intensecorp.meeteazy.utils.SharedPrefsManager;
 import net.intensecorp.meeteazy.utils.Snackbars;
 
+import org.jitsi.meet.sdk.JitsiMeetActivity;
+import org.jitsi.meet.sdk.JitsiMeetConferenceOptions;
+import org.jitsi.meet.sdk.JitsiMeetUserInfo;
+
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -564,6 +571,40 @@ public class HomeActivity extends AppCompatActivity implements UsersListener {
                 });
     }
 
+    private void initiateMeeting(String roomId) {
+        SharedPrefsManager sharedPrefsManager = new SharedPrefsManager(HomeActivity.this, SharedPrefsManager.PREF_USER_DATA);
+
+        HashMap<String, String> userData = sharedPrefsManager.getUserDataPrefs();
+        String firstName = userData.get(SharedPrefsManager.PREF_FIRST_NAME);
+        String lastName = userData.get(SharedPrefsManager.PREF_LAST_NAME);
+        String email = userData.get(SharedPrefsManager.PREF_EMAIL);
+        String profilePictureLink = userData.get(SharedPrefsManager.PREF_PROFILE_PICTURE_URL);
+
+        String fullName = FormatterUtility.getFullName(firstName, lastName);
+        URL profilePictureUrl;
+
+        JitsiMeetUserInfo jitsiMeetUserInfo = new JitsiMeetUserInfo();
+        jitsiMeetUserInfo.setDisplayName(fullName);
+        jitsiMeetUserInfo.setEmail(email);
+
+        try {
+            profilePictureUrl = new URL(profilePictureLink);
+            jitsiMeetUserInfo.setAvatar(profilePictureUrl);
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        }
+
+        JitsiMeetConferenceOptions.Builder conferenceOptionsBuilder = new JitsiMeetConferenceOptions.Builder()
+                .setServerURL(ApiUtility.getJitsiMeetServerUrl())
+                .setWelcomePageEnabled(false)
+                .setRoom(roomId)
+                .setUserInfo(jitsiMeetUserInfo)
+                .setVideoMuted(true)
+                .setAudioMuted(false);
+
+        JitsiMeetActivity.launch(HomeActivity.this, conferenceOptionsBuilder.build());
+    }
+
     private String getRoomId() {
         String roomId = Objects.requireNonNull(mRoomIdLayout.getEditText()).getText().toString().toUpperCase().trim();
 
@@ -737,7 +778,7 @@ public class HomeActivity extends AppCompatActivity implements UsersListener {
             createButton.setOnClickListener(v -> {
                 hideSoftInput();
                 dismissCreateRoomDialog();
-//                initiateInstantMeeting(generatedRoomId);
+                initiateMeeting(generatedRoomId);
             });
         }
 
@@ -787,7 +828,7 @@ public class HomeActivity extends AppCompatActivity implements UsersListener {
                 if (isRoomIdValid()) {
                     hideSoftInput();
                     dismissJoinRoomDialog();
-//                    initiateInstantMeeting(getRoomId());
+                    initiateMeeting(getRoomId());
                 }
             });
         }
