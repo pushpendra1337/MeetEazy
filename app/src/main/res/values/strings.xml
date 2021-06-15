@@ -171,4 +171,7 @@
     <string name="snackbar_text_cannot_add_yourself">You can\'t add yourself in contacts.</string>
     <string name="snackbar_text_contact_successfully_saved">Contact successfully saved.</string>
 
+    <!-- Toasts -->
+    <string name="toast_text_room_id_copied_to_clipboard">Room ID copied to clipboard</string>
+
 </resources>
