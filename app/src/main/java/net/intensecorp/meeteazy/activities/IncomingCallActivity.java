@@ -8,7 +8,6 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.LinearLayout;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -32,6 +31,7 @@ import org.jitsi.meet.sdk.JitsiMeetUserInfo;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.HashMap;
 
@@ -43,20 +43,20 @@ import retrofit2.Response;
 public class IncomingCallActivity extends AppCompatActivity {
 
     private static final String TAG = IncomingCallActivity.class.getSimpleName();
+
     BroadcastReceiver mCallEndRequestReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
             String requestType = intent.getStringExtra(Extras.EXTRA_REQUEST_TYPE);
 
             if (requestType != null) {
-                if (ApiUtility.REQUEST_TYPE_ENDED.equals(requestType)) {
+                if (requestType.equals(ApiUtility.REQUEST_TYPE_ENDED)) {
                     finish();
                 }
             }
         }
     };
     private String mRoomId;
-    private String mIncomingCallType;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -74,7 +74,7 @@ public class IncomingCallActivity extends AppCompatActivity {
         FloatingActionButton answerCallButton = findViewById(R.id.floatingActionButton_answer_call);
 
         Intent incomingCallIntent = getIntent();
-        mIncomingCallType = incomingCallIntent.getStringExtra(Extras.EXTRA_CALL_TYPE);
+        String incomingCallType = incomingCallIntent.getStringExtra(Extras.EXTRA_CALL_TYPE);
         String callerFirstName = incomingCallIntent.getStringExtra(Extras.EXTRA_CALLER_FIRST_NAME);
         String callerLastName = incomingCallIntent.getStringExtra(Extras.EXTRA_CALLER_LAST_NAME);
         String callerEmail = incomingCallIntent.getStringExtra(Extras.EXTRA_CALLER_EMAIL);
@@ -82,7 +82,7 @@ public class IncomingCallActivity extends AppCompatActivity {
         String callerFcmToken = incomingCallIntent.getStringExtra(Extras.EXTRA_CALLER_FCM_TOKEN);
         mRoomId = incomingCallIntent.getStringExtra(Extras.EXTRA_ROOM_ID);
 
-        switch (mIncomingCallType) {
+        switch (incomingCallType) {
             case ApiUtility.CALL_TYPE_PERSONAL:
                 incomingCallTypeView.setText(R.string.text_incoming_call);
                 callerEmailView.setText(callerEmail);
@@ -167,40 +167,37 @@ public class IncomingCallActivity extends AppCompatActivity {
                             switch (responseType) {
                                 case ApiUtility.RESPONSE_TYPE_ANSWERED:
 
+                                    SharedPrefsManager sharedPrefsManager = new SharedPrefsManager(IncomingCallActivity.this, SharedPrefsManager.PREF_USER_DATA);
+                                    HashMap<String, String> userData = sharedPrefsManager.getUserDataPrefs();
+                                    String firstName = userData.get(SharedPrefsManager.PREF_FIRST_NAME);
+                                    String lastName = userData.get(SharedPrefsManager.PREF_LAST_NAME);
+                                    String email = userData.get(SharedPrefsManager.PREF_EMAIL);
+                                    String profilePictureLink = userData.get(SharedPrefsManager.PREF_PROFILE_PICTURE_URL);
+
+                                    String fullName = FormatterUtility.getFullName(firstName, lastName);
+                                    URL profilePictureUrl;
+
+                                    JitsiMeetUserInfo jitsiMeetUserInfo = new JitsiMeetUserInfo();
+                                    jitsiMeetUserInfo.setDisplayName(fullName);
+                                    jitsiMeetUserInfo.setEmail(email);
+
                                     try {
-                                        SharedPrefsManager sharedPrefsManager = new SharedPrefsManager(IncomingCallActivity.this, SharedPrefsManager.PREF_USER_DATA);
-                                        HashMap<String, String> userData = sharedPrefsManager.getUserDataPrefs();
-                                        String firstName = userData.get(SharedPrefsManager.PREF_FIRST_NAME);
-                                        String lastName = userData.get(SharedPrefsManager.PREF_LAST_NAME);
-                                        String email = userData.get(SharedPrefsManager.PREF_EMAIL);
-                                        URL profilePictureUrl = new URL(userData.get(SharedPrefsManager.PREF_PROFILE_PICTURE_URL));
-                                        String fullName = FormatterUtility.getFullName(firstName, lastName);
-
-                                        JitsiMeetUserInfo jitsiMeetUserInfo = new JitsiMeetUserInfo();
-                                        jitsiMeetUserInfo.setDisplayName(fullName);
-                                        jitsiMeetUserInfo.setEmail(email);
+                                        profilePictureUrl = new URL(profilePictureLink);
                                         jitsiMeetUserInfo.setAvatar(profilePictureUrl);
-
-                                        JitsiMeetConferenceOptions.Builder conferenceOptionsBuilder = new JitsiMeetConferenceOptions.Builder()
-                                                .setServerURL(ApiUtility.getJitsiMeetServerUrl())
-                                                .setWelcomePageEnabled(false)
-                                                .setRoom(mRoomId)
-                                                .setUserInfo(jitsiMeetUserInfo);
-
-                                        if (mIncomingCallType.equals(ApiUtility.CALL_TYPE_PERSONAL)) {
-                                            conferenceOptionsBuilder.setAudioOnly(true);
-                                            conferenceOptionsBuilder.setVideoMuted(true);
-                                        }
-
-                                        JitsiMeetActivity.launch(IncomingCallActivity.this, conferenceOptionsBuilder.build());
-                                        finish();
-                                    } catch (Exception exception) {
-                                        Log.e(TAG, "Failed to attend call: " + exception.getMessage());
-
-                                        Toast.makeText(IncomingCallActivity.this, "Failed to attend call: " + exception.getMessage(), Toast.LENGTH_SHORT).show();
-                                        finish();
+                                    } catch (MalformedURLException e) {
+                                        e.printStackTrace();
                                     }
 
+                                    JitsiMeetConferenceOptions.Builder conferenceOptionsBuilder = new JitsiMeetConferenceOptions.Builder()
+                                            .setServerURL(ApiUtility.getJitsiMeetServerUrl())
+                                            .setWelcomePageEnabled(false)
+                                            .setRoom(mRoomId)
+                                            .setUserInfo(jitsiMeetUserInfo)
+                                            .setVideoMuted(true)
+                                            .setAudioMuted(true);
+
+                                    JitsiMeetActivity.launch(IncomingCallActivity.this, conferenceOptionsBuilder.build());
+                                    finish();
                                     break;
 
                                 case ApiUtility.RESPONSE_TYPE_REJECTED:
