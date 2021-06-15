@@ -80,7 +80,7 @@
             android:layout_height="@dimen/button_height_medium"
             android:layout_marginStart="@dimen/margin_8dp"
             android:layout_marginTop="@dimen/margin_20dp"
-            android:backgroundTint="@color/colorError"
+            android:backgroundTint="@color/monza"
             android:fontFamily="@font/poppins_medium"
             android:includeFontPadding="false"
             android:text="@string/dialog_button_text_yes"

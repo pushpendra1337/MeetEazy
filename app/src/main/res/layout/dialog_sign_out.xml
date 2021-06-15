@@ -58,7 +58,7 @@
             app:layout_constraintTop_toBottomOf="@id/textView_title" />
 
         <com.google.android.material.button.MaterialButton
-            android:id="@+id/button_yes"
+            android:id="@+id/button_no"
             style="@style/Widget.MaterialComponents.Button.OutlinedButton"
             android:layout_width="0dp"
             android:layout_height="@dimen/button_height_medium"
@@ -66,29 +66,29 @@
             android:layout_marginEnd="@dimen/margin_8dp"
             android:fontFamily="@font/poppins_medium"
             android:includeFontPadding="false"
-            android:text="@string/dialog_button_text_yes"
+            android:text="@string/dialog_button_text_no"
             android:textSize="@dimen/text_size_medium"
             app:cornerRadius="@dimen/corner_radius_medium"
-            app:layout_constraintEnd_toStartOf="@id/button_no"
+            app:layout_constraintEnd_toStartOf="@id/button_yes"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/textView_message" />
 
         <com.google.android.material.button.MaterialButton
-            android:id="@+id/button_no"
+            android:id="@+id/button_yes"
             style="@style/Widget.MaterialComponents.Button.UnelevatedButton"
             android:layout_width="0dp"
             android:layout_height="@dimen/button_height_medium"
             android:layout_marginStart="@dimen/margin_8dp"
             android:layout_marginTop="@dimen/margin_20dp"
-            android:backgroundTint="@color/colorPrimary"
+            android:backgroundTint="@color/monza"
             android:fontFamily="@font/poppins_medium"
             android:includeFontPadding="false"
-            android:text="@string/dialog_button_text_no"
+            android:text="@string/dialog_button_text_yes"
             android:textColor="@color/colorOnPrimary"
             android:textSize="@dimen/text_size_medium"
             app:cornerRadius="@dimen/corner_radius_medium"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@id/button_yes"
+            app:layout_constraintStart_toEndOf="@id/button_no"
             app:layout_constraintTop_toBottomOf="@id/textView_message"
             app:rippleColor="@color/colorPrimaryVariant" />
 
