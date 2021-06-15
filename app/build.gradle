@@ -50,7 +50,7 @@ dependencies {
     annotationProcessor 'com.github.bumptech.glide:compiler:4.12.0'
 
     // Jitsi Meet SDK
-    implementation ('org.jitsi.react:jitsi-meet-sdk:2.+') { transitive = true }
+    implementation('org.jitsi.react:jitsi-meet-sdk:3.6.0') { transitive = true }
 
     // Import the Firebase BoM
     implementation platform('com.google.firebase:firebase-bom:27.0.0')
@@ -80,7 +80,7 @@ dependencies {
     implementation 'androidx.appcompat:appcompat:1.3.0'
 
     // RecyclerView
-    implementation 'androidx.recyclerview:recyclerview:1.2.0'
+    implementation 'androidx.recyclerview:recyclerview:1.2.1'
 
     // SwipeRefreshLayout
     implementation "androidx.swiperefreshlayout:swiperefreshlayout:1.1.0"
