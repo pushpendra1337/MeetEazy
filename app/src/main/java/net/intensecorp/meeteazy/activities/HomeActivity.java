@@ -47,9 +47,9 @@ import com.google.firebase.messaging.FirebaseMessaging;
 import com.google.gson.Gson;
 
 import net.intensecorp.meeteazy.R;
-import net.intensecorp.meeteazy.adapters.UsersAdapter;
-import net.intensecorp.meeteazy.listener.UsersListener;
-import net.intensecorp.meeteazy.models.User;
+import net.intensecorp.meeteazy.adapters.ContactsAdapter;
+import net.intensecorp.meeteazy.listener.ActionListener;
+import net.intensecorp.meeteazy.models.Contact;
 import net.intensecorp.meeteazy.utils.ApiUtility;
 import net.intensecorp.meeteazy.utils.Extras;
 import net.intensecorp.meeteazy.utils.Firestore;
@@ -74,7 +74,7 @@ import java.util.regex.Matcher;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
-public class HomeActivity extends AppCompatActivity implements UsersListener {
+public class HomeActivity extends AppCompatActivity implements ActionListener {
 
     private static final String TAG = HomeActivity.class.getSimpleName();
     private static final String FEEDBACK_EMAIL_TYPE = "text/html";
@@ -86,8 +86,8 @@ public class HomeActivity extends AppCompatActivity implements UsersListener {
     private FirebaseFirestore mStore;
     private DocumentReference mUserReference;
     private String mUid;
-    private List<User> mContacts;
-    private UsersAdapter mContactsAdapter;
+    private List<Contact> mContacts;
+    private ContactsAdapter mContactsAdapter;
     private MaterialToolbar mMaterialToolbar;
     private Toolbar mToolbar;
     private ProgressBar mLoadingProgressbar;
@@ -103,6 +103,7 @@ public class HomeActivity extends AppCompatActivity implements UsersListener {
     private AlertDialog mCreateContactDialog;
     private TextInputLayout mContactEmailLayout;
     private TextInputEditText mContactEmailField;
+    private AlertDialog mDeleteContactDialog;
     private AlertDialog mCreateRoomDialog;
     private AlertDialog mJoinRoomDialog;
     private TextInputLayout mRoomIdLayout;
@@ -141,7 +142,7 @@ public class HomeActivity extends AppCompatActivity implements UsersListener {
         }
 
         mContacts = new ArrayList<>();
-        mContactsAdapter = new UsersAdapter(mContacts, this);
+        mContactsAdapter = new ContactsAdapter(mContacts, this);
         contactsRecyclerView.setAdapter(mContactsAdapter);
 
         getContacts();
@@ -152,7 +153,7 @@ public class HomeActivity extends AppCompatActivity implements UsersListener {
         mMaterialToolbar.setNavigationOnClickListener(v -> Toast.makeText(HomeActivity.this, "Search", Toast.LENGTH_SHORT).show());
 
         mToolbar.setNavigationOnClickListener(v -> {
-            UsersAdapter.mSelectedUsers.clear();
+            ContactsAdapter.sSelectedContacts.clear();
             mToolbar.setVisibility(View.INVISIBLE);
             mMaterialToolbar.setVisibility(View.VISIBLE);
             mContactsAdapter.notifyDataSetChanged();
@@ -266,13 +267,14 @@ public class HomeActivity extends AppCompatActivity implements UsersListener {
                                                 mLoadingProgressbar.setVisibility(View.GONE);
                                             }
 
-                                            User contact = new User();
-                                            contact.mFirstName = documentSnapshot.getString(Firestore.FIELD_FIRST_NAME);
-                                            contact.mLastName = documentSnapshot.getString(Firestore.FIELD_LAST_NAME);
-                                            contact.mEmail = documentSnapshot.getString(Firestore.FIELD_EMAIL);
-                                            contact.mAbout = documentSnapshot.getString(Firestore.FIELD_ABOUT);
-                                            contact.mProfilePictureUrl = documentSnapshot.getString(Firestore.FIELD_PROFILE_PICTURE_URL);
-                                            contact.mFcmToken = documentSnapshot.getString(Firestore.FIELD_FCM_TOKEN);
+                                            Contact contact = new Contact();
+                                            contact.firstName = documentSnapshot.getString(Firestore.FIELD_FIRST_NAME);
+                                            contact.lastName = documentSnapshot.getString(Firestore.FIELD_LAST_NAME);
+                                            contact.email = documentSnapshot.getString(Firestore.FIELD_EMAIL);
+                                            contact.about = documentSnapshot.getString(Firestore.FIELD_ABOUT);
+                                            contact.profilePictureUrl = documentSnapshot.getString(Firestore.FIELD_PROFILE_PICTURE_URL);
+                                            contact.fcmToken = documentSnapshot.getString(Firestore.FIELD_FCM_TOKEN);
+                                            contact.uid = documentSnapshot.getString(Firestore.FIELD_UID);
 
                                             mContacts.add(contact);
 
@@ -382,47 +384,59 @@ public class HomeActivity extends AppCompatActivity implements UsersListener {
 
     @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
-    public void initiatePersonalCall(User callee) {
+    public void initiatePersonalCall(Contact contact) {
         if (new NetworkInfoUtility(HomeActivity.this).isConnectedToInternet()) {
-            if (callee.mFcmToken == null || callee.mFcmToken.trim().isEmpty()) {
-                Toast.makeText(this, callee.mFirstName + " " + callee.mLastName + " is not available", Toast.LENGTH_SHORT).show();
+            if (contact.fcmToken == null || contact.fcmToken.trim().isEmpty()) {
+                Toast.makeText(this, contact.firstName + " " + contact.lastName + " is not available right now", Toast.LENGTH_SHORT).show();
             } else {
-                startOutgoingCallActivity(callee);
+                startOutgoingCallActivity(contact);
             }
         } else {
             new Snackbars(HomeActivity.this).snackbar(R.string.snackbar_text_check_your_internet_connection, mNewFloatingActionButton);
         }
     }
 
+    @SuppressLint("NonConstantResourceId")
     @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
-    public void initiateGroupCall(List<User> callees) {
+    public void handleSelection(List<Contact> contacts) {
         if (new NetworkInfoUtility(HomeActivity.this).isConnectedToInternet()) {
-            if (callees.size() > 0) {
+            if (contacts.size() > 0) {
                 mMaterialToolbar.setVisibility(View.INVISIBLE);
                 mToolbar.setVisibility(View.VISIBLE);
-                mToolbar.setTitle(callees.size() + " " + getResources().getString(R.string.toolbar_title_selected));
+                mToolbar.setTitle(contacts.size() + " " + getResources().getString(R.string.toolbar_title_selected));
                 mToolbar.setOnMenuItemClickListener(item -> {
-                    if (item.getItemId() == R.id.item_call) {
-                        if (callees.size() > 0) {
-                            if (callees.size() == 1) {
-                                startOutgoingCallActivity(callees.get(0));
-                            } else {
-                                startOutgoingCallActivity(callees);
+                    switch (item.getItemId()) {
+                        case R.id.item_call:
+                            if (contacts.size() > 0) {
+                                if (contacts.size() == 1) {
+                                    startOutgoingCallActivity(contacts.get(0));
+                                } else {
+                                    startOutgoingCallActivity(contacts);
+                                }
+
+                                mMaterialToolbar.setVisibility(View.VISIBLE);
+                                mToolbar.setVisibility(View.INVISIBLE);
+
+                                ContactsAdapter.sSelectedContacts.clear();
+                                mContactsAdapter.notifyDataSetChanged();
                             }
+                            break;
 
-                            mMaterialToolbar.setVisibility(View.VISIBLE);
-                            mToolbar.setVisibility(View.INVISIBLE);
+                        case R.id.item_delete:
+                            if (contacts.size() > 0) {
+                                showDeleteContactDialog(contacts);
+                            }
+                            break;
 
-                            UsersAdapter.mSelectedUsers.clear();
-                            mContactsAdapter.notifyDataSetChanged();
-                        }
+                        default:
+                            break;
                     }
 
                     return true;
                 });
             } else {
-                UsersAdapter.mSelectedUsers.clear();
+                ContactsAdapter.sSelectedContacts.clear();
                 mMaterialToolbar.setVisibility(View.VISIBLE);
                 mToolbar.setVisibility(View.INVISIBLE);
                 mToolbar.setTitle(null);
@@ -561,7 +575,7 @@ public class HomeActivity extends AppCompatActivity implements UsersListener {
                 .addOnSuccessListener(aVoid -> {
                     dismissProgressDialog();
 
-                    new Snackbars(HomeActivity.this).snackbar(R.string.snackbar_text_contact_successfully_saved, mNewFloatingActionButton);
+                    new Snackbars(HomeActivity.this).snackbar(R.string.snackbar_text_contact_saved_successfully, mNewFloatingActionButton);
                     getContacts();
                 })
                 .addOnFailureListener(e -> {
@@ -569,6 +583,30 @@ public class HomeActivity extends AppCompatActivity implements UsersListener {
 
                     new Snackbars(HomeActivity.this).snackbar(R.string.snackbar_text_error_occurred, mNewFloatingActionButton);
                 });
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.O)
+    private void deleteContact(List<Contact> contacts) {
+        showProgressDialog();
+
+        for (int i = 0; i < contacts.size(); i++) {
+            mStore.collection(Firestore.COLLECTION_USERS)
+                    .document(mUid)
+                    .collection(Firestore.COLLECTION_CONTACTS)
+                    .document(contacts.get(i).uid)
+                    .delete();
+        }
+
+        dismissProgressDialog();
+
+        new Snackbars(HomeActivity.this).snackbar(R.string.snackbar_text_contacts_deleted_successfully, mNewFloatingActionButton);
+
+        mMaterialToolbar.setVisibility(View.VISIBLE);
+        mToolbar.setVisibility(View.INVISIBLE);
+
+        ContactsAdapter.sSelectedContacts.clear();
+        mContactsAdapter.notifyDataSetChanged();
+        getContacts();
     }
 
     private void initiateMeeting(String roomId) {
@@ -742,6 +780,38 @@ public class HomeActivity extends AppCompatActivity implements UsersListener {
         if (mCreateContactDialog != null) {
             mCreateContactDialog.dismiss();
             mCreateContactDialog = null;
+        }
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.O)
+    private void showDeleteContactDialog(List<Contact> contacts) {
+        if (mDeleteContactDialog == null) {
+
+            AlertDialog.Builder builder = new AlertDialog.Builder(HomeActivity.this);
+            View view = LayoutInflater.from(this).inflate(R.layout.dialog_delete_contact, findViewById(R.id.scrollView_dialog_container));
+            builder.setView(view);
+            mDeleteContactDialog = builder.create();
+
+            if (mDeleteContactDialog.getWindow() != null) {
+                mDeleteContactDialog.getWindow().setBackgroundDrawable(new ColorDrawable(0));
+            }
+
+            view.findViewById(R.id.button_no).setOnClickListener(v -> dismissDeleteContactDialog());
+
+            view.findViewById(R.id.button_yes).setOnClickListener(v -> {
+                dismissDeleteContactDialog();
+                deleteContact(contacts);
+            });
+
+        }
+
+        mDeleteContactDialog.show();
+    }
+
+    private void dismissDeleteContactDialog() {
+        if (mDeleteContactDialog != null) {
+            mDeleteContactDialog.dismiss();
+            mDeleteContactDialog = null;
         }
     }
 
@@ -999,14 +1069,14 @@ public class HomeActivity extends AppCompatActivity implements UsersListener {
         startActivity(emailIntent);
     }
 
-    private void startOutgoingCallActivity(User callee) {
+    private void startOutgoingCallActivity(Contact callee) {
         Intent outgoingCallIntent = new Intent(HomeActivity.this, OutgoingCallActivity.class);
         outgoingCallIntent.putExtra(Extras.EXTRA_CALL_TYPE, ApiUtility.CALL_TYPE_PERSONAL);
         outgoingCallIntent.putExtra(Extras.EXTRA_CALLEE, callee);
         startActivity(outgoingCallIntent);
     }
 
-    private void startOutgoingCallActivity(List<User> callees) {
+    private void startOutgoingCallActivity(List<Contact> callees) {
         Intent outgoingCallIntent = new Intent(HomeActivity.this, OutgoingCallActivity.class);
         outgoingCallIntent.putExtra(Extras.EXTRA_CALL_TYPE, ApiUtility.CALL_TYPE_GROUP);
         outgoingCallIntent.putExtra(Extras.EXTRA_CALLEES, new Gson().toJson(callees));
@@ -1054,7 +1124,6 @@ public class HomeActivity extends AppCompatActivity implements UsersListener {
 
         }
 
-        @SuppressLint("NonConstantResourceId")
         public void afterTextChanged(Editable editable) {
             if (view.getId() == R.id.textInputEditText_contact_email) {
                 getContactEmail();
