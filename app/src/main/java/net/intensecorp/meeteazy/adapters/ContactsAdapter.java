@@ -27,14 +27,14 @@ import de.hdodenhof.circleimageview.CircleImageView;
 
 public class ContactsAdapter extends RecyclerView.Adapter<ContactsAdapter.UserViewHolder> {
 
-    public static List<Contact> mSelectedContacts;
-    private List<Contact> mContacts;
-    private ActionListener mActionListener;
+    public static List<Contact> sSelectedContacts;
+    List<Contact> contacts;
+    ActionListener actionListener;
 
     public ContactsAdapter(List<Contact> contacts, ActionListener actionListener) {
-        this.mContacts = contacts;
-        this.mActionListener = actionListener;
-        mSelectedContacts = new ArrayList<>();
+        this.contacts = contacts;
+        this.actionListener = actionListener;
+        sSelectedContacts = new ArrayList<>();
     }
 
     @NonNull
@@ -45,29 +45,29 @@ public class ContactsAdapter extends RecyclerView.Adapter<ContactsAdapter.UserVi
 
     @Override
     public void onBindViewHolder(@NonNull UserViewHolder holder, int position) {
-        if (mSelectedContacts.size() <= 0) {
+        if (sSelectedContacts.size() <= 0) {
             holder.selectedStateLayout.setVisibility(View.GONE);
             holder.callButton.setVisibility(View.VISIBLE);
         } else {
             holder.callButton.setVisibility(View.GONE);
         }
 
-        holder.setContactData(mContacts.get(position));
+        holder.setContactData(contacts.get(position));
     }
 
     @Override
     public int getItemCount() {
-        return mContacts.size();
+        return contacts.size();
     }
 
     class UserViewHolder extends RecyclerView.ViewHolder {
 
-        private ConstraintLayout contactContainer;
-        private MaterialTextView fullNameView;
-        private MaterialTextView emailView;
-        private CircleImageView profilePictureView;
-        private ConstraintLayout selectedStateLayout;
-        private ImageView callButton;
+        ConstraintLayout contactContainer;
+        MaterialTextView fullNameView;
+        MaterialTextView emailView;
+        CircleImageView profilePictureView;
+        ConstraintLayout selectedStateLayout;
+        ImageView callButton;
 
         public UserViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -81,12 +81,12 @@ public class ContactsAdapter extends RecyclerView.Adapter<ContactsAdapter.UserVi
         }
 
         private void setContactData(Contact contact) {
-            fullNameView.setText(FormatterUtility.getFullName(contact.mFirstName, contact.mLastName));
-            emailView.setText(contact.mEmail);
+            fullNameView.setText(FormatterUtility.getFullName(contact.firstName, contact.lastName));
+            emailView.setText(contact.email);
 
-            if (!contact.mProfilePictureUrl.equals("null")) {
+            if (!contact.profilePictureUrl.equals("null")) {
                 Glide.with(itemView.getContext())
-                        .load(contact.mProfilePictureUrl)
+                        .load(contact.profilePictureUrl)
                         .centerCrop()
                         .placeholder(R.drawable.img_profile_picture)
                         .into(profilePictureView);
@@ -104,13 +104,13 @@ public class ContactsAdapter extends RecyclerView.Adapter<ContactsAdapter.UserVi
 
                 switch (selectedStateLayout.getVisibility()) {
                     case View.GONE:
-                        mSelectedContacts.add(contact);
+                        sSelectedContacts.add(contact);
                         selectedStateLayout.setVisibility(View.VISIBLE);
                         callButton.setVisibility(View.GONE);
                         break;
 
                     case View.VISIBLE:
-                        mSelectedContacts.remove(contact);
+                        sSelectedContacts.remove(contact);
                         selectedStateLayout.setVisibility(View.GONE);
                         callButton.setVisibility(View.VISIBLE);
                         break;
@@ -119,12 +119,12 @@ public class ContactsAdapter extends RecyclerView.Adapter<ContactsAdapter.UserVi
                         break;
                 }
 
-                mActionListener.handleSelection(mSelectedContacts);
+                actionListener.handleSelection(sSelectedContacts);
 
                 return true;
             });
 
-            callButton.setOnClickListener(v -> mActionListener.initiatePersonalCall(contact));
+            callButton.setOnClickListener(v -> actionListener.initiatePersonalCall(contact));
         }
     }
 }
