@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/scrollView_dialog_container"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="@dimen/padding_medium"
+    android:scrollbars="none">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/bg_dialog"
+        android:padding="@dimen/padding_compact"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <ImageView
+            android:id="@+id/imageView_image"
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/dialog_image_height"
+            android:layout_marginBottom="@dimen/margin_16dp"
+            android:contentDescription="@string/content_description_delete_contact"
+            android:src="@drawable/img_delete"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <com.google.android.material.textview.MaterialTextView
+            android:id="@+id/textView_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/margin_16dp"
+            android:fontFamily="@font/poppins_semi_bold"
+            android:includeFontPadding="false"
+            android:text="@string/dialog_title_delete_contact"
+            android:textColor="@color/colorHighEmphasisText"
+            android:textSize="@dimen/text_size_compact"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/imageView_image" />
+
+        <com.google.android.material.textview.MaterialTextView
+            android:id="@+id/textView_message"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/margin_12dp"
+            android:fontFamily="@font/poppins_regular"
+            android:includeFontPadding="false"
+            android:text="@string/dialog_message_delete_contact"
+            android:textAlignment="center"
+            android:textColor="@color/colorMediumEmphasisText"
+            android:textSize="@dimen/text_size_small"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/textView_title" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/button_no"
+            style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+            android:layout_width="0dp"
+            android:layout_height="@dimen/button_height_medium"
+            android:layout_marginTop="@dimen/margin_20dp"
+            android:layout_marginEnd="@dimen/margin_8dp"
+            android:fontFamily="@font/poppins_medium"
+            android:includeFontPadding="false"
+            android:text="@string/dialog_button_text_no"
+            android:textSize="@dimen/text_size_medium"
+            app:cornerRadius="@dimen/corner_radius_medium"
+            app:layout_constraintEnd_toStartOf="@id/button_yes"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/textView_message" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/button_yes"
+            style="@style/Widget.MaterialComponents.Button.UnelevatedButton"
+            android:layout_width="0dp"
+            android:layout_height="@dimen/button_height_medium"
+            android:layout_marginStart="@dimen/margin_8dp"
+            android:layout_marginTop="@dimen/margin_20dp"
+            android:backgroundTint="@color/colorError"
+            android:fontFamily="@font/poppins_medium"
+            android:includeFontPadding="false"
+            android:text="@string/dialog_button_text_yes"
+            android:textColor="@color/colorOnPrimary"
+            android:textSize="@dimen/text_size_medium"
+            app:cornerRadius="@dimen/corner_radius_medium"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/button_no"
+            app:layout_constraintTop_toBottomOf="@id/textView_message"
+            app:rippleColor="@color/colorPrimaryVariant" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</ScrollView>
