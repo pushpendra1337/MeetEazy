@@ -66,6 +66,7 @@
     <!-- Home Activity -->
     <string name="item_title_profile">Profile</string>
     <string name="item_title_call">Call</string>
+    <string name="item_title_delete">Delete</string>
     <string name="toolbar_title_search">Search</string>
     <string name="toolbar_title_selected">selected</string>
     <string name="navigation_content_description_search">Search</string>
@@ -176,7 +177,8 @@
     <string name="snackbar_text_no_user_exists_with_provided_email_address">No user exists with provided email address.</string>
     <string name="snackbar_text_contact_already_exists">Contact already exists.</string>
     <string name="snackbar_text_cannot_add_yourself">You can\'t add yourself in contacts.</string>
-    <string name="snackbar_text_contact_successfully_saved">Contact successfully saved.</string>
+    <string name="snackbar_text_contact_saved_successfully">Contact saved successfully.</string>
+    <string name="snackbar_text_contacts_deleted_successfully">Contacts deleted successfully.</string>
 
     <!-- Toasts -->
     <string name="toast_text_room_id_copied_to_clipboard">Room ID copied to clipboard</string>
