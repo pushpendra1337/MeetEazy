@@ -9,7 +9,6 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.LinearLayout;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
@@ -39,6 +38,7 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.lang.reflect.Type;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -51,6 +51,7 @@ import retrofit2.Response;
 public class OutgoingCallActivity extends AppCompatActivity {
 
     private static final String TAG = OutgoingCallActivity.class.getSimpleName();
+    private static final String ROOM_ID = Patterns.generateRoomId();
     SharedPrefsManager mSharedPrefsManager;
     private ArrayList<User> mCallees;
     private String mOutgoingCallType;
@@ -61,53 +62,48 @@ public class OutgoingCallActivity extends AppCompatActivity {
         @Override
         public void onReceive(Context context, Intent intent) {
             String responseType = intent.getStringExtra(Extras.EXTRA_RESPONSE_TYPE);
-            String roomId = intent.getStringExtra(Extras.EXTRA_ROOM_ID);
+
             if (responseType != null) {
 
                 switch (responseType) {
                     case ApiUtility.RESPONSE_TYPE_REJECTED:
                         mCallRejectionCount += 1;
-
                         if (mCallRejectionCount == mTotalCallees) {
                             finish();
                         }
-
                         break;
 
                     case ApiUtility.RESPONSE_TYPE_ANSWERED:
+
+                        HashMap<String, String> userData = mSharedPrefsManager.getUserDataPrefs();
+                        String firstName = userData.get(SharedPrefsManager.PREF_FIRST_NAME);
+                        String lastName = userData.get(SharedPrefsManager.PREF_LAST_NAME);
+                        String email = userData.get(SharedPrefsManager.PREF_EMAIL);
+                        String profilePictureLink = userData.get(SharedPrefsManager.PREF_PROFILE_PICTURE_URL);
+
+                        String fullName = FormatterUtility.getFullName(firstName, lastName);
+                        URL profilePictureUrl;
+
+                        JitsiMeetUserInfo jitsiMeetUserInfo = new JitsiMeetUserInfo();
+                        jitsiMeetUserInfo.setDisplayName(fullName);
+                        jitsiMeetUserInfo.setEmail(email);
+
                         try {
-
-                            HashMap<String, String> userData = mSharedPrefsManager.getUserDataPrefs();
-                            String firstName = userData.get(SharedPrefsManager.PREF_FIRST_NAME);
-                            String lastName = userData.get(SharedPrefsManager.PREF_LAST_NAME);
-                            String email = userData.get(SharedPrefsManager.PREF_EMAIL);
-                            String profilePictureLink = userData.get(SharedPrefsManager.PREF_PROFILE_PICTURE_URL);
-
-                            URL profilePictureUrl = new URL(profilePictureLink);
-                            String fullName = FormatterUtility.getFullName(firstName, lastName);
-
-                            JitsiMeetUserInfo jitsiMeetUserInfo = new JitsiMeetUserInfo();
-                            jitsiMeetUserInfo.setDisplayName(fullName);
-                            jitsiMeetUserInfo.setEmail(email);
+                            profilePictureUrl = new URL(profilePictureLink);
                             jitsiMeetUserInfo.setAvatar(profilePictureUrl);
-
-                            JitsiMeetConferenceOptions.Builder conferenceOptionsBuilder = new JitsiMeetConferenceOptions.Builder()
-                                    .setServerURL(ApiUtility.getJitsiMeetServerUrl())
-                                    .setWelcomePageEnabled(false)
-                                    .setRoom(roomId);
-
-                            if (mOutgoingCallType.equals(ApiUtility.CALL_TYPE_PERSONAL)) {
-                                conferenceOptionsBuilder.setVideoMuted(true);
-                            }
-
-                            JitsiMeetActivity.launch(OutgoingCallActivity.this, conferenceOptionsBuilder.build());
-                            finish();
-                        } catch (Exception exception) {
-                            Log.e(TAG, "Failed to join call: " + exception.getMessage());
-
-                            Toast.makeText(OutgoingCallActivity.this, "Failed to attend call: " + exception.getMessage(), Toast.LENGTH_SHORT).show();
-                            finish();
+                        } catch (MalformedURLException e) {
+                            e.printStackTrace();
                         }
+
+                        JitsiMeetConferenceOptions.Builder conferenceOptionsBuilder = new JitsiMeetConferenceOptions.Builder()
+                                .setServerURL(ApiUtility.getJitsiMeetServerUrl())
+                                .setWelcomePageEnabled(false)
+                                .setRoom(ROOM_ID)
+                                .setVideoMuted(true)
+                                .setAudioMuted(false);
+
+                        JitsiMeetActivity.launch(OutgoingCallActivity.this, conferenceOptionsBuilder.build());
+                        finish();
                         break;
 
                     default:
@@ -185,7 +181,7 @@ public class OutgoingCallActivity extends AppCompatActivity {
             finish();
         });
 
-        craftCallInitiateRequestMessageBody(callee.mFcmToken, mOutgoingCallType, mCallees);
+        craftCallInitiateRequestMessageBody(mOutgoingCallType, callee.mFcmToken, mCallees);
     }
 
     @Override
@@ -218,7 +214,6 @@ public class OutgoingCallActivity extends AppCompatActivity {
             JSONObject body = new JSONObject();
             JSONObject data = new JSONObject();
 
-
             mSharedPrefsManager = new SharedPrefsManager(OutgoingCallActivity.this, SharedPrefsManager.PREF_USER_DATA);
             HashMap<String, String> userData = mSharedPrefsManager.getUserDataPrefs();
             String firstName = userData.get(SharedPrefsManager.PREF_FIRST_NAME);
@@ -237,7 +232,7 @@ public class OutgoingCallActivity extends AppCompatActivity {
             }
             data.put(ApiUtility.KEY_CALLER_PROFILE_PICTURE_URL, profilePictureUrl);
             data.put(ApiUtility.KEY_CALLER_FCM_TOKEN, mSharedPrefsManager.getFcmTokenPref());
-            data.put(ApiUtility.KEY_ROOM_ID, Patterns.generateRoomId());
+            data.put(ApiUtility.KEY_ROOM_ID, ROOM_ID);
 
             body.put(ApiUtility.JSON_OBJECT_DATA, data);
             body.put(ApiUtility.JSON_OBJECT_REGISTRATION_IDS, calleeFcmTokensArray);
