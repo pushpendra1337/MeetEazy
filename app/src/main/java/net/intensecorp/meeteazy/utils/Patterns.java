@@ -18,6 +18,8 @@ public class Patterns {
 
     public static final Pattern PASSWORD_PATTERN = Pattern.compile("^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[(@#$%^&+=])(?=\\S+$).{8,}$");
 
+    public static final Pattern ROOM_ID_PATTERN = Pattern.compile("^[A-Z]{10}");
+
     private static final String ENGLISH_ALPHABET = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
 
     public static String generateRoomId() {
