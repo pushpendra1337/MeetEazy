@@ -37,18 +37,18 @@ public class MessagingService extends FirebaseMessagingService {
             switch (messageType) {
                 case ApiUtility.MESSAGE_TYPE_CALL_REQUEST:
                     String requestType = remoteMessage.getData().get(ApiUtility.KEY_REQUEST_TYPE);
-
                     if (requestType != null) {
                         switch (requestType) {
                             case ApiUtility.REQUEST_TYPE_INITIATED:
                                 startIncomingCallActivity(remoteMessage);
                                 break;
+
                             case ApiUtility.REQUEST_TYPE_ENDED:
                                 Intent incomingCallIntent = new Intent(ApiUtility.MESSAGE_TYPE_CALL_REQUEST);
                                 incomingCallIntent.putExtra(Extras.EXTRA_REQUEST_TYPE, requestType);
-
                                 LocalBroadcastManager.getInstance(getApplicationContext()).sendBroadcast(incomingCallIntent);
                                 break;
+
                             default:
                                 break;
                         }
@@ -57,12 +57,8 @@ public class MessagingService extends FirebaseMessagingService {
 
                 case ApiUtility.MESSAGE_TYPE_CALL_RESPONSE:
                     String responseType = remoteMessage.getData().get(ApiUtility.KEY_RESPONSE_TYPE);
-                    String roomId = remoteMessage.getData().get(ApiUtility.KEY_ROOM_ID);
-
                     Intent outgoingCallIntent = new Intent(ApiUtility.MESSAGE_TYPE_CALL_RESPONSE);
                     outgoingCallIntent.putExtra(Extras.EXTRA_RESPONSE_TYPE, responseType);
-                    outgoingCallIntent.putExtra(Extras.EXTRA_ROOM_ID, roomId);
-
                     LocalBroadcastManager.getInstance(getApplicationContext()).sendBroadcast(outgoingCallIntent);
                     break;
 
