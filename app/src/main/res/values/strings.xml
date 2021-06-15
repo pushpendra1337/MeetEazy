@@ -136,6 +136,11 @@
     <string name="error_empty_contact_email">Please enter an email address.</string>
     <string name="dialog_btn_text_save">Save</string>
 
+    <!-- Delete Contact Dialog -->
+    <string name="content_description_delete_contact">Delete contact</string>
+    <string name="dialog_title_delete_contact">Are you sure?</string>
+    <string name="dialog_message_delete_contact">Do you really want to delete selected contacts?</string>
+
     <!-- Create Room Dialog -->
     <string name="dialog_title_create_room">Create room</string>
     <string name="hint_room_id">Room ID</string>
