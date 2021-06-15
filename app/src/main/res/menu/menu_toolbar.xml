@@ -8,4 +8,10 @@
         android:title="@string/item_title_call"
         app:showAsAction="always" />
 
+    <item
+        android:id="@+id/item_delete"
+        android:icon="@drawable/ic_baseline_delete_cornflower_blue_24"
+        android:title="@string/item_title_delete"
+        app:showAsAction="always" />
+
 </menu>
