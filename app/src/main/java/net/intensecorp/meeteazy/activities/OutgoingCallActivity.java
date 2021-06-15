@@ -24,7 +24,7 @@ import com.google.gson.reflect.TypeToken;
 import net.intensecorp.meeteazy.R;
 import net.intensecorp.meeteazy.api.ApiClient;
 import net.intensecorp.meeteazy.api.ApiService;
-import net.intensecorp.meeteazy.models.User;
+import net.intensecorp.meeteazy.models.Contact;
 import net.intensecorp.meeteazy.utils.ApiUtility;
 import net.intensecorp.meeteazy.utils.Extras;
 import net.intensecorp.meeteazy.utils.FormatterUtility;
@@ -53,7 +53,7 @@ public class OutgoingCallActivity extends AppCompatActivity {
     private static final String TAG = OutgoingCallActivity.class.getSimpleName();
     private static final String ROOM_ID = Patterns.generateRoomId();
     SharedPrefsManager mSharedPrefsManager;
-    private ArrayList<User> mCallees;
+    private ArrayList<Contact> mCallees;
     private String mOutgoingCallType;
     private String mOtherCalleesCount;
     private int mCallRejectionCount = 0;
@@ -131,7 +131,7 @@ public class OutgoingCallActivity extends AppCompatActivity {
         Intent outgoingCallIntent = getIntent();
         mOutgoingCallType = outgoingCallIntent.getStringExtra(Extras.EXTRA_CALL_TYPE);
 
-        User callee = (User) outgoingCallIntent.getSerializableExtra(Extras.EXTRA_CALLEE);
+        Contact callee = (Contact) outgoingCallIntent.getSerializableExtra(Extras.EXTRA_CALLEE);
 
         switch (mOutgoingCallType) {
             case ApiUtility.CALL_TYPE_PERSONAL:
@@ -142,7 +142,7 @@ public class OutgoingCallActivity extends AppCompatActivity {
 
             case ApiUtility.CALL_TYPE_GROUP:
                 outgoingCallTypeView.setText(R.string.text_outgoing_group_call);
-                Type type = new TypeToken<ArrayList<User>>() {
+                Type type = new TypeToken<ArrayList<Contact>>() {
                 }.getType();
                 mCallees = new Gson().fromJson(outgoingCallIntent.getStringExtra(Extras.EXTRA_CALLEES), type);
                 mTotalCallees = mCallees.size();
@@ -196,7 +196,7 @@ public class OutgoingCallActivity extends AppCompatActivity {
         LocalBroadcastManager.getInstance(getApplicationContext()).unregisterReceiver(mCallResponseReceiver);
     }
 
-    public void craftCallInitiateRequestMessageBody(String callType, String calleeFcmToken, ArrayList<User> callees) {
+    public void craftCallInitiateRequestMessageBody(String callType, String calleeFcmToken, ArrayList<Contact> callees) {
 
         try {
             JSONArray calleeFcmTokensArray = new JSONArray();
@@ -244,7 +244,7 @@ public class OutgoingCallActivity extends AppCompatActivity {
         }
     }
 
-    public void craftCallEndRequestMessageBody(String calleeFcmToken, ArrayList<User> callees) {
+    public void craftCallEndRequestMessageBody(String calleeFcmToken, ArrayList<Contact> callees) {
 
         try {
             JSONArray calleeFcmTokensArray = new JSONArray();
