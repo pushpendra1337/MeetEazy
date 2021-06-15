@@ -141,6 +141,13 @@
     <string name="content_description_copy">Copy</string>
     <string name="dialog_btn_text_create">Create</string>
 
+    <!-- Join Room Dialog -->
+    <string name="dialog_title_join_room">Join room</string>
+    <string name="content_description_paste">Paste</string>
+    <string name="error_empty_room_id">Please enter Room ID.</string>
+    <string name="error_invalid_room_id">Please enter a valid Room ID.</string>
+    <string name="dialog_btn_text_join">Join</string>
+
     <!-- Profile Dialog -->
     <string name="list_item_text_profile">Profile</string>
     <string name="list_item_text_settings">Settings</string>
