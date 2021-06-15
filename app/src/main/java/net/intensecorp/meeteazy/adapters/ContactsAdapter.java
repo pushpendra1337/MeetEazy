@@ -15,8 +15,8 @@ import com.google.android.material.textview.MaterialTextView;
 
 import net.intensecorp.meeteazy.R;
 import net.intensecorp.meeteazy.activities.ProfileActivity;
-import net.intensecorp.meeteazy.listener.UsersListener;
-import net.intensecorp.meeteazy.models.User;
+import net.intensecorp.meeteazy.listener.ActionListener;
+import net.intensecorp.meeteazy.models.Contact;
 import net.intensecorp.meeteazy.utils.Extras;
 import net.intensecorp.meeteazy.utils.FormatterUtility;
 
@@ -25,16 +25,16 @@ import java.util.List;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
-public class UsersAdapter extends RecyclerView.Adapter<UsersAdapter.UserViewHolder> {
+public class ContactsAdapter extends RecyclerView.Adapter<ContactsAdapter.UserViewHolder> {
 
-    public static List<User> mSelectedUsers;
-    private List<User> mUsers;
-    private UsersListener mUsersListener;
+    public static List<Contact> mSelectedContacts;
+    private List<Contact> mContacts;
+    private ActionListener mActionListener;
 
-    public UsersAdapter(List<User> users, UsersListener usersListener) {
-        this.mUsers = users;
-        this.mUsersListener = usersListener;
-        mSelectedUsers = new ArrayList<>();
+    public ContactsAdapter(List<Contact> contacts, ActionListener actionListener) {
+        this.mContacts = contacts;
+        this.mActionListener = actionListener;
+        mSelectedContacts = new ArrayList<>();
     }
 
     @NonNull
@@ -45,24 +45,24 @@ public class UsersAdapter extends RecyclerView.Adapter<UsersAdapter.UserViewHold
 
     @Override
     public void onBindViewHolder(@NonNull UserViewHolder holder, int position) {
-        if (mSelectedUsers.size() <= 0) {
+        if (mSelectedContacts.size() <= 0) {
             holder.selectedStateLayout.setVisibility(View.GONE);
             holder.callButton.setVisibility(View.VISIBLE);
         } else {
             holder.callButton.setVisibility(View.GONE);
         }
 
-        holder.setUserData(mUsers.get(position));
+        holder.setContactData(mContacts.get(position));
     }
 
     @Override
     public int getItemCount() {
-        return mUsers.size();
+        return mContacts.size();
     }
 
     class UserViewHolder extends RecyclerView.ViewHolder {
 
-        private ConstraintLayout userContainer;
+        private ConstraintLayout contactContainer;
         private MaterialTextView fullNameView;
         private MaterialTextView emailView;
         private CircleImageView profilePictureView;
@@ -72,7 +72,7 @@ public class UsersAdapter extends RecyclerView.Adapter<UsersAdapter.UserViewHold
         public UserViewHolder(@NonNull View itemView) {
             super(itemView);
 
-            userContainer = itemView.findViewById(R.id.constraintLayout_user_container);
+            contactContainer = itemView.findViewById(R.id.constraintLayout_user_container);
             fullNameView = itemView.findViewById(R.id.textView_full_name);
             emailView = itemView.findViewById(R.id.textView_email);
             profilePictureView = itemView.findViewById(R.id.circleImageView_user_profile_picture);
@@ -80,13 +80,13 @@ public class UsersAdapter extends RecyclerView.Adapter<UsersAdapter.UserViewHold
             callButton = itemView.findViewById(R.id.imageView_call);
         }
 
-        private void setUserData(User user) {
-            fullNameView.setText(FormatterUtility.getFullName(user.mFirstName, user.mLastName));
-            emailView.setText(user.mEmail);
+        private void setContactData(Contact contact) {
+            fullNameView.setText(FormatterUtility.getFullName(contact.mFirstName, contact.mLastName));
+            emailView.setText(contact.mEmail);
 
-            if (!user.mProfilePictureUrl.equals("null")) {
+            if (!contact.mProfilePictureUrl.equals("null")) {
                 Glide.with(itemView.getContext())
-                        .load(user.mProfilePictureUrl)
+                        .load(contact.mProfilePictureUrl)
                         .centerCrop()
                         .placeholder(R.drawable.img_profile_picture)
                         .into(profilePictureView);
@@ -94,23 +94,23 @@ public class UsersAdapter extends RecyclerView.Adapter<UsersAdapter.UserViewHold
                 profilePictureView.setImageResource(R.drawable.img_profile_picture);
             }
 
-            userContainer.setOnClickListener(v -> {
+            contactContainer.setOnClickListener(v -> {
                 Intent profileIntent = new Intent(itemView.getContext(), ProfileActivity.class);
-                profileIntent.putExtra(Extras.EXTRA_USER, user);
+                profileIntent.putExtra(Extras.EXTRA_USER, contact);
                 itemView.getContext().startActivity(profileIntent);
             });
 
-            userContainer.setOnLongClickListener(v -> {
+            contactContainer.setOnLongClickListener(v -> {
 
                 switch (selectedStateLayout.getVisibility()) {
                     case View.GONE:
-                        mSelectedUsers.add(user);
+                        mSelectedContacts.add(contact);
                         selectedStateLayout.setVisibility(View.VISIBLE);
                         callButton.setVisibility(View.GONE);
                         break;
 
                     case View.VISIBLE:
-                        mSelectedUsers.remove(user);
+                        mSelectedContacts.remove(contact);
                         selectedStateLayout.setVisibility(View.GONE);
                         callButton.setVisibility(View.VISIBLE);
                         break;
@@ -119,12 +119,12 @@ public class UsersAdapter extends RecyclerView.Adapter<UsersAdapter.UserViewHold
                         break;
                 }
 
-                mUsersListener.initiateGroupCall(mSelectedUsers);
+                mActionListener.handleSelection(mSelectedContacts);
 
                 return true;
             });
 
-            callButton.setOnClickListener(v -> mUsersListener.initiatePersonalCall(user));
+            callButton.setOnClickListener(v -> mActionListener.initiatePersonalCall(contact));
         }
     }
 }
