@@ -3,11 +3,11 @@ package net.intensecorp.meeteazy.models;
 import java.io.Serializable;
 
 public class Contact implements Serializable {
-    public String mFirstName;
-    public String mLastName;
-    public String mEmail;
-    public String mAbout;
-    public String mProfilePictureUrl;
-    public String mFcmToken;
-    public String mUid;
+    public String firstName;
+    public String lastName;
+    public String email;
+    public String about;
+    public String profilePictureUrl;
+    public String fcmToken;
+    public String uid;
 }

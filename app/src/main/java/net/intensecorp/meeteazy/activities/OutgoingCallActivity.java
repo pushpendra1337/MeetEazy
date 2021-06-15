@@ -136,7 +136,7 @@ public class OutgoingCallActivity extends AppCompatActivity {
         switch (mOutgoingCallType) {
             case ApiUtility.CALL_TYPE_PERSONAL:
                 outgoingCallTypeView.setText(R.string.text_outgoing_call);
-                calleeEmailView.setText(callee.mEmail);
+                calleeEmailView.setText(callee.email);
                 mTotalCallees = 1;
                 break;
 
@@ -159,9 +159,9 @@ public class OutgoingCallActivity extends AppCompatActivity {
                 break;
         }
 
-        if (!callee.mProfilePictureUrl.equals("null")) {
+        if (!callee.profilePictureUrl.equals("null")) {
             Glide.with(OutgoingCallActivity.this)
-                    .load(callee.mProfilePictureUrl)
+                    .load(callee.profilePictureUrl)
                     .centerCrop()
                     .placeholder(R.drawable.img_profile_picture)
                     .into(calleeProfilePictureView);
@@ -169,11 +169,11 @@ public class OutgoingCallActivity extends AppCompatActivity {
             calleeProfilePictureView.setImageResource(R.drawable.img_profile_picture);
         }
 
-        calleeFullNameView.setText(FormatterUtility.getFullName(callee.mFirstName, callee.mLastName));
+        calleeFullNameView.setText(FormatterUtility.getFullName(callee.firstName, callee.lastName));
 
         endCallButton.setOnClickListener(v -> {
             if (mOutgoingCallType.equals(ApiUtility.CALL_TYPE_PERSONAL)) {
-                craftCallEndRequestMessageBody(callee.mFcmToken, null);
+                craftCallEndRequestMessageBody(callee.fcmToken, null);
             } else {
                 craftCallEndRequestMessageBody(null, mCallees);
             }
@@ -181,7 +181,7 @@ public class OutgoingCallActivity extends AppCompatActivity {
             finish();
         });
 
-        craftCallInitiateRequestMessageBody(mOutgoingCallType, callee.mFcmToken, mCallees);
+        craftCallInitiateRequestMessageBody(mOutgoingCallType, callee.fcmToken, mCallees);
     }
 
     @Override
@@ -207,7 +207,7 @@ public class OutgoingCallActivity extends AppCompatActivity {
 
             if (callees != null && callees.size() > 0) {
                 for (int i = 0; i < callees.size(); i++) {
-                    calleeFcmTokensArray.put(callees.get(i).mFcmToken);
+                    calleeFcmTokensArray.put(callees.get(i).fcmToken);
                 }
             }
 
@@ -254,7 +254,7 @@ public class OutgoingCallActivity extends AppCompatActivity {
 
             if (callees != null && callees.size() > 0) {
                 for (int i = 0; i < callees.size(); i++) {
-                    calleeFcmTokensArray.put(callees.get(i).mFcmToken);
+                    calleeFcmTokensArray.put(callees.get(i).fcmToken);
                 }
             }
 
