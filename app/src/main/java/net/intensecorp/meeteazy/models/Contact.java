@@ -9,4 +9,5 @@ public class Contact implements Serializable {
     public String mAbout;
     public String mProfilePictureUrl;
     public String mFcmToken;
+    public String mUid;
 }
