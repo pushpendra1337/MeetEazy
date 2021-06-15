@@ -2,6 +2,8 @@ package net.intensecorp.meeteazy.activities;
 
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
+import android.content.ClipData;
+import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.drawable.ColorDrawable;
@@ -94,6 +96,7 @@ public class HomeActivity extends AppCompatActivity implements UsersListener {
     private AlertDialog mCreateContactDialog;
     private TextInputLayout mContactEmailLayout;
     private TextInputEditText mContactEmailField;
+    private AlertDialog mCreateRoomDialog;
 
     @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
@@ -372,12 +375,12 @@ public class HomeActivity extends AppCompatActivity implements UsersListener {
     public void initiatePersonalCall(User callee) {
         if (new NetworkInfoUtility(HomeActivity.this).isConnectedToInternet()) {
             if (callee.mFcmToken == null || callee.mFcmToken.trim().isEmpty()) {
-                Toast.makeText(HomeActivity.this, callee.mFirstName + " " + callee.mLastName + " is not available", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, callee.mFirstName + " " + callee.mLastName + " is not available", Toast.LENGTH_SHORT).show();
             } else {
                 startOutgoingCallActivity(callee);
             }
         } else {
-            new Snackbars(HomeActivity.this).snackbar(R.string.snackbar_text_check_your_internet_connection);
+            new Snackbars(HomeActivity.this).snackbar(R.string.snackbar_text_check_your_internet_connection, mNewFloatingActionButton);
         }
     }
 
@@ -417,7 +420,7 @@ public class HomeActivity extends AppCompatActivity implements UsersListener {
 
             mContactsAdapter.notifyDataSetChanged();
         } else {
-            new Snackbars(HomeActivity.this).snackbar(R.string.snackbar_text_check_your_internet_connection);
+            new Snackbars(HomeActivity.this).snackbar(R.string.snackbar_text_check_your_internet_connection, mNewFloatingActionButton);
         }
     }
 
@@ -463,6 +466,7 @@ public class HomeActivity extends AppCompatActivity implements UsersListener {
             mContactEmailLayout.setErrorEnabled(false);
             return contactEmail;
         }
+
         return null;
     }
 
@@ -480,22 +484,6 @@ public class HomeActivity extends AppCompatActivity implements UsersListener {
             }
         } else {
             return false;
-        }
-    }
-
-    private void putFocusOn(View view) {
-        if (view.requestFocus()) {
-            getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
-        }
-    }
-
-    private void hideSoftInput() {
-        View view = this.getCurrentFocus();
-
-        if (view != null) {
-            view.clearFocus();
-            InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-            inputMethodManager.hideSoftInputFromWindow(view.getWindowToken(), 0);
         }
     }
 
@@ -573,6 +561,22 @@ public class HomeActivity extends AppCompatActivity implements UsersListener {
                 });
     }
 
+    private void putFocusOn(View view) {
+        if (view.requestFocus()) {
+            getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
+        }
+    }
+
+    private void hideSoftInput() {
+        View view = this.getCurrentFocus();
+
+        if (view != null) {
+            view.clearFocus();
+            InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+            inputMethodManager.hideSoftInputFromWindow(view.getWindowToken(), 0);
+        }
+    }
+
     @RequiresApi(api = Build.VERSION_CODES.O)
     private void showNewBottomSheetDialog() {
         final BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(HomeActivity.this, R.style.StyleBottomSheetDialog);
@@ -583,7 +587,10 @@ public class HomeActivity extends AppCompatActivity implements UsersListener {
             showCreateContactDialog();
         });
 
-        bottomSheetView.findViewById(R.id.linearLayout_create_new_room).setOnClickListener(v -> bottomSheetDialog.dismiss());
+        bottomSheetView.findViewById(R.id.linearLayout_create_new_room).setOnClickListener(v -> {
+            bottomSheetDialog.dismiss();
+            showCreateRoomDialog();
+        });
 
         bottomSheetView.findViewById(R.id.linearLayout_join_a_room).setOnClickListener(v -> bottomSheetDialog.dismiss());
 
@@ -654,6 +661,52 @@ public class HomeActivity extends AppCompatActivity implements UsersListener {
         if (mCreateContactDialog != null) {
             mCreateContactDialog.dismiss();
             mCreateContactDialog = null;
+        }
+    }
+
+    private void showCreateRoomDialog() {
+        if (mCreateRoomDialog == null) {
+
+            AlertDialog.Builder builder = new AlertDialog.Builder(HomeActivity.this);
+            View view = LayoutInflater.from(this).inflate(R.layout.dialog_create_room, findViewById(R.id.scrollView_dialog_container));
+            builder.setView(view);
+            mCreateRoomDialog = builder.create();
+
+            if (mCreateRoomDialog.getWindow() != null) {
+                mCreateRoomDialog.getWindow().setBackgroundDrawable(new ColorDrawable(0));
+            }
+
+            String generatedRoomId = Patterns.generateRoomId();
+
+            ImageView closeButton = view.findViewById(R.id.imageView_close);
+            TextInputLayout roomIdLayout = view.findViewById(R.id.textInputLayout_room_id);
+            TextInputEditText roomIdField = view.findViewById(R.id.textInputEditText_room_id);
+            MaterialButton createButton = view.findViewById(R.id.button_create);
+
+            roomIdField.setText(generatedRoomId);
+
+            closeButton.setOnClickListener(v -> dismissCreateRoomDialog());
+
+            roomIdLayout.setEndIconOnClickListener(v -> {
+                ClipboardManager clipboardManager = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
+                ClipData clipData = ClipData.newPlainText("Room ID", generatedRoomId);
+                clipboardManager.setPrimaryClip(clipData);
+                Toast.makeText(this, R.string.toast_text_room_id_copied_to_clipboard, Toast.LENGTH_SHORT).show();
+            });
+
+            createButton.setOnClickListener(v -> {
+                dismissCreateRoomDialog();
+//                initiateInstantMeeting(generatedRoomId);
+            });
+        }
+
+        mCreateRoomDialog.show();
+    }
+
+    private void dismissCreateRoomDialog() {
+        if (mCreateRoomDialog != null) {
+            mCreateRoomDialog.dismiss();
+            mCreateRoomDialog = null;
         }
     }
 
