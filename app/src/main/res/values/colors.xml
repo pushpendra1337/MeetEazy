@@ -157,4 +157,7 @@
     <!-- Bottom Sheet Dialog Background -->
     <color name="colorBottomSheetDialogBackground">@color/white</color>
 
+    <!-- Name View Background -->
+    <color name="colorNameViewBackground">#CDFFFFFF</color>
+
 </resources>

@@ -41,4 +41,7 @@
     <!-- Bottom Sheet Dialog Background -->
     <color name="colorBottomSheetDialogBackground">@color/dark_grey_15_overlay</color>
 
+    <!-- Name View Background -->
+    <color name="colorNameViewBackground">#CD000000</color>
+
 </resources>
