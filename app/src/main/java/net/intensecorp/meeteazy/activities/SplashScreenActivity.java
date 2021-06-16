@@ -9,6 +9,7 @@ import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatDelegate;
 
 import com.google.android.material.textview.MaterialTextView;
 import com.google.firebase.auth.FirebaseAuth;
@@ -31,6 +32,22 @@ public class SplashScreenActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash_screen);
 
+        SharedPrefsManager themePrefsManager = new SharedPrefsManager(SplashScreenActivity.this, SharedPrefsManager.PREF_THEME);
+
+        switch (themePrefsManager.getThemePref()) {
+            case SharedPrefsManager.PREF_THEME_LIGHT:
+                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
+                break;
+            case SharedPrefsManager.PREF_THEME_DARK:
+                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
+                break;
+            case SharedPrefsManager.PREF_THEME_SYSTEM_DEFAULT:
+                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM);
+                break;
+            default:
+                break;
+        }
+
         Animation slideDownAnimation = AnimationUtils.loadAnimation(SplashScreenActivity.this, R.anim.anim_fade_in_from_top_to_bottom_1500);
         Animation slideUpAnimation = AnimationUtils.loadAnimation(SplashScreenActivity.this, R.anim.anim_fade_in_from_bottom_to_top_1000);
 
@@ -51,7 +68,7 @@ public class SplashScreenActivity extends AppCompatActivity {
 
         new Handler(Looper.getMainLooper()).postDelayed(() -> {
 
-            SharedPrefsManager sharedPrefsManager = new SharedPrefsManager(SplashScreenActivity.this, SharedPrefsManager.PREF_USER_DATA);
+            SharedPrefsManager userPrefsManager = new SharedPrefsManager(SplashScreenActivity.this, SharedPrefsManager.PREF_USER_DATA);
 
             SharedPrefsManager onboardingPrefsManager = new SharedPrefsManager(SplashScreenActivity.this, SharedPrefsManager.PREF_ONBOARDING);
             boolean isFirstRun = onboardingPrefsManager.getOnboardingPrefs();
@@ -60,27 +77,27 @@ public class SplashScreenActivity extends AppCompatActivity {
 
                 if (mUser != null) {
                     mAuth.signOut();
-                    sharedPrefsManager.invalidateSession();
+                    userPrefsManager.invalidateSession();
                 }
 
                 onboardingPrefsManager.setOnboardingPrefs(false);
 
                 startOnboardingActivity();
 
-            } else if (mUser != null && sharedPrefsManager.getIsSignedIn() && !mUser.isEmailVerified()) {
-                HashMap<String, String> userData = sharedPrefsManager.getUserDataPrefs();
+            } else if (mUser != null && userPrefsManager.getIsSignedIn() && !mUser.isEmailVerified()) {
+                HashMap<String, String> userData = userPrefsManager.getUserDataPrefs();
                 String firstName = userData.get(SharedPrefsManager.PREF_FIRST_NAME);
                 String email = userData.get(SharedPrefsManager.PREF_EMAIL);
 
                 startEmailVerificationActivity(email, firstName);
 
-            } else if (mUser != null && sharedPrefsManager.getIsSignedIn() && mUser.isEmailVerified()) {
+            } else if (mUser != null && userPrefsManager.getIsSignedIn() && mUser.isEmailVerified()) {
 
                 startHomeActivity();
 
             } else {
                 mAuth.signOut();
-                sharedPrefsManager.invalidateSession();
+                userPrefsManager.invalidateSession();
 
                 startSignInActivity();
             }
