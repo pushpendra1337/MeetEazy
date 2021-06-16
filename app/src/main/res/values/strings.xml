@@ -189,6 +189,15 @@
     <string name="dialog_button_text_yes">Yes</string>
     <string name="dialog_button_text_no">No</string>
 
+    <!-- Set Theme Dialog -->
+    <string name="dialog_title_set_theme">Set theme</string>
+    <string name="list_item_text_light">Light</string>
+    <string name="list_item_text_dark">Dark</string>
+    <string name="list_item_text_system_default">System default</string>
+    <string name="content_description_light">Light</string>
+    <string name="content_description_dark">Dark</string>
+    <string name="content_description_system_default">System default</string>
+
     <!-- Snackbars -->
     <string name="snackbar_text_error_occurred">An error occurred. Please try again later.</string>
     <string name="snackbar_text_login_failed_wrong_credentials">Login failed! Please check your credentials and try again.</string>
