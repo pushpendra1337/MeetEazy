@@ -101,18 +101,20 @@ public class ViewProfileActivity extends AppCompatActivity {
         mEmailView.setText(email);
         mAboutView.setText(about);
 
-        if (!profilePictureUrl.equals("null")) {
-            Glide.with(ViewProfileActivity.this)
-                    .load(profilePictureUrl)
-                    .centerCrop()
-                    .placeholder(R.drawable.img_profile_picture)
-                    .into(mProfilePictureView);
-        } else {
-            mProfilePictureView.setImageResource(R.drawable.img_profile_picture);
+        if (profilePictureUrl != null) {
+            if (!profilePictureUrl.equals("null")) {
+                Glide.with(ViewProfileActivity.this)
+                        .load(profilePictureUrl)
+                        .centerCrop()
+                        .placeholder(R.drawable.img_profile_picture)
+                        .into(mProfilePictureView);
+            } else {
+                mProfilePictureView.setImageResource(R.drawable.img_profile_picture);
+            }
         }
 
         if (isSelf) {
-            setFreshData(auth.getCurrentUser().getUid());
+            setFreshData(Objects.requireNonNull(auth.getCurrentUser()).getUid());
         } else {
             setFreshData(contact.uid);
         }
@@ -133,14 +135,16 @@ public class ViewProfileActivity extends AppCompatActivity {
                     mAboutView.setText(documentSnapshot.getString(Firestore.FIELD_ABOUT));
                     String profilePictureUrl = documentSnapshot.getString(Firestore.FIELD_PROFILE_PICTURE_URL);
 
-                    if (!profilePictureUrl.equals("null")) {
-                        Glide.with(ViewProfileActivity.this)
-                                .load(profilePictureUrl)
-                                .centerCrop()
-                                .placeholder(R.drawable.img_profile_picture)
-                                .into(mProfilePictureView);
-                    } else {
-                        mProfilePictureView.setImageResource(R.drawable.img_profile_picture);
+                    if (profilePictureUrl != null) {
+                        if (!profilePictureUrl.equals("null")) {
+                            Glide.with(ViewProfileActivity.this)
+                                    .load(profilePictureUrl)
+                                    .centerCrop()
+                                    .placeholder(R.drawable.img_profile_picture)
+                                    .into(mProfilePictureView);
+                        } else {
+                            mProfilePictureView.setImageResource(R.drawable.img_profile_picture);
+                        }
                     }
 
                     Log.d(TAG, "Data loaded successfully");
