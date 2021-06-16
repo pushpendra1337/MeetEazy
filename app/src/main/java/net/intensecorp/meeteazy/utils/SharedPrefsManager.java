@@ -8,6 +8,10 @@ import java.util.HashMap;
 
 public class SharedPrefsManager {
 
+    public static final String PREF_THEME = "PREF_THEME";
+    public static final String PREF_THEME_SYSTEM_DEFAULT = "PREF_THEME_SYSTEM_DEFAULT";
+    public static final String PREF_THEME_LIGHT = "PREF_THEME_LIGHT";
+    public static final String PREF_THEME_DARK = "PREF_THEME_DARK";
     public static final String PREF_ONBOARDING = "PREF_ONBOARDING";
     public static final String PREF_FIRST_RUN = "PREF_FIRST_RUN";
     public static final String PREF_USER_DATA = "PREF_USER_DATA";
@@ -63,6 +67,15 @@ public class SharedPrefsManager {
 
     public void setFcmTokenPref(String fcmToken) {
         mSharedPrefsEditor.putString(PREF_FCM_TOKEN, fcmToken);
+        mSharedPrefsEditor.apply();
+    }
+
+    public String getThemePref() {
+        return mSharedPreferences.getString(PREF_THEME, PREF_THEME_SYSTEM_DEFAULT);
+    }
+
+    public void setThemePref(String themePref) {
+        mSharedPrefsEditor.putString(PREF_THEME, themePref);
         mSharedPrefsEditor.apply();
     }
 
