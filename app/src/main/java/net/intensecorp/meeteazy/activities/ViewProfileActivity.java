@@ -47,7 +47,7 @@ public class ViewProfileActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_view_profile);
 
-        MaterialToolbar materialToolbar = findViewById(R.id.materialToolbar_profile);
+        MaterialToolbar materialToolbar = findViewById(R.id.materialToolbar_view_profile);
         mProfilePictureView = findViewById(R.id.appCompatImageView_profile_picture);
         mFirstNameView = findViewById(R.id.textView_first_name_holder);
         mLastNameView = findViewById(R.id.textView_last_name_holder);

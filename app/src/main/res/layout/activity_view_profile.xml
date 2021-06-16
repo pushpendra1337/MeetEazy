@@ -39,7 +39,7 @@
                 android:background="@drawable/bg_name_view" />
 
             <com.google.android.material.appbar.MaterialToolbar
-                android:id="@+id/materialToolbar_profile"
+                android:id="@+id/materialToolbar_view_profile"
                 android:layout_width="match_parent"
                 android:layout_height="?actionBarSize"
                 app:contentInsetStart="0dp"
