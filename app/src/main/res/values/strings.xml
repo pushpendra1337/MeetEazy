@@ -82,16 +82,6 @@
     <string name="placeholder_full_name">Full Name</string>
     <string name="content_description_call">Call</string>
 
-    <!-- Profile Activity -->
-    <string name="text_first_name">First Name</string>
-    <string name="text_last_name">Last Name</string>
-    <string name="placeholder_last_name">Doe</string>
-    <string name="text_email">Email</string>
-    <string name="text_about">About</string>
-    <string name="placeholder_about">Hey there! I am using MeatEazy.</string>
-    <string name="content_description_edit">Edit</string>
-    <string name="content_description_delete">Delete</string>
-
     <!-- Outgoing Call Activity -->
     <string name="text_outgoing_call" tools:ignore="TypographyEllipsis">Outgoing call...</string>
     <string name="text_outgoing_group_call" tools:ignore="TypographyEllipsis">"Outgoing group call..."</string>
@@ -107,6 +97,22 @@
     <string name="text_is_calling_you_and">is calling You &amp;</string>
     <string name="content_description_reject_call">Reject call</string>
     <string name="content_description_answer_call">Answer call</string>
+
+    <!-- View Profile Activity -->
+    <string name="text_first_name">First Name</string>
+    <string name="text_last_name">Last Name</string>
+    <string name="placeholder_last_name">Doe</string>
+    <string name="text_email">Email</string>
+    <string name="text_about">About</string>
+    <string name="placeholder_about">Hey there! I am using MeatEazy.</string>
+    <string name="content_description_edit">Edit</string>
+    <string name="content_description_delete">Delete</string>
+
+    <!-- Settings Activity -->
+    <string name="list_item_text_theme">Theme</string>
+    <string name="list_item_text_account">Account</string>
+    <string name="content_description_theme">Theme</string>
+    <string name="content_description_account">Account</string>
 
     <!-- Bottom Sheet Dialog -->
     <string name="bottom_sheet_dialog_title_choose">Choose</string>
