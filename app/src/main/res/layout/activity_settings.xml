@@ -19,6 +19,7 @@
             android:layout_width="match_parent"
             android:layout_height="?actionBarSize"
             app:title="Settings"
+            app:titleTextAppearance="@style/StyleToolbarTitleText"
             app:titleTextColor="@color/colorHighEmphasisText" />
 
     </com.google.android.material.appbar.AppBarLayout>
