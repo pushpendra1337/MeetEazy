@@ -28,13 +28,13 @@ public class SettingsActivity extends AppCompatActivity {
         setContentView(R.layout.activity_settings);
 
         MaterialToolbar materialToolbar = findViewById(R.id.materialToolbar_settings);
-        LinearLayout accountLayout = findViewById(R.id.linearLayout_account);
+        LinearLayout profileLayout = findViewById(R.id.linearLayout_profile);
         LinearLayout themeLayout = findViewById(R.id.linearLayout_theme);
         setSupportActionBar(materialToolbar);
         Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
         materialToolbar.setNavigationOnClickListener(v -> onBackPressed());
 
-        accountLayout.setOnClickListener(v -> startEditProfileActivity());
+        profileLayout.setOnClickListener(v -> startEditProfileActivity());
 
         themeLayout.setOnClickListener(v -> showSetThemeDialog());
     }
