@@ -92,6 +92,9 @@
     <!-- Call Button -->
     <dimen name="call_button_padding">6dp</dimen>
 
+    <!-- Edit Button -->
+    <dimen name="edit_button_padding">6dp</dimen>
+
     <!-- Call Type Icon -->
     <dimen name="call_type_icon_height">20dp</dimen>
     <dimen name="call_type_icon_width">20dp</dimen>
@@ -99,5 +102,10 @@
     <!-- Incoming/Outgoing Call Activity Profile Picture -->
     <dimen name="call_activity_profile_picture_height">100dp</dimen>
     <dimen name="call_activity_profile_picture_width">100dp</dimen>
+
+    <!-- Edit Profile Activity Profile Picture -->
+    <dimen name="edit_profile_activity_profile_picture_height">200dp</dimen>
+    <dimen name="edit_profile_activity_profile_picture_width">200dp</dimen>
+    <dimen name="edit_profile_activity_profile_picture_border_width">1dp</dimen>
 
 </resources>
