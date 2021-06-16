@@ -14,7 +14,7 @@ import com.bumptech.glide.Glide;
 import com.google.android.material.textview.MaterialTextView;
 
 import net.intensecorp.meeteazy.R;
-import net.intensecorp.meeteazy.activities.ProfileActivity;
+import net.intensecorp.meeteazy.activities.ViewProfileActivity;
 import net.intensecorp.meeteazy.listener.ActionListener;
 import net.intensecorp.meeteazy.models.Contact;
 import net.intensecorp.meeteazy.utils.Extras;
@@ -95,9 +95,10 @@ public class ContactsAdapter extends RecyclerView.Adapter<ContactsAdapter.UserVi
             }
 
             contactContainer.setOnClickListener(v -> {
-                Intent profileIntent = new Intent(itemView.getContext(), ProfileActivity.class);
-                profileIntent.putExtra(Extras.EXTRA_USER, contact);
-                itemView.getContext().startActivity(profileIntent);
+                Intent viewProfileIntent = new Intent(itemView.getContext(), ViewProfileActivity.class);
+                viewProfileIntent.putExtra(Extras.EXTRA_CONTACT, contact);
+                viewProfileIntent.putExtra(Extras.EXTRA_IS_SELF, false);
+                itemView.getContext().startActivity(viewProfileIntent);
             });
 
             contactContainer.setOnLongClickListener(v -> {

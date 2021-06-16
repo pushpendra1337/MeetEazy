@@ -150,7 +150,9 @@ public class HomeActivity extends AppCompatActivity implements ActionListener {
         mSwipeRefreshLayout.setProgressBackgroundColorSchemeColor(getResources().getColor(R.color.colorSwipeRefreshLayoutProgressSpinnerBackground, getTheme()));
         mSwipeRefreshLayout.setColorSchemeColors(getResources().getColor(R.color.colorSwipeRefreshLayoutProgressSpinner, getTheme()));
 
-        mMaterialToolbar.setNavigationOnClickListener(v -> Toast.makeText(HomeActivity.this, "Search", Toast.LENGTH_SHORT).show());
+        mMaterialToolbar.setNavigationOnClickListener(v -> {
+            // TODO: Search
+        });
 
         mToolbar.setNavigationOnClickListener(v -> {
             ContactsAdapter.sSelectedContacts.clear();
@@ -594,7 +596,9 @@ public class HomeActivity extends AppCompatActivity implements ActionListener {
                     .document(mUid)
                     .collection(Firestore.COLLECTION_CONTACTS)
                     .document(contacts.get(i).uid)
-                    .delete();
+                    .delete()
+                    .addOnSuccessListener(aVoid -> Log.d(TAG, "Contact deleted successfully"))
+                    .addOnFailureListener(e -> Log.e(TAG, "Failed to delete contact: " + e.getMessage()));
         }
 
         dismissProgressDialog();
@@ -1086,8 +1090,9 @@ public class HomeActivity extends AppCompatActivity implements ActionListener {
     }
 
     private void startProfileActivity() {
-        Intent profileIntent = new Intent(HomeActivity.this, ProfileActivity.class);
-        startActivity(profileIntent);
+        Intent viewProfileIntent = new Intent(HomeActivity.this, ViewProfileActivity.class);
+        viewProfileIntent.putExtra(Extras.EXTRA_IS_SELF, true);
+        startActivity(viewProfileIntent);
     }
 
     private void startSettingsActivity() {
