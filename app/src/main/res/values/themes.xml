@@ -50,6 +50,11 @@
         <item name="android:textColor">@color/colorPrimary</item>
     </style>
 
+    <!-- Toolbar title text style -->
+    <style name="StyleToolbarTitleText">
+        <item name="android:textSize">@dimen/text_size_large</item>
+    </style>
+
     <!-- Bottom sheet dialog style -->
     <style name="StyleBottomSheetDialog" parent="ThemeOverlay.MaterialComponents.BottomSheetDialog">
         <item name="bottomSheetStyle">@style/StyleBottomSheet</item>
