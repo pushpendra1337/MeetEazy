@@ -23,4 +23,22 @@ public class Firestore {
     public static final String COLLECTION_CONTACTS = "contacts";
 
     public static final String FIELD_UID = "uid";
+
+    public static final String COLLECTION_DEVELOPERS = "developers";
+
+    public static final String DOCUMENT_CREATOR = "creator";
+
+    public static final String FIELD_NAME = "name";
+
+    public static final String FIELD_WEBSITE = "website";
+
+    public static final String FIELD_LINKEDIN = "linkedin";
+
+    public static final String FIELD_GITHUB = "github";
+
+    public static final String FIELD_INSTAGRAM = "instagram";
+
+    public static final String FIELD_TWITTER = "twitter";
+
+    public static final String FIELD_FACEBOOK = "facebook";
 }
