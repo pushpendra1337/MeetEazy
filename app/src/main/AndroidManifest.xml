@@ -73,6 +73,15 @@
         <!-- About Activity -->
         <activity android:name=".activities.AboutActivity" />
 
+        <!-- Image Picker Activity -->
+        <activity android:name=".activities.ImagePickerActivity" />
+
+        <!-- uCrop Activity -->
+        <activity
+            android:name="com.yalantis.ucrop.UCropActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.MeetEazy"/>
+
         <!-- Messaging Service -->
         <service
             android:name=".services.MessagingService"
