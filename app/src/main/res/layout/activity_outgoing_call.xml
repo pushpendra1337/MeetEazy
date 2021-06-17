@@ -145,7 +145,7 @@
         android:layout_marginBottom="@dimen/margin_48dp"
         android:contentDescription="@string/content_description_end_call"
         android:src="@drawable/ic_baseline_call_end_24"
-        android:tint="@color/colorCallButtonIcon"
+        android:tint="@color/colorCallButtonForeground"
         app:backgroundTint="@color/colorEndOrRejectCallButtonBackground"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
