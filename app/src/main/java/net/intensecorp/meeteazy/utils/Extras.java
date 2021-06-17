@@ -32,4 +32,20 @@ public class Extras {
     public static final String EXTRA_ROOM_ID = "net.intensecorp.meeeteazy.utils.extra.ROOM_ID";
 
     public static final String EXTRA_IS_SELF = "net.intensecorp.meeeteazy.utils.extra.IS_SELF";
+
+    public static final String EXTRA_IMAGE_PICKER_REQUEST = "net.intensecorp.meeeteazy.utils.extra.IMAGE_PICKER_REQUEST";
+
+    public static final String EXTRA_ASPECT_RATIO_X = "net.intensecorp.meeeteazy.utils.extra.ASPECT_RATIO_X";
+
+    public static final String EXTRA_ASPECT_RATIO_Y = "net.intensecorp.meeeteazy.utils.extra.ASPECT_RATIO_Y";
+
+    public static final String EXTRA_IS_ASPECT_RATIO_LOCKED = "net.intensecorp.meeeteazy.utils.extra.IS_ASPECT_RATIO_LOCKED";
+
+    public static final String EXTRA_IMAGE_COMPRESSION_QUALITY = "net.intensecorp.meeeteazy.utils.extra.IMAGE_COMPRESSION_QUALITY";
+
+    public static final String EXTRA_IS_BITMAP_HAS_CUSTOM_SIZE = "net.intensecorp.meeeteazy.utils.extra.IS_BITMAP_HAS_CUSTOM_SIZE";
+
+    public static final String EXTRA_BITMAP_MAX_WIDTH = "net.intensecorp.meeeteazy.utils.extra.BITMAP_MAX_WIDTH";
+
+    public static final String EXTRA_BITMAP_MAX_HEIGHT = "net.intensecorp.meeeteazy.utils.extra.BITMAP_MAX_HEIGHT";
 }
