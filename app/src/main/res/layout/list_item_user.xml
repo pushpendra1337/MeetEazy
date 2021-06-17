@@ -57,7 +57,7 @@
         android:clickable="true"
         android:contentDescription="@string/content_description_call"
         android:focusable="true"
-        android:padding="@dimen/call_button_padding"
+        android:padding="@dimen/image_button_padding"
         android:src="@drawable/ic_baseline_call_24"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
