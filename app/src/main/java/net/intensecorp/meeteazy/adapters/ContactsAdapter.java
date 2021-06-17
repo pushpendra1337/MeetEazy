@@ -84,15 +84,11 @@ public class ContactsAdapter extends RecyclerView.Adapter<ContactsAdapter.UserVi
             fullNameView.setText(FormatterUtility.getFullName(contact.firstName, contact.lastName));
             emailView.setText(contact.email);
 
-            if (!contact.profilePictureUrl.equals("null")) {
-                Glide.with(itemView.getContext())
-                        .load(contact.profilePictureUrl)
-                        .centerCrop()
-                        .placeholder(R.drawable.img_profile_picture)
-                        .into(profilePictureView);
-            } else {
-                profilePictureView.setImageResource(R.drawable.img_profile_picture);
-            }
+            Glide.with(itemView.getContext())
+                    .load(contact.profilePictureUrl)
+                    .centerCrop()
+                    .placeholder(R.drawable.img_profile_picture)
+                    .into(profilePictureView);
 
             contactContainer.setOnClickListener(v -> {
                 Intent viewProfileIntent = new Intent(itemView.getContext(), ViewProfileActivity.class);
@@ -120,12 +116,12 @@ public class ContactsAdapter extends RecyclerView.Adapter<ContactsAdapter.UserVi
                         break;
                 }
 
-                actionListener.handleSelection(sSelectedContacts);
+                actionListener.onSelection(sSelectedContacts);
 
                 return true;
             });
 
-            callButton.setOnClickListener(v -> actionListener.initiatePersonalCall(contact));
+            callButton.setOnClickListener(v -> actionListener.onInitiatePersonalCall(contact));
         }
     }
 }

@@ -101,22 +101,12 @@ public class ViewProfileActivity extends AppCompatActivity {
         mEmailView.setText(email);
         mAboutView.setText(about);
 
-        if (profilePictureUrl != null) {
-            if (!profilePictureUrl.equals("null")) {
-                Glide.with(ViewProfileActivity.this)
-                        .load(profilePictureUrl)
-                        .centerCrop()
-                        .placeholder(R.drawable.img_profile_picture)
-                        .into(mProfilePictureView);
-            } else {
-                mProfilePictureView.setImageResource(R.drawable.img_profile_picture);
-            }
-        }
+        loadProfilePicture(profilePictureUrl);
 
         if (isSelf) {
-            setFreshData(Objects.requireNonNull(auth.getCurrentUser()).getUid());
+            getFreshData(Objects.requireNonNull(auth.getCurrentUser()).getUid());
         } else {
-            setFreshData(contact.uid);
+            getFreshData(contact.uid);
         }
 
         editButton.setOnClickListener(v -> startEditProfileActivity());
@@ -124,7 +114,7 @@ public class ViewProfileActivity extends AppCompatActivity {
         callButton.setOnClickListener(v -> initiatePersonalCall(contact));
     }
 
-    private void setFreshData(String uid) {
+    private void getFreshData(String uid) {
         mStore.collection(Firestore.COLLECTION_USERS)
                 .document(uid)
                 .get()
@@ -133,23 +123,19 @@ public class ViewProfileActivity extends AppCompatActivity {
                     mLastNameView.setText(documentSnapshot.getString(Firestore.FIELD_LAST_NAME));
                     mEmailView.setText(documentSnapshot.getString(Firestore.FIELD_EMAIL));
                     mAboutView.setText(documentSnapshot.getString(Firestore.FIELD_ABOUT));
-                    String profilePictureUrl = documentSnapshot.getString(Firestore.FIELD_PROFILE_PICTURE_URL);
-
-                    if (profilePictureUrl != null) {
-                        if (!profilePictureUrl.equals("null")) {
-                            Glide.with(ViewProfileActivity.this)
-                                    .load(profilePictureUrl)
-                                    .centerCrop()
-                                    .placeholder(R.drawable.img_profile_picture)
-                                    .into(mProfilePictureView);
-                        } else {
-                            mProfilePictureView.setImageResource(R.drawable.img_profile_picture);
-                        }
-                    }
+                    loadProfilePicture(documentSnapshot.getString(Firestore.FIELD_PROFILE_PICTURE_URL));
 
                     Log.d(TAG, "Data loaded successfully");
                 })
                 .addOnFailureListener(e -> Log.e(TAG, "Failed to load data: " + e.getMessage()));
+    }
+
+    private void loadProfilePicture(String profilePictureUrl) {
+        Glide.with(ViewProfileActivity.this)
+                .load(profilePictureUrl)
+                .centerCrop()
+                .placeholder(R.drawable.img_profile_picture)
+                .into(mProfilePictureView);
     }
 
     @RequiresApi(api = Build.VERSION_CODES.O)
