@@ -124,6 +124,9 @@
     <!-- Highlight Control -->
     <color name="colorControlHighlight">@color/ripple_cornflower_blue</color>
 
+    <!-- Status Bar -->
+    <color name="colorStatusBar">@color/white</color>
+
     <!-- Snackbar Background -->
     <color name="colorSnackbarBackground">@color/dark_grey_11_overlay</color>
 
@@ -152,7 +155,7 @@
     <color name="colorAnswerCallButtonBackground">@color/fern</color>
 
     <!-- Call Button Foreground -->
-    <color name="colorCallButtonIcon">@color/white</color>
+    <color name="colorCallButtonForeground">@color/white</color>
 
     <!-- Bottom Sheet Dialog Background -->
     <color name="colorBottomSheetDialogBackground">@color/white</color>

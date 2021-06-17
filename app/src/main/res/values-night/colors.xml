@@ -16,6 +16,9 @@
     <!-- Disabled Text -->
     <color name="colorDisabledText">#61FFFFFF</color>
 
+    <!-- Status Bar -->
+    <color name="colorStatusBar">@color/dark_grey_0_overlay</color>
+
     <!-- Snackbar Background -->
     <color name="colorSnackbarBackground">@color/white</color>
 
