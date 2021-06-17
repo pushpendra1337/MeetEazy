@@ -35,12 +35,12 @@
         <item name="fontFamily">@font/poppins_regular</item>
     </style>
 
-    <!-- Material Toolbar title style -->
+    <!-- Material toolbar title style -->
     <style name="StyleMaterialToolbarTitle">
         <item name="android:includeFontPadding">false</item>
         <item name="android:textAlignment">center</item>
         <item name="android:textSize">@dimen/text_size_medium</item>
-        <item name="android:textColor">@color/colorIconography</item>
+        <item name="android:textColor">@color/lynch</item>
     </style>
 
     <!-- Toolbar title style -->
