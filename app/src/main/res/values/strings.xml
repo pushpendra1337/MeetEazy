@@ -110,9 +110,27 @@
 
     <!-- Settings Activity -->
     <string name="list_item_text_theme">Theme</string>
-    <string name="list_item_text_account">Account</string>
     <string name="content_description_theme">Theme</string>
-    <string name="content_description_account">Account</string>
+
+    <!-- About Activity -->
+    <string name="text_version">Version</string>
+    <string name="text_creator">Creator</string>
+    <string name="text_website">Website</string>
+    <string name="text_linkedin">LinkedIn</string>
+    <string name="text_github">GitHub</string>
+    <string name="text_instagram">Instagram</string>
+    <string name="text_facebook">Facebook</string>
+    <string name="text_twitter">Twitter</string>
+    <string name="placeholder_version">v1.0</string>
+    <string name="placeholder_creator">Pushpendra Yadav</string>
+    <string name="placeholder_creator_email">pushpendray1337@gmail.com</string>
+    <string name="placeholder_website">https://pushpendra1337.github.io</string>
+    <string name="placeholder_linkedin">im-pushpendra</string>
+    <string name="placeholder_github">pushpendra1337</string>
+    <string name="placeholder_instagram">sinister__420</string>
+    <string name="placeholder_facebook">sinister1337</string>
+    <string name="placeholder_twitter">sinister__420</string>
+    <string name="content_description_go_to">Go to</string>
 
     <!-- Bottom Sheet Dialog -->
     <string name="bottom_sheet_dialog_title_choose">Choose</string>
