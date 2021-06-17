@@ -132,7 +132,7 @@
     <string name="placeholder_twitter">sinister__420</string>
     <string name="content_description_go_to">Go to</string>
 
-    <!-- Bottom Sheet Dialog -->
+    <!-- New Bottom Sheet Dialog -->
     <string name="bottom_sheet_dialog_title_choose">Choose</string>
     <string name="list_item_text_create_new_contact">Create new contact</string>
     <string name="list_item_text_create_new_room">Create new room</string>
@@ -140,6 +140,15 @@
     <string name="content_description_create_new_contact">Create new contact</string>
     <string name="content_description_join_a_room">Join a room</string>
     <string name="content_description_create_new_room">Create new room</string>
+
+    <!-- Set Profile Picture Bottom Sheet Dialog -->
+    <string name="bottom_sheet_dialog_title_set_profile_picture">Set profile picture</string>
+    <string name="list_item_text_take_a_photo">Take a photo</string>
+    <string name="list_item_text_select_from_gallery">Select from gallery</string>
+    <string name="list_item_text_remove_current_photo">Remove current photo</string>
+    <string name="content_description_take_a_photo">Take a photo</string>
+    <string name="content_description_select_from_gallery">Select from gallery</string>
+    <string name="content_description_remove_current_photo">Remove current photo</string>
 
     <!-- No Internet Dialog -->
     <string name="dialog_title_no_internet">Whoops!</string>
