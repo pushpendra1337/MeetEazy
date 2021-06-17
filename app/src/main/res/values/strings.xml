@@ -233,6 +233,9 @@
     <!-- Edit First Name Dialog -->
     <string name="dialog_title_edit_first_name">Edit first name</string>
 
+    <!-- Edit Last Name Dialog -->
+    <string name="dialog_title_edit_last_name">Edit last name</string>
+
     <!-- Snackbars -->
     <string name="snackbar_text_error_occurred">An error occurred. Please try again later.</string>
     <string name="snackbar_text_login_failed_wrong_credentials">Login failed! Please check your credentials and try again.</string>
