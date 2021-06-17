@@ -386,7 +386,7 @@ public class HomeActivity extends AppCompatActivity implements ActionListener {
 
     @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
-    public void initiatePersonalCall(Contact contact) {
+    public void onInitiatePersonalCall(Contact contact) {
         if (new NetworkInfoUtility(HomeActivity.this).isConnectedToInternet()) {
             if (contact.fcmToken == null || contact.fcmToken.trim().isEmpty()) {
                 Toast.makeText(this, contact.firstName + " " + contact.lastName + " is not available right now", Toast.LENGTH_SHORT).show();
@@ -401,7 +401,7 @@ public class HomeActivity extends AppCompatActivity implements ActionListener {
     @SuppressLint("NonConstantResourceId")
     @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
-    public void handleSelection(List<Contact> contacts) {
+    public void onSelection(List<Contact> contacts) {
         if (new NetworkInfoUtility(HomeActivity.this).isConnectedToInternet()) {
             if (contacts.size() > 0) {
                 mMaterialToolbar.setVisibility(View.INVISIBLE);

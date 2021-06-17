@@ -6,7 +6,7 @@ import java.util.List;
 
 public interface ActionListener {
 
-    void initiatePersonalCall(Contact contact);
+    void onInitiatePersonalCall(Contact contact);
 
-    void handleSelection(List<Contact> contacts);
+    void onSelection(List<Contact> contacts);
 }
