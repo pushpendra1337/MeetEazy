@@ -18,7 +18,7 @@ public class Firestore {
 
     public static final String DEFAULT_VALUE_ABOUT = "Hey there! I am using MeatEazy.";
 
-    public static final String DEFAULT_VALUE_PROFILE_PICTURE_URL = "null";
+    public static final String DEFAULT_VALUE_PROFILE_PICTURE_URL = "";
 
     public static final String COLLECTION_CONTACTS = "contacts";
 
