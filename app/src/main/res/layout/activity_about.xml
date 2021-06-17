@@ -1,9 +1,606 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/colorBackground"
     tools:context=".activities.AboutActivity">
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+    <com.google.android.material.appbar.AppBarLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/bg_toolbar"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <com.google.android.material.appbar.MaterialToolbar
+            android:id="@+id/materialToolbar_about"
+            android:layout_width="match_parent"
+            android:layout_height="?actionBarSize"
+            app:title="About"
+            app:titleTextAppearance="@style/StyleToolbarTitleText"
+            app:titleTextColor="@color/colorHighEmphasisText" />
+
+    </com.google.android.material.appbar.AppBarLayout>
+
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:overScrollMode="never"
+        android:scrollbars="none"
+        app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <ImageView
+                android:layout_width="@dimen/logo_width_large"
+                android:layout_height="@dimen/logo_height_large"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginHorizontal="@dimen/margin_16dp"
+                android:layout_marginTop="@dimen/margin_16dp"
+                android:contentDescription="@string/content_description_logo"
+                android:src="@drawable/img_logo" />
+
+            <com.google.android.material.textview.MaterialTextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginHorizontal="@dimen/margin_16dp"
+                android:layout_marginBottom="@dimen/margin_16dp"
+                android:includeFontPadding="false"
+                android:text="@string/app_name"
+                android:textAlignment="center"
+                android:textColor="@color/royal_blue"
+                android:textSize="@dimen/logo_text_large"
+                app:fontFamily="@font/poppins_medium" />
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/two_line_list_item_height">
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/divider_height"
+                    android:background="@color/colorDivider"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <com.google.android.material.textview.MaterialTextView
+                    android:id="@+id/textView_version"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="@dimen/margin_16dp"
+                    android:layout_marginTop="@dimen/margin_16dp"
+                    android:includeFontPadding="false"
+                    android:text="@string/text_version"
+                    android:textColor="@color/colorHighEmphasisText"
+                    android:textSize="@dimen/text_size_medium"
+                    app:fontFamily="@font/poppins_regular"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <com.google.android.material.textview.MaterialTextView
+                    android:id="@+id/textView_version_holder"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="@dimen/margin_16dp"
+                    android:layout_marginBottom="@dimen/margin_16dp"
+                    android:includeFontPadding="false"
+                    android:text="@string/placeholder_version"
+                    android:textColor="@color/colorMediumEmphasisText"
+                    android:textSize="@dimen/text_size_small"
+                    app:fontFamily="@font/poppins_regular"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/textView_version" />
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/divider_height"
+                    android:background="@color/colorDivider"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/two_line_list_item_height">
+
+                <com.google.android.material.textview.MaterialTextView
+                    android:id="@+id/textView_creator"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="@dimen/margin_16dp"
+                    android:layout_marginTop="@dimen/margin_16dp"
+                    android:includeFontPadding="false"
+                    android:text="@string/text_creator"
+                    android:textColor="@color/colorHighEmphasisText"
+                    android:textSize="@dimen/text_size_medium"
+                    app:fontFamily="@font/poppins_regular"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <com.google.android.material.textview.MaterialTextView
+                    android:id="@+id/textView_creator_holder"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="@dimen/margin_16dp"
+                    android:layout_marginBottom="@dimen/margin_16dp"
+                    android:includeFontPadding="false"
+                    android:text="@string/placeholder_creator"
+                    android:textColor="@color/colorMediumEmphasisText"
+                    android:textSize="@dimen/text_size_small"
+                    app:fontFamily="@font/poppins_regular"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/textView_creator" />
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/divider_height"
+                    android:background="@color/colorDivider"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/two_line_list_item_height">
+
+                <com.google.android.material.textview.MaterialTextView
+                    android:id="@+id/textView_email"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="@dimen/margin_16dp"
+                    android:layout_marginTop="@dimen/margin_16dp"
+                    android:includeFontPadding="false"
+                    android:text="@string/text_email"
+                    android:textColor="@color/colorHighEmphasisText"
+                    android:textSize="@dimen/text_size_medium"
+                    app:fontFamily="@font/poppins_regular"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <com.google.android.material.textview.MaterialTextView
+                    android:id="@+id/textView_email_holder"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="@dimen/margin_16dp"
+                    android:layout_marginBottom="@dimen/margin_16dp"
+                    android:includeFontPadding="false"
+                    android:text="@string/placeholder_creator_email"
+                    android:textColor="@color/colorMediumEmphasisText"
+                    android:textSize="@dimen/text_size_small"
+                    app:fontFamily="@font/poppins_regular"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/textView_email" />
+
+                <ImageView
+                    android:id="@+id/imageView_go_to_email"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="@dimen/margin_16dp"
+                    android:background="?selectableItemBackgroundBorderless"
+                    android:contentDescription="@string/content_description_go_to"
+                    android:padding="@dimen/image_button_padding"
+                    android:src="@drawable/ic_baseline_send_24"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:tint="@color/colorIconography" />
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/divider_height"
+                    android:background="@color/colorDivider"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/two_line_list_item_height">
+
+                <com.google.android.material.textview.MaterialTextView
+                    android:id="@+id/textView_website"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="@dimen/margin_16dp"
+                    android:layout_marginTop="@dimen/margin_16dp"
+                    android:includeFontPadding="false"
+                    android:text="@string/text_website"
+                    android:textColor="@color/colorHighEmphasisText"
+                    android:textSize="@dimen/text_size_medium"
+                    app:fontFamily="@font/poppins_regular"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <com.google.android.material.textview.MaterialTextView
+                    android:id="@+id/textView_website_holder"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="@dimen/margin_16dp"
+                    android:layout_marginBottom="@dimen/margin_16dp"
+                    android:includeFontPadding="false"
+                    android:text="@string/placeholder_website"
+                    android:textColor="@color/colorMediumEmphasisText"
+                    android:textSize="@dimen/text_size_small"
+                    app:fontFamily="@font/poppins_regular"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/textView_website" />
+
+                <ImageView
+                    android:id="@+id/imageView_go_to_website"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="@dimen/margin_16dp"
+                    android:background="?selectableItemBackgroundBorderless"
+                    android:contentDescription="@string/content_description_go_to"
+                    android:padding="@dimen/image_button_padding"
+                    android:src="@drawable/ic_baseline_send_24"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:tint="@color/colorIconography" />
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/divider_height"
+                    android:background="@color/colorDivider"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/two_line_list_item_height">
+
+                <com.google.android.material.textview.MaterialTextView
+                    android:id="@+id/textView_linkedin"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="@dimen/margin_16dp"
+                    android:layout_marginTop="@dimen/margin_16dp"
+                    android:includeFontPadding="false"
+                    android:text="@string/text_linkedin"
+                    android:textColor="@color/colorHighEmphasisText"
+                    android:textSize="@dimen/text_size_medium"
+                    app:fontFamily="@font/poppins_regular"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <com.google.android.material.textview.MaterialTextView
+                    android:id="@+id/textView_linkedin_holder"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="@dimen/margin_16dp"
+                    android:layout_marginBottom="@dimen/margin_16dp"
+                    android:includeFontPadding="false"
+                    android:text="@string/placeholder_linkedin"
+                    android:textColor="@color/colorMediumEmphasisText"
+                    android:textSize="@dimen/text_size_small"
+                    app:fontFamily="@font/poppins_regular"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/textView_linkedin" />
+
+                <ImageView
+                    android:id="@+id/imageView_go_to_linkedin"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="@dimen/margin_16dp"
+                    android:background="?selectableItemBackgroundBorderless"
+                    android:contentDescription="@string/content_description_go_to"
+                    android:padding="@dimen/image_button_padding"
+                    android:src="@drawable/ic_baseline_send_24"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:tint="@color/colorIconography" />
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/divider_height"
+                    android:background="@color/colorDivider"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/two_line_list_item_height">
+
+                <com.google.android.material.textview.MaterialTextView
+                    android:id="@+id/textView_github"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="@dimen/margin_16dp"
+                    android:layout_marginTop="@dimen/margin_16dp"
+                    android:includeFontPadding="false"
+                    android:text="@string/text_github"
+                    android:textColor="@color/colorHighEmphasisText"
+                    android:textSize="@dimen/text_size_medium"
+                    app:fontFamily="@font/poppins_regular"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <com.google.android.material.textview.MaterialTextView
+                    android:id="@+id/textView_github_holder"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="@dimen/margin_16dp"
+                    android:layout_marginBottom="@dimen/margin_16dp"
+                    android:includeFontPadding="false"
+                    android:text="@string/placeholder_github"
+                    android:textColor="@color/colorMediumEmphasisText"
+                    android:textSize="@dimen/text_size_small"
+                    app:fontFamily="@font/poppins_regular"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/textView_github" />
+
+                <ImageView
+                    android:id="@+id/imageView_go_to_github"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="@dimen/margin_16dp"
+                    android:background="?selectableItemBackgroundBorderless"
+                    android:contentDescription="@string/content_description_go_to"
+                    android:padding="@dimen/image_button_padding"
+                    android:src="@drawable/ic_baseline_send_24"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:tint="@color/colorIconography" />
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/divider_height"
+                    android:background="@color/colorDivider"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/two_line_list_item_height">
+
+                <com.google.android.material.textview.MaterialTextView
+                    android:id="@+id/textView_instagram"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="@dimen/margin_16dp"
+                    android:layout_marginTop="@dimen/margin_16dp"
+                    android:includeFontPadding="false"
+                    android:text="@string/text_instagram"
+                    android:textColor="@color/colorHighEmphasisText"
+                    android:textSize="@dimen/text_size_medium"
+                    app:fontFamily="@font/poppins_regular"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <com.google.android.material.textview.MaterialTextView
+                    android:id="@+id/textView_instagram_holder"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="@dimen/margin_16dp"
+                    android:layout_marginBottom="@dimen/margin_16dp"
+                    android:includeFontPadding="false"
+                    android:text="@string/placeholder_instagram"
+                    android:textColor="@color/colorMediumEmphasisText"
+                    android:textSize="@dimen/text_size_small"
+                    app:fontFamily="@font/poppins_regular"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/textView_instagram" />
+
+                <ImageView
+                    android:id="@+id/imageView_go_to_instagram"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="@dimen/margin_16dp"
+                    android:background="?selectableItemBackgroundBorderless"
+                    android:contentDescription="@string/content_description_go_to"
+                    android:padding="@dimen/image_button_padding"
+                    android:src="@drawable/ic_baseline_send_24"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:tint="@color/colorIconography" />
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/divider_height"
+                    android:background="@color/colorDivider"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/two_line_list_item_height">
+
+                <com.google.android.material.textview.MaterialTextView
+                    android:id="@+id/textView_twitter"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="@dimen/margin_16dp"
+                    android:layout_marginTop="@dimen/margin_16dp"
+                    android:includeFontPadding="false"
+                    android:text="@string/text_twitter"
+                    android:textColor="@color/colorHighEmphasisText"
+                    android:textSize="@dimen/text_size_medium"
+                    app:fontFamily="@font/poppins_regular"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <com.google.android.material.textview.MaterialTextView
+                    android:id="@+id/textView_twitter_holder"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="@dimen/margin_16dp"
+                    android:layout_marginBottom="@dimen/margin_16dp"
+                    android:includeFontPadding="false"
+                    android:text="@string/placeholder_twitter"
+                    android:textColor="@color/colorMediumEmphasisText"
+                    android:textSize="@dimen/text_size_small"
+                    app:fontFamily="@font/poppins_regular"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/textView_twitter" />
+
+                <ImageView
+                    android:id="@+id/imageView_go_to_twitter"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="@dimen/margin_16dp"
+                    android:background="?selectableItemBackgroundBorderless"
+                    android:contentDescription="@string/content_description_go_to"
+                    android:padding="@dimen/image_button_padding"
+                    android:src="@drawable/ic_baseline_send_24"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:tint="@color/colorIconography" />
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/divider_height"
+                    android:background="@color/colorDivider"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/two_line_list_item_height">
+
+                <com.google.android.material.textview.MaterialTextView
+                    android:id="@+id/textView_facebook"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="@dimen/margin_16dp"
+                    android:layout_marginTop="@dimen/margin_16dp"
+                    android:includeFontPadding="false"
+                    android:text="@string/text_facebook"
+                    android:textColor="@color/colorHighEmphasisText"
+                    android:textSize="@dimen/text_size_medium"
+                    app:fontFamily="@font/poppins_regular"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <com.google.android.material.textview.MaterialTextView
+                    android:id="@+id/textView_facebook_holder"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="@dimen/margin_16dp"
+                    android:layout_marginBottom="@dimen/margin_16dp"
+                    android:includeFontPadding="false"
+                    android:text="@string/placeholder_facebook"
+                    android:textColor="@color/colorMediumEmphasisText"
+                    android:textSize="@dimen/text_size_small"
+                    app:fontFamily="@font/poppins_regular"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/textView_facebook" />
+
+                <ImageView
+                    android:id="@+id/imageView_go_to_facebook"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="@dimen/margin_16dp"
+                    android:background="?selectableItemBackgroundBorderless"
+                    android:contentDescription="@string/content_description_go_to"
+                    android:padding="@dimen/image_button_padding"
+                    android:src="@drawable/ic_baseline_send_24"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:tint="@color/colorIconography" />
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/divider_height"
+                    android:background="@color/colorDivider"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_margin="@dimen/margin_16dp"
+                android:gravity="center_horizontal">
+
+                <com.google.android.material.textview.MaterialTextView
+                    android:id="@+id/textView_made_with"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:includeFontPadding="false"
+                    android:text="@string/text_made_with"
+                    android:textColor="@color/colorHighEmphasisText"
+                    android:textSize="@dimen/text_size_medium"
+                    app:fontFamily="@font/poppins_regular"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <ImageView
+                    android:id="@+id/imageView_love"
+                    android:layout_width="@dimen/love_icon_width"
+                    android:layout_height="@dimen/love_icon_height"
+                    android:layout_marginStart="@dimen/margin_4dp"
+                    android:contentDescription="@string/content_description_love"
+                    android:src="@drawable/ic_baseline_favorite_24"
+                    android:textAlignment="center"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toStartOf="@+id/textView_in_india"
+                    app:layout_constraintStart_toEndOf="@+id/textView_made_with"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:tint="@color/maroon_flush" />
+
+                <com.google.android.material.textview.MaterialTextView
+                    android:id="@+id/textView_in_india"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/margin_4dp"
+                    android:includeFontPadding="false"
+                    android:text="@string/text_in_india"
+                    android:textColor="@color/colorHighEmphasisText"
+                    android:textSize="@dimen/text_size_medium"
+                    app:fontFamily="@font/poppins_regular"
+                    app:layout_constraintStart_toEndOf="@+id/imageView_love"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintVertical_bias="1.0" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+        </LinearLayout>
+
+    </androidx.core.widget.NestedScrollView>
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>
