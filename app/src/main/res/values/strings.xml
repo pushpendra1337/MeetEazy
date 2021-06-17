@@ -230,6 +230,9 @@
     <string name="dialog_title_grant_permissions">Grant permissions</string>
     <string name="dialog_message_grant_permissions">MeetEazy needs permission to use this feature. You can grant them in app settings.</string>
 
+    <!-- Edit First Name Dialog -->
+    <string name="dialog_title_edit_first_name">Edit first name</string>
+
     <!-- Snackbars -->
     <string name="snackbar_text_error_occurred">An error occurred. Please try again later.</string>
     <string name="snackbar_text_login_failed_wrong_credentials">Login failed! Please check your credentials and try again.</string>
