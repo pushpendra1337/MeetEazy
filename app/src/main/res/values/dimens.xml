@@ -66,7 +66,7 @@
 
     <!-- Dialog -->
     <dimen name="dialog_image_height">150dp</dimen>
-    <dimen name="dialog_titlebar_height">64dp</dimen>
+    <dimen name="dialog_title_bar_height">64dp</dimen>
 
     <!-- Toolbar Height -->
     <dimen name="toolbar_height">48dp</dimen>
