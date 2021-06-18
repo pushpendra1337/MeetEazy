@@ -16,6 +16,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.textview.MaterialTextView;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseAuthEmailException;
 import com.google.firebase.auth.FirebaseUser;
 
 import net.intensecorp.meeteazy.R;
@@ -23,6 +24,8 @@ import net.intensecorp.meeteazy.utils.Extras;
 import net.intensecorp.meeteazy.utils.NetworkInfoUtility;
 import net.intensecorp.meeteazy.utils.SharedPrefsManager;
 import net.intensecorp.meeteazy.utils.Snackbars;
+
+import java.util.Objects;
 
 public class EmailVerificationActivity extends AppCompatActivity {
 
@@ -51,7 +54,8 @@ public class EmailVerificationActivity extends AppCompatActivity {
 
         Intent emailVerificationIntent = getIntent();
         String firstName = emailVerificationIntent.getStringExtra(Extras.EXTRA_FIRST_NAME);
-        mEmail = emailVerificationIntent.getStringExtra(Extras.EXTRA_EMAIL);
+
+        mEmail = Objects.requireNonNull(mAuth.getCurrentUser()).getEmail();
 
         firstNameView.setText(firstName);
         emailView.setText(mEmail);
@@ -79,7 +83,6 @@ public class EmailVerificationActivity extends AppCompatActivity {
                             Log.d(TAG, "Email address verified: " + mUser.getEmail());
 
                             dismissEmailVerificationDialog();
-
                             startHomeActivity();
                         }
                     })
@@ -110,18 +113,16 @@ public class EmailVerificationActivity extends AppCompatActivity {
                             Log.d(TAG, "Email sent to: " + mUser.getEmail());
 
                             dismissProgressDialog();
-
                             showEmailVerificationDialog();
                         })
                         .addOnFailureListener(e -> {
+                            dismissProgressDialog();
 
-                            if (!new NetworkInfoUtility(EmailVerificationActivity.this).isConnectedToInternet()) {
-                                dismissProgressDialog();
-
+                            if (e instanceof FirebaseAuthEmailException) {
+                                new Snackbars(EmailVerificationActivity.this).snackbar(R.string.snackbar_text_failed_to_send_email);
+                            } else if (!new NetworkInfoUtility(EmailVerificationActivity.this).isConnectedToInternet()) {
                                 showNoInternetDialog();
                             } else {
-                                dismissProgressDialog();
-
                                 new Snackbars(EmailVerificationActivity.this).snackbar(R.string.snackbar_text_error_occurred);
                             }
 
@@ -129,7 +130,6 @@ public class EmailVerificationActivity extends AppCompatActivity {
                         });
         } else {
             dismissProgressDialog();
-
             showNoInternetDialog();
         }
     }
@@ -178,7 +178,6 @@ public class EmailVerificationActivity extends AppCompatActivity {
 
             view.findViewById(R.id.button_settings).setOnClickListener(v -> {
                 dismissNoInternetDialog();
-
                 startWirelessSettingsActivity();
             });
         }

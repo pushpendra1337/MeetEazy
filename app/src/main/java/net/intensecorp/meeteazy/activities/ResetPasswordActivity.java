@@ -24,6 +24,7 @@ import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 import com.google.android.material.textview.MaterialTextView;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseAuthEmailException;
 import com.google.firebase.auth.FirebaseAuthInvalidUserException;
 
 import net.intensecorp.meeteazy.R;
@@ -59,7 +60,10 @@ public class ResetPasswordActivity extends AppCompatActivity {
 
         mAuth = FirebaseAuth.getInstance();
 
-        sendLinkButton.setOnClickListener(v -> sendPasswordResetLink());
+        sendLinkButton.setOnClickListener(v -> {
+            hideSoftInput();
+            sendPasswordResetLink();
+        });
 
         signInLink.setOnClickListener(v -> startSignInActivity());
     }
@@ -98,8 +102,6 @@ public class ResetPasswordActivity extends AppCompatActivity {
     private void sendPasswordResetLink() {
         if (isEmailValid() && getEmail() != null) {
 
-            hideSoftInput();
-
             showProgressDialog();
 
             if (new NetworkInfoUtility(ResetPasswordActivity.this).isConnectedToInternet()) {
@@ -109,22 +111,18 @@ public class ResetPasswordActivity extends AppCompatActivity {
                             Log.d(TAG, "Email sent to: " + getEmail());
 
                             dismissProgressDialog();
-
                             showResetPasswordDialog();
                         })
                         .addOnFailureListener(e -> {
+                            dismissProgressDialog();
 
                             if (e instanceof FirebaseAuthInvalidUserException) {
-                                dismissProgressDialog();
-
                                 new Snackbars(ResetPasswordActivity.this).snackbar(R.string.snackbar_text_email_not_registered);
+                            } else if (e instanceof FirebaseAuthEmailException) {
+                                new Snackbars(ResetPasswordActivity.this).snackbar(R.string.snackbar_text_failed_to_send_email);
                             } else if (!new NetworkInfoUtility(ResetPasswordActivity.this).isConnectedToInternet()) {
-                                dismissProgressDialog();
-
                                 showNoInternetDialog();
                             } else {
-                                dismissProgressDialog();
-
                                 new Snackbars(ResetPasswordActivity.this).snackbar(R.string.snackbar_text_error_occurred);
                             }
 
@@ -132,7 +130,6 @@ public class ResetPasswordActivity extends AppCompatActivity {
                         });
             } else {
                 dismissProgressDialog();
-
                 showNoInternetDialog();
             }
         }
@@ -170,7 +167,6 @@ public class ResetPasswordActivity extends AppCompatActivity {
 
             view.findViewById(R.id.button_settings).setOnClickListener(v -> {
                 dismissNoInternetDialog();
-
                 startWirelessSettingsActivity();
             });
         }
@@ -220,7 +216,6 @@ public class ResetPasswordActivity extends AppCompatActivity {
 
             view.findViewById(R.id.button_ok).setOnClickListener(v -> {
                 dismissResetPasswordDialog();
-
                 startSignInActivity();
             });
 
