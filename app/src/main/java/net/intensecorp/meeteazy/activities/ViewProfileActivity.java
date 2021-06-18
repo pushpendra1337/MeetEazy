@@ -34,11 +34,12 @@ import java.util.Objects;
 public class ViewProfileActivity extends AppCompatActivity {
 
     private static final String TAG = ViewProfileActivity.class.getSimpleName();
+    private boolean mIsSelf;
     private AppCompatImageView mProfilePictureView;
     private MaterialTextView mFirstNameView;
     private MaterialTextView mLastNameView;
-    private MaterialTextView mEmailView;
     private MaterialTextView mAboutView;
+    private FirebaseAuth mAuth;
     private FirebaseFirestore mStore;
 
     @RequiresApi(api = Build.VERSION_CODES.O)
@@ -51,16 +52,16 @@ public class ViewProfileActivity extends AppCompatActivity {
         mProfilePictureView = findViewById(R.id.appCompatImageView_profile_picture);
         mFirstNameView = findViewById(R.id.textView_first_name_holder);
         mLastNameView = findViewById(R.id.textView_last_name_holder);
-        mEmailView = findViewById(R.id.textView_email_holder);
+        MaterialTextView emailView = findViewById(R.id.textView_email_holder);
         mAboutView = findViewById(R.id.textView_about_holder);
         FloatingActionButton editButton = findViewById(R.id.floatingActionButton_edit);
         FloatingActionButton callButton = findViewById(R.id.floatingActionButton_call);
 
-        FirebaseAuth auth = FirebaseAuth.getInstance();
+        mAuth = FirebaseAuth.getInstance();
         mStore = FirebaseFirestore.getInstance();
 
         Intent profileIntent = getIntent();
-        boolean isSelf = profileIntent.getBooleanExtra(Extras.EXTRA_IS_SELF, false);
+        mIsSelf = profileIntent.getBooleanExtra(Extras.EXTRA_IS_SELF, false);
         Contact contact = (Contact) profileIntent.getSerializableExtra(Extras.EXTRA_CONTACT);
 
         String firstName;
@@ -69,12 +70,12 @@ public class ViewProfileActivity extends AppCompatActivity {
         String about;
         String profilePictureUrl;
 
-        if (isSelf) {
+        if (mIsSelf) {
             SharedPrefsManager sharedPrefsManager = new SharedPrefsManager(ViewProfileActivity.this, SharedPrefsManager.PREF_USER_DATA);
             HashMap<String, String> userData = sharedPrefsManager.getUserDataPrefs();
             firstName = userData.get(SharedPrefsManager.PREF_FIRST_NAME);
             lastName = userData.get(SharedPrefsManager.PREF_LAST_NAME);
-            email = userData.get(SharedPrefsManager.PREF_EMAIL);
+            email = Objects.requireNonNull(mAuth.getCurrentUser()).getEmail();
             about = userData.get(SharedPrefsManager.PREF_ABOUT);
             profilePictureUrl = userData.get(SharedPrefsManager.PREF_PROFILE_PICTURE_URL);
 
@@ -98,13 +99,13 @@ public class ViewProfileActivity extends AppCompatActivity {
 
         mFirstNameView.setText(firstName);
         mLastNameView.setText(lastName);
-        mEmailView.setText(email);
+        emailView.setText(email);
         mAboutView.setText(about);
 
         loadProfilePicture(profilePictureUrl);
 
-        if (isSelf) {
-            getFreshData(Objects.requireNonNull(auth.getCurrentUser()).getUid());
+        if (mIsSelf) {
+            getFreshData(Objects.requireNonNull(mAuth.getCurrentUser()).getUid());
         } else {
             getFreshData(contact.uid);
         }
@@ -114,6 +115,14 @@ public class ViewProfileActivity extends AppCompatActivity {
         callButton.setOnClickListener(v -> initiatePersonalCall(contact));
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (mIsSelf) {
+            getFreshData(Objects.requireNonNull(mAuth.getCurrentUser()).getUid());
+        }
+    }
+
     private void getFreshData(String uid) {
         mStore.collection(Firestore.COLLECTION_USERS)
                 .document(uid)
@@ -121,17 +130,16 @@ public class ViewProfileActivity extends AppCompatActivity {
                 .addOnSuccessListener(documentSnapshot -> {
                     mFirstNameView.setText(documentSnapshot.getString(Firestore.FIELD_FIRST_NAME));
                     mLastNameView.setText(documentSnapshot.getString(Firestore.FIELD_LAST_NAME));
-                    mEmailView.setText(documentSnapshot.getString(Firestore.FIELD_EMAIL));
                     mAboutView.setText(documentSnapshot.getString(Firestore.FIELD_ABOUT));
                     loadProfilePicture(documentSnapshot.getString(Firestore.FIELD_PROFILE_PICTURE_URL));
 
-                    Log.d(TAG, "Data loaded successfully");
+                    Log.d(TAG, "Data loaded successfully.");
                 })
                 .addOnFailureListener(e -> Log.e(TAG, "Failed to load data: " + e.getMessage()));
     }
 
     private void loadProfilePicture(String profilePictureUrl) {
-        Glide.with(ViewProfileActivity.this)
+        Glide.with(getBaseContext())
                 .load(profilePictureUrl)
                 .centerCrop()
                 .placeholder(R.drawable.img_profile_picture)
