@@ -240,13 +240,17 @@
     <string name="snackbar_text_error_occurred">An error occurred. Please try again later.</string>
     <string name="snackbar_text_login_failed_wrong_credentials">Login failed! Please check your credentials and try again.</string>
     <string name="snackbar_text_email_not_registered">The email address you entered is not associated with any account.</string>
-    <string name="snackbar_text_email_already_exists">The email address is already in use by another account.</string>
+    <string name="snackbar_text_email_already_in_use">The email address is already in use by another account.</string>
+    <string name="snackbar_text_failed_to_send_email">We can\'t process your request at the moment. Please try again later.</string>
     <string name="snackbar_text_check_your_internet_connection">Please check your internet connection or try again later.</string>
     <string name="snackbar_text_no_user_exists_with_provided_email_address">No user exists with provided email address.</string>
     <string name="snackbar_text_contact_already_exists">Contact already exists.</string>
     <string name="snackbar_text_cannot_add_yourself">You can\'t add yourself in contacts.</string>
     <string name="snackbar_text_contact_saved_successfully">Contact saved successfully.</string>
     <string name="snackbar_text_contacts_deleted_successfully">Contacts deleted successfully.</string>
+    <string name="snackbar_text_profile_updated_successfully">Profile updated successfully.</string>
+    <string name="snackbar_text_authentication_failed_wrong_credentials">Authentication failed! Please check your credentials and try again.</string>
+    <string name="snackbar_text_password_changed_successfully">Password changed successfully.</string>
 
     <!-- Toasts -->
     <string name="toast_text_room_id_copied_to_clipboard">Room ID copied to clipboard</string>
