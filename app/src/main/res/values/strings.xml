@@ -257,6 +257,11 @@
     <string name="hint_new_password">New Password</string>
     <string name="dialog_title_change_password">Change password</string>
 
+    <!-- Edit About Dialog -->
+    <string name="dialog_title_edit_about">Edit about</string>
+    <string name="hint_about">About</string>
+    <string name="error_invalid_about">About text must not exceed the length of 256 characters.</string>
+
     <!-- Snackbars -->
     <string name="snackbar_text_error_occurred">An error occurred. Please try again later.</string>
     <string name="snackbar_text_login_failed_wrong_credentials">Login failed! Please check your credentials and try again.</string>
