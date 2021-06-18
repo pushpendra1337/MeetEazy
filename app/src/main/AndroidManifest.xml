@@ -67,6 +67,9 @@
         <!-- View Profile Activity -->
         <activity android:name=".activities.ViewProfileActivity" />
 
+        <!-- Edit Profile Activity -->
+        <activity android:name=".activities.EditProfileActivity" />
+
         <!-- Settings Activity -->
         <activity android:name=".activities.SettingsActivity" />
 
