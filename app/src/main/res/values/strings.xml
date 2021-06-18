@@ -252,6 +252,11 @@
     <string name="dialog_title_signing_out" tools:ignore="TypographyEllipsis">Signing out...</string>
     <string name="dialog_message_signing_out">Due to security reasons, you will be signed out immediately. To continue using MeetEazy you need to sign in again.</string>
 
+    <!-- Change Password Dialog -->
+    <string name="hint_old_password">Old Password</string>
+    <string name="hint_new_password">New Password</string>
+    <string name="dialog_title_change_password">Change password</string>
+
     <!-- Snackbars -->
     <string name="snackbar_text_error_occurred">An error occurred. Please try again later.</string>
     <string name="snackbar_text_login_failed_wrong_credentials">Login failed! Please check your credentials and try again.</string>
