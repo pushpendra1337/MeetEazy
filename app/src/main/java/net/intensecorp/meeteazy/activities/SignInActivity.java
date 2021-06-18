@@ -26,6 +26,7 @@ import com.google.android.material.textview.MaterialTextView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException;
 import com.google.firebase.auth.FirebaseAuthInvalidUserException;
+import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Source;
 
@@ -37,9 +38,10 @@ import net.intensecorp.meeteazy.utils.Patterns;
 import net.intensecorp.meeteazy.utils.SharedPrefsManager;
 import net.intensecorp.meeteazy.utils.Snackbars;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Objects;
 import java.util.regex.Matcher;
-
 
 public class SignInActivity extends AppCompatActivity {
 
@@ -50,6 +52,7 @@ public class SignInActivity extends AppCompatActivity {
     private TextInputEditText mPasswordField;
     private FirebaseAuth mAuth;
     private FirebaseFirestore mStore;
+    private DocumentReference mUserReference;
     private AlertDialog mNoInternetDialog;
     private AlertDialog mProgressDialog;
 
@@ -73,7 +76,10 @@ public class SignInActivity extends AppCompatActivity {
         mAuth = FirebaseAuth.getInstance();
         mStore = FirebaseFirestore.getInstance();
 
-        signInButton.setOnClickListener(v -> initSignIn());
+        signInButton.setOnClickListener(v -> {
+            hideSoftInput();
+            initSignIn();
+        });
 
         signUpLink.setOnClickListener(v -> startSignUpActivity());
 
@@ -127,8 +133,6 @@ public class SignInActivity extends AppCompatActivity {
     private void initSignIn() {
         if (isEmailValid() && getEmail() != null && getPassword() != null) {
 
-            hideSoftInput();
-
             showProgressDialog();
 
             if (new NetworkInfoUtility(SignInActivity.this).isConnectedToInternet()) {
@@ -136,26 +140,21 @@ public class SignInActivity extends AppCompatActivity {
                 mAuth.signInWithEmailAndPassword(getEmail(), getPassword())
                         .addOnSuccessListener(authResult -> {
                             Log.d(TAG, "Signed in to: " + Objects.requireNonNull(mAuth.getCurrentUser()).getUid());
+                            mUserReference = mStore.collection(Firestore.COLLECTION_USERS).document(Objects.requireNonNull(mAuth.getCurrentUser()).getUid());
 
+                            updateEmail();
                             getUserData();
                         })
                         .addOnFailureListener(e -> {
+                            dismissProgressDialog();
 
                             if (e instanceof FirebaseAuthInvalidUserException) {
-                                dismissProgressDialog();
-
                                 new Snackbars(SignInActivity.this).snackbar(R.string.snackbar_text_email_not_registered);
                             } else if (e instanceof FirebaseAuthInvalidCredentialsException) {
-                                dismissProgressDialog();
-
                                 new Snackbars(SignInActivity.this).snackbar(R.string.snackbar_text_login_failed_wrong_credentials);
                             } else if (!new NetworkInfoUtility(SignInActivity.this).isConnectedToInternet()) {
-                                dismissProgressDialog();
-
                                 showNoInternetDialog();
                             } else {
-                                dismissProgressDialog();
-
                                 new Snackbars(SignInActivity.this).snackbar(R.string.snackbar_text_error_occurred);
                             }
 
@@ -163,48 +162,48 @@ public class SignInActivity extends AppCompatActivity {
                         });
             } else {
                 dismissProgressDialog();
-
                 showNoInternetDialog();
             }
         }
     }
 
+    private void updateEmail() {
+        Map<String, Object> emailMap = new HashMap<>();
+        emailMap.put(Firestore.FIELD_EMAIL, Objects.requireNonNull(mAuth.getCurrentUser()).getEmail());
+
+        mUserReference.update(emailMap)
+                .addOnSuccessListener(aVoid -> Log.d(TAG, "Email successfully updated: " + Objects.requireNonNull(mAuth.getCurrentUser()).getUid()))
+                .addOnFailureListener(e -> Log.e(TAG, "Failed to update email: " + Objects.requireNonNull(mAuth.getCurrentUser()).getUid()));
+    }
+
     @RequiresApi(api = Build.VERSION_CODES.O)
     private void getUserData() {
-
         SharedPrefsManager sharedPrefsManager = new SharedPrefsManager(SignInActivity.this, SharedPrefsManager.PREF_USER_DATA);
 
-        mStore.collection(Firestore.COLLECTION_USERS)
-                .document(Objects.requireNonNull(mAuth.getCurrentUser()).getUid())
-                .get(Source.SERVER)
+        mUserReference.get(Source.SERVER)
                 .addOnSuccessListener(documentSnapshot -> {
                     Log.d(TAG, "Fetched user data: " + Firestore.COLLECTION_USERS + "/" + mAuth.getCurrentUser().getUid());
 
                     String firstName = documentSnapshot.getString(Firestore.FIELD_FIRST_NAME);
                     String lastName = documentSnapshot.getString(Firestore.FIELD_LAST_NAME);
-                    String email = documentSnapshot.getString(Firestore.FIELD_EMAIL);
                     String about = documentSnapshot.getString(Firestore.FIELD_ABOUT);
                     String profilePictureUrl = documentSnapshot.getString(Firestore.FIELD_PROFILE_PICTURE_URL);
 
-                    sharedPrefsManager.setUserDataPrefs(firstName, lastName, email, about, profilePictureUrl);
+                    sharedPrefsManager.setUserDataPrefs(firstName, lastName, about, profilePictureUrl);
+
+                    dismissProgressDialog();
 
                     if (mAuth.getCurrentUser().isEmailVerified()) {
-                        dismissProgressDialog();
-
                         startHomeActivity();
                     } else {
-                        dismissProgressDialog();
-
-                        startEmailVerificationActivity(firstName, email);
+                        startEmailVerificationActivity(firstName);
                     }
                 })
                 .addOnFailureListener(e -> {
-
                     mAuth.signOut();
                     sharedPrefsManager.invalidateSession();
 
                     dismissProgressDialog();
-
                     new Snackbars(SignInActivity.this).snackbar(R.string.snackbar_text_error_occurred);
 
                     Log.e(TAG, "Failed to get user data: " + e.getMessage());
@@ -243,7 +242,6 @@ public class SignInActivity extends AppCompatActivity {
 
             view.findViewById(R.id.button_settings).setOnClickListener(v -> {
                 dismissNoInternetDialog();
-
                 startWirelessSettingsActivity();
             });
         }
@@ -279,10 +277,9 @@ public class SignInActivity extends AppCompatActivity {
         }
     }
 
-    private void startEmailVerificationActivity(String firstName, String email) {
+    private void startEmailVerificationActivity(String firstName) {
         Intent emailVerificationIntent = new Intent(SignInActivity.this, EmailVerificationActivity.class);
         emailVerificationIntent.putExtra(Extras.EXTRA_FIRST_NAME, firstName);
-        emailVerificationIntent.putExtra(Extras.EXTRA_EMAIL, email);
         emailVerificationIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP | Intent.FLAG_ACTIVITY_NO_HISTORY);
         startActivity(emailVerificationIntent);
         finish();
@@ -335,6 +332,8 @@ public class SignInActivity extends AppCompatActivity {
                     break;
                 case R.id.textInputEditText_password:
                     getPassword();
+                    break;
+                default:
                     break;
             }
         }
