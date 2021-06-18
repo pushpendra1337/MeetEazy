@@ -31,6 +31,7 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
+import com.bumptech.glide.Glide;
 import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.button.MaterialButton;
@@ -131,10 +132,8 @@ public class HomeActivity extends AppCompatActivity implements ActionListener {
 
         mAuth = FirebaseAuth.getInstance();
         mMessaging = FirebaseMessaging.getInstance();
-
         mStore = FirebaseFirestore.getInstance();
         mUid = Objects.requireNonNull(mAuth.getCurrentUser()).getUid();
-
         mUserReference = mStore.collection(Firestore.COLLECTION_USERS).document(mUid);
 
         if (isUserValid()) {
@@ -198,9 +197,17 @@ public class HomeActivity extends AppCompatActivity implements ActionListener {
         MenuItem menuItem = menu.findItem(R.id.item_profile);
         View view = menuItem.getActionView();
 
-        CircleImageView profilePicture = view.findViewById(R.id.circleImageView_profile_picture);
+        CircleImageView profilePictureView = view.findViewById(R.id.circleImageView_profile_picture);
 
-        profilePicture.setOnClickListener(v -> showProfileDialog());
+        SharedPrefsManager sharedPrefsManager = new SharedPrefsManager(HomeActivity.this, SharedPrefsManager.PREF_USER_DATA);
+
+        Glide.with(getBaseContext())
+                .load(sharedPrefsManager.getProfilePictureUrlPref())
+                .centerCrop()
+                .placeholder(R.drawable.img_profile_picture)
+                .into(profilePictureView);
+
+        profilePictureView.setOnClickListener(v -> showProfileDialog());
 
         return super.onCreateOptionsMenu(menu);
     }
@@ -309,7 +316,6 @@ public class HomeActivity extends AppCompatActivity implements ActionListener {
 
                                             if (!new NetworkInfoUtility(HomeActivity.this).isConnectedToInternet()) {
                                                 mNoInternetErrorLayout.setVisibility(View.VISIBLE);
-
                                                 mNewFloatingActionButton.setVisibility(View.GONE);
                                             } else {
                                                 mNoUserErrorLayout.setVisibility(View.VISIBLE);
@@ -328,7 +334,6 @@ public class HomeActivity extends AppCompatActivity implements ActionListener {
 
                         if (mNoInternetErrorLayout.getVisibility() == View.VISIBLE) {
                             mNoInternetErrorLayout.setVisibility(View.GONE);
-
                             mNewFloatingActionButton.setVisibility(View.VISIBLE);
                         }
 
@@ -336,7 +341,7 @@ public class HomeActivity extends AppCompatActivity implements ActionListener {
                             mNoUserErrorLayout.setVisibility(View.GONE);
                         }
 
-                        Log.d(TAG, "Users loaded successfully");
+                        Log.d(TAG, "Users loaded successfully.");
                     })
                     .addOnFailureListener(e -> {
 
@@ -350,7 +355,6 @@ public class HomeActivity extends AppCompatActivity implements ActionListener {
 
                         if (!new NetworkInfoUtility(HomeActivity.this).isConnectedToInternet()) {
                             mNoInternetErrorLayout.setVisibility(View.VISIBLE);
-
                             mNewFloatingActionButton.setVisibility(View.GONE);
                         } else {
                             mNoUserErrorLayout.setVisibility(View.VISIBLE);
@@ -370,7 +374,6 @@ public class HomeActivity extends AppCompatActivity implements ActionListener {
             }
 
             mNoInternetErrorLayout.setVisibility(View.VISIBLE);
-
             mNewFloatingActionButton.setVisibility(View.GONE);
         }
     }
@@ -451,18 +454,15 @@ public class HomeActivity extends AppCompatActivity implements ActionListener {
     }
 
     private void signOut() {
-
         if (new NetworkInfoUtility(HomeActivity.this).isConnectedToInternet()) {
-
             showProgressDialog();
 
-            mUserReference
-                    .update(Firestore.FIELD_FCM_TOKEN, FieldValue.delete())
-                    .addOnSuccessListener(aVoid -> Log.d(TAG, "Token successfully deleted from database"))
+            mUserReference.update(Firestore.FIELD_FCM_TOKEN, FieldValue.delete())
+                    .addOnSuccessListener(aVoid -> Log.d(TAG, "Token successfully deleted from database."))
                     .addOnFailureListener(e -> Log.e(TAG, "Failed to delete token from database: " + e.getMessage()));
 
             mMessaging.deleteToken()
-                    .addOnSuccessListener(aVoid -> Log.d(TAG, "Token successfully deleted from device"))
+                    .addOnSuccessListener(aVoid -> Log.d(TAG, "Token successfully deleted from device."))
                     .addOnFailureListener(e -> Log.e(TAG, "Failed to delete token from device: " + e.getMessage()));
 
             mAuth.signOut();
@@ -471,18 +471,14 @@ public class HomeActivity extends AppCompatActivity implements ActionListener {
             sharedPrefsManager.invalidateSession();
 
             dismissProgressDialog();
-
             startSignInActivity();
-
         } else {
             dismissProgressDialog();
-
             showNoInternetDialog();
         }
     }
 
     private String getContactEmail() {
-
         String contactEmail = Objects.requireNonNull(mContactEmailLayout.getEditText()).getText().toString().trim();
 
         if (contactEmail.isEmpty()) {
@@ -515,16 +511,15 @@ public class HomeActivity extends AppCompatActivity implements ActionListener {
 
     @RequiresApi(api = Build.VERSION_CODES.O)
     private void isUserExists() {
-        if (isContactEmailValid() && getContactEmail() != null) {
-            showProgressDialog();
+        showProgressDialog();
 
+        if (new NetworkInfoUtility(HomeActivity.this).isConnectedToInternet()) {
             mStore.collection(Firestore.COLLECTION_USERS)
                     .whereEqualTo(Firestore.FIELD_EMAIL, getContactEmail())
                     .get()
                     .addOnSuccessListener(queryDocumentSnapshots -> {
                         if (queryDocumentSnapshots.isEmpty()) {
                             dismissProgressDialog();
-
                             new Snackbars(HomeActivity.this).snackbar(R.string.snackbar_text_no_user_exists_with_provided_email_address, mNewFloatingActionButton);
                         } else {
                             String contactUid = queryDocumentSnapshots.getDocuments().get(0).getId();
@@ -533,9 +528,11 @@ public class HomeActivity extends AppCompatActivity implements ActionListener {
                     })
                     .addOnFailureListener(e -> {
                         dismissProgressDialog();
-
                         new Snackbars(HomeActivity.this).snackbar(R.string.snackbar_text_error_occurred, mNewFloatingActionButton);
                     });
+        } else {
+            dismissProgressDialog();
+            new Snackbars(HomeActivity.this).snackbar(R.string.snackbar_text_check_your_internet_connection, mNewFloatingActionButton);
         }
     }
 
@@ -551,7 +548,6 @@ public class HomeActivity extends AppCompatActivity implements ActionListener {
                         new Snackbars(HomeActivity.this).snackbar(R.string.snackbar_text_cannot_add_yourself, mNewFloatingActionButton);
                     } else if (documentSnapshot.exists()) {
                         dismissProgressDialog();
-
                         new Snackbars(HomeActivity.this).snackbar(R.string.snackbar_text_contact_already_exists, mNewFloatingActionButton);
                     } else {
                         saveContact(contactUid);
@@ -559,7 +555,6 @@ public class HomeActivity extends AppCompatActivity implements ActionListener {
                 })
                 .addOnFailureListener(e -> {
                     dismissProgressDialog();
-
                     new Snackbars(HomeActivity.this).snackbar(R.string.snackbar_text_error_occurred, mNewFloatingActionButton);
                 });
     }
@@ -576,13 +571,11 @@ public class HomeActivity extends AppCompatActivity implements ActionListener {
                 .set(contact)
                 .addOnSuccessListener(aVoid -> {
                     dismissProgressDialog();
-
                     new Snackbars(HomeActivity.this).snackbar(R.string.snackbar_text_contact_saved_successfully, mNewFloatingActionButton);
                     getContacts();
                 })
                 .addOnFailureListener(e -> {
                     dismissProgressDialog();
-
                     new Snackbars(HomeActivity.this).snackbar(R.string.snackbar_text_error_occurred, mNewFloatingActionButton);
                 });
     }
@@ -591,60 +584,68 @@ public class HomeActivity extends AppCompatActivity implements ActionListener {
     private void deleteContact(List<Contact> contacts) {
         showProgressDialog();
 
-        for (int i = 0; i < contacts.size(); i++) {
-            mStore.collection(Firestore.COLLECTION_USERS)
-                    .document(mUid)
-                    .collection(Firestore.COLLECTION_CONTACTS)
-                    .document(contacts.get(i).uid)
-                    .delete()
-                    .addOnSuccessListener(aVoid -> Log.d(TAG, "Contact deleted successfully"))
-                    .addOnFailureListener(e -> Log.e(TAG, "Failed to delete contact: " + e.getMessage()));
+        if (new NetworkInfoUtility(HomeActivity.this).isConnectedToInternet()) {
+            for (int i = 0; i < contacts.size(); i++) {
+                mStore.collection(Firestore.COLLECTION_USERS)
+                        .document(mUid)
+                        .collection(Firestore.COLLECTION_CONTACTS)
+                        .document(contacts.get(i).uid)
+                        .delete()
+                        .addOnSuccessListener(aVoid -> Log.d(TAG, "Contact successfully deleted."))
+                        .addOnFailureListener(e -> Log.e(TAG, "Failed to delete contact: " + e.getMessage()));
+            }
+
+            dismissProgressDialog();
+            new Snackbars(HomeActivity.this).snackbar(R.string.snackbar_text_contacts_deleted_successfully, mNewFloatingActionButton);
+
+            mMaterialToolbar.setVisibility(View.VISIBLE);
+            mToolbar.setVisibility(View.INVISIBLE);
+
+            ContactsAdapter.sSelectedContacts.clear();
+            mContactsAdapter.notifyDataSetChanged();
+            getContacts();
+        } else {
+            dismissProgressDialog();
+            new Snackbars(HomeActivity.this).snackbar(R.string.snackbar_text_check_your_internet_connection, mNewFloatingActionButton);
         }
-
-        dismissProgressDialog();
-
-        new Snackbars(HomeActivity.this).snackbar(R.string.snackbar_text_contacts_deleted_successfully, mNewFloatingActionButton);
-
-        mMaterialToolbar.setVisibility(View.VISIBLE);
-        mToolbar.setVisibility(View.INVISIBLE);
-
-        ContactsAdapter.sSelectedContacts.clear();
-        mContactsAdapter.notifyDataSetChanged();
-        getContacts();
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.O)
     private void initiateMeeting(String roomId) {
-        SharedPrefsManager sharedPrefsManager = new SharedPrefsManager(HomeActivity.this, SharedPrefsManager.PREF_USER_DATA);
+        if (new NetworkInfoUtility(HomeActivity.this).isConnectedToInternet()) {
+            SharedPrefsManager sharedPrefsManager = new SharedPrefsManager(HomeActivity.this, SharedPrefsManager.PREF_USER_DATA);
 
-        HashMap<String, String> userData = sharedPrefsManager.getUserDataPrefs();
-        String firstName = userData.get(SharedPrefsManager.PREF_FIRST_NAME);
-        String lastName = userData.get(SharedPrefsManager.PREF_LAST_NAME);
-        String email = userData.get(SharedPrefsManager.PREF_EMAIL);
-        String profilePictureLink = userData.get(SharedPrefsManager.PREF_PROFILE_PICTURE_URL);
+            HashMap<String, String> userData = sharedPrefsManager.getUserDataPrefs();
+            String firstName = userData.get(SharedPrefsManager.PREF_FIRST_NAME);
+            String lastName = userData.get(SharedPrefsManager.PREF_LAST_NAME);
+            String profilePictureLink = userData.get(SharedPrefsManager.PREF_PROFILE_PICTURE_URL);
 
-        String fullName = FormatterUtility.getFullName(firstName, lastName);
-        URL profilePictureUrl;
+            String fullName = FormatterUtility.getFullName(firstName, lastName);
+            URL profilePictureUrl;
 
-        JitsiMeetUserInfo jitsiMeetUserInfo = new JitsiMeetUserInfo();
-        jitsiMeetUserInfo.setDisplayName(fullName);
-        jitsiMeetUserInfo.setEmail(email);
+            JitsiMeetUserInfo jitsiMeetUserInfo = new JitsiMeetUserInfo();
+            jitsiMeetUserInfo.setDisplayName(fullName);
+            jitsiMeetUserInfo.setEmail(Objects.requireNonNull(mAuth.getCurrentUser()).getEmail());
 
-        try {
-            profilePictureUrl = new URL(profilePictureLink);
-            jitsiMeetUserInfo.setAvatar(profilePictureUrl);
-        } catch (MalformedURLException e) {
-            e.printStackTrace();
+            try {
+                profilePictureUrl = new URL(profilePictureLink);
+                jitsiMeetUserInfo.setAvatar(profilePictureUrl);
+            } catch (MalformedURLException e) {
+                e.printStackTrace();
+            }
+
+            JitsiMeetConferenceOptions.Builder conferenceOptionsBuilder = new JitsiMeetConferenceOptions.Builder()
+                    .setServerURL(ApiUtility.getJitsiMeetServerUrl())
+                    .setWelcomePageEnabled(false)
+                    .setRoom(roomId)
+                    .setUserInfo(jitsiMeetUserInfo)
+                    .setVideoMuted(true)
+                    .setAudioMuted(false);
+
+            JitsiMeetActivity.launch(HomeActivity.this, conferenceOptionsBuilder.build());
+        } else {
+            new Snackbars(HomeActivity.this).snackbar(R.string.snackbar_text_check_your_internet_connection, mNewFloatingActionButton);
         }
-
-        JitsiMeetConferenceOptions.Builder conferenceOptionsBuilder = new JitsiMeetConferenceOptions.Builder()
-                .setServerURL(ApiUtility.getJitsiMeetServerUrl())
-                .setWelcomePageEnabled(false)
-                .setRoom(roomId)
-                .setUserInfo(jitsiMeetUserInfo)
-                .setVideoMuted(true)
-                .setAudioMuted(false);
-
-        JitsiMeetActivity.launch(HomeActivity.this, conferenceOptionsBuilder.build());
     }
 
     private String getRoomId() {
@@ -770,9 +771,11 @@ public class HomeActivity extends AppCompatActivity implements ActionListener {
             });
 
             saveButton.setOnClickListener(v -> {
-                hideSoftInput();
-                dismissCreateContactDialog();
-                isUserExists();
+                if (isContactEmailValid() && getContactEmail() != null) {
+                    hideSoftInput();
+                    dismissCreateContactDialog();
+                    isUserExists();
+                }
             });
 
         }
@@ -806,7 +809,6 @@ public class HomeActivity extends AppCompatActivity implements ActionListener {
                 dismissDeleteContactDialog();
                 deleteContact(contacts);
             });
-
         }
 
         mDeleteContactDialog.show();
@@ -819,6 +821,7 @@ public class HomeActivity extends AppCompatActivity implements ActionListener {
         }
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.O)
     private void showCreateRoomDialog() {
         if (mCreateRoomDialog == null) {
 
@@ -866,6 +869,7 @@ public class HomeActivity extends AppCompatActivity implements ActionListener {
         }
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.O)
     private void showJoinRoomDialog() {
         if (mJoinRoomDialog == null) {
 
@@ -933,7 +937,6 @@ public class HomeActivity extends AppCompatActivity implements ActionListener {
 
             view.findViewById(R.id.button_settings).setOnClickListener(v -> {
                 dismissNoInternetDialog();
-
                 startWirelessSettingsActivity();
             });
         }
@@ -963,31 +966,26 @@ public class HomeActivity extends AppCompatActivity implements ActionListener {
 
             view.findViewById(R.id.linearLayout_profile).setOnClickListener(v -> {
                 dismissProfileDialog();
-
                 startProfileActivity();
             });
 
             view.findViewById(R.id.linearLayout_settings).setOnClickListener(v -> {
                 dismissProfileDialog();
-
                 startSettingsActivity();
             });
 
             view.findViewById(R.id.linearLayout_about).setOnClickListener(v -> {
                 dismissProfileDialog();
-
                 startAboutActivity();
             });
 
             view.findViewById(R.id.linearLayout_feedback).setOnClickListener(v -> {
                 dismissProfileDialog();
-
                 startComposeEmailActivity();
             });
 
             view.findViewById(R.id.button_sign_out).setOnClickListener(v -> {
                 dismissProfileDialog();
-
                 showSignOutDialog();
             });
         }
@@ -1039,7 +1037,6 @@ public class HomeActivity extends AppCompatActivity implements ActionListener {
 
             view.findViewById(R.id.button_yes).setOnClickListener(v -> {
                 dismissSignOutDialog();
-
                 signOut();
             });
         }
@@ -1129,13 +1126,17 @@ public class HomeActivity extends AppCompatActivity implements ActionListener {
 
         }
 
+        @SuppressLint("NonConstantResourceId")
         public void afterTextChanged(Editable editable) {
-            if (view.getId() == R.id.textInputEditText_contact_email) {
-                getContactEmail();
-            }
-
-            if (view.getId() == R.id.textInputEditText_room_id) {
-                getRoomId();
+            switch (view.getId()) {
+                case R.id.textInputEditText_contact_email:
+                    getContactEmail();
+                    break;
+                case R.id.textInputEditText_room_id:
+                    getRoomId();
+                    break;
+                default:
+                    break;
             }
         }
     }
