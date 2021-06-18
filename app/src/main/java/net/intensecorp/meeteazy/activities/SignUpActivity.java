@@ -83,7 +83,10 @@ public class SignUpActivity extends AppCompatActivity {
         mAuth = FirebaseAuth.getInstance();
         mStore = FirebaseFirestore.getInstance();
 
-        signUpButton.setOnClickListener(v -> initSignUp());
+        signUpButton.setOnClickListener(v -> {
+            hideSoftInput();
+            initSignUp();
+        });
 
         signInActivityLink.setOnClickListener(v -> startSignInActivity());
     }
@@ -182,8 +185,6 @@ public class SignUpActivity extends AppCompatActivity {
     private void initSignUp() {
         if (getFirstName() != null && getLastName() != null && isEmailValid() && getEmail() != null && getPassword() != null) {
 
-            hideSoftInput();
-
             showProgressDialog();
 
             if (new NetworkInfoUtility(SignUpActivity.this).isConnectedToInternet()) {
@@ -194,23 +195,17 @@ public class SignUpActivity extends AppCompatActivity {
 
                             if (mUser != null) {
                                 Log.d(TAG, "Signed up with: " + mUser.getEmail());
-
                                 setUserData();
                             }
                         })
                         .addOnFailureListener(e -> {
+                            dismissProgressDialog();
 
                             if (e instanceof FirebaseAuthUserCollisionException) {
-                                dismissProgressDialog();
-
-                                new Snackbars(SignUpActivity.this).snackbar(R.string.snackbar_text_email_already_exists);
+                                new Snackbars(SignUpActivity.this).snackbar(R.string.snackbar_text_email_already_in_use);
                             } else if (!new NetworkInfoUtility(SignUpActivity.this).isConnectedToInternet()) {
-                                dismissProgressDialog();
-
                                 showNoInternetDialog();
                             } else {
-                                dismissProgressDialog();
-
                                 new Snackbars(SignUpActivity.this).snackbar(R.string.snackbar_text_error_occurred);
                             }
 
@@ -218,7 +213,6 @@ public class SignUpActivity extends AppCompatActivity {
                         });
             } else {
                 dismissProgressDialog();
-
                 showNoInternetDialog();
             }
         }
@@ -241,16 +235,13 @@ public class SignUpActivity extends AppCompatActivity {
                     Log.d(TAG, "User data added: " + Firestore.COLLECTION_USERS + "/" + mUser.getUid());
 
                     SharedPrefsManager sharedPrefsManager = new SharedPrefsManager(SignUpActivity.this, SharedPrefsManager.PREF_USER_DATA);
-                    sharedPrefsManager.setUserDataPrefs(getFirstName(), getLastName(), getEmail(), Firestore.DEFAULT_VALUE_ABOUT, Firestore.DEFAULT_VALUE_PROFILE_PICTURE_URL);
+                    sharedPrefsManager.setUserDataPrefs(getFirstName(), getLastName(), Firestore.DEFAULT_VALUE_ABOUT, Firestore.DEFAULT_VALUE_PROFILE_PICTURE_URL);
 
                     dismissProgressDialog();
-
                     startEmailVerificationActivity();
                 })
                 .addOnFailureListener(e -> {
-
                     deleteUser(mUser);
-
                     Log.e(TAG, "Failed to add user data: " + e.getMessage());
                 });
 
@@ -260,24 +251,11 @@ public class SignUpActivity extends AppCompatActivity {
     private void deleteUser(FirebaseUser user) {
         user.delete()
                 .addOnSuccessListener(aVoid -> {
-                    Log.d(TAG, "User deleted: " + user.getUid());
-
                     dismissProgressDialog();
-
-                    new Snackbars(SignUpActivity.this).snackbar(R.string.snackbar_text_error_occurred);
+                    Log.d(TAG, "User deleted: " + user.getUid());
                 })
                 .addOnFailureListener(e -> {
-
-                    if (!new NetworkInfoUtility(SignUpActivity.this).isConnectedToInternet()) {
-                        dismissProgressDialog();
-
-                        showNoInternetDialog();
-                    } else {
-                        dismissProgressDialog();
-
-                        new Snackbars(SignUpActivity.this).snackbar(R.string.snackbar_text_error_occurred);
-                    }
-
+                    dismissProgressDialog();
                     Log.e(TAG, "Failed to delete user: " + e.getMessage());
                 });
     }
@@ -314,7 +292,6 @@ public class SignUpActivity extends AppCompatActivity {
 
             view.findViewById(R.id.button_settings).setOnClickListener(v -> {
                 dismissNoInternetDialog();
-
                 startWirelessSettingsActivity();
             });
         }
@@ -353,7 +330,6 @@ public class SignUpActivity extends AppCompatActivity {
     private void startEmailVerificationActivity() {
         Intent emailVerificationIntent = new Intent(SignUpActivity.this, EmailVerificationActivity.class);
         emailVerificationIntent.putExtra(Extras.EXTRA_FIRST_NAME, getFirstName());
-        emailVerificationIntent.putExtra(Extras.EXTRA_EMAIL, getEmail());
         emailVerificationIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP | Intent.FLAG_ACTIVITY_NO_HISTORY);
         startActivity(emailVerificationIntent);
         finish();
@@ -402,6 +378,8 @@ public class SignUpActivity extends AppCompatActivity {
                     break;
                 case R.id.textInputEditText_password:
                     getPassword();
+                    break;
+                default:
                     break;
             }
         }
