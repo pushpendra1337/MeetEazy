@@ -74,40 +74,31 @@ public class SplashScreenActivity extends AppCompatActivity {
             boolean isFirstRun = onboardingPrefsManager.getOnboardingPrefs();
 
             if (isFirstRun) {
-
                 if (mUser != null) {
                     mAuth.signOut();
                     userPrefsManager.invalidateSession();
                 }
-
                 onboardingPrefsManager.setOnboardingPrefs(false);
 
                 startOnboardingActivity();
-
             } else if (mUser != null && userPrefsManager.getIsSignedIn() && !mUser.isEmailVerified()) {
                 HashMap<String, String> userData = userPrefsManager.getUserDataPrefs();
                 String firstName = userData.get(SharedPrefsManager.PREF_FIRST_NAME);
-                String email = userData.get(SharedPrefsManager.PREF_EMAIL);
 
-                startEmailVerificationActivity(email, firstName);
-
+                startEmailVerificationActivity(firstName);
             } else if (mUser != null && userPrefsManager.getIsSignedIn() && mUser.isEmailVerified()) {
-
                 startHomeActivity();
-
             } else {
                 mAuth.signOut();
                 userPrefsManager.invalidateSession();
-
                 startSignInActivity();
             }
         }, SPLASH_TIMER);
     }
 
-    private void startEmailVerificationActivity(String firstName, String email) {
+    private void startEmailVerificationActivity(String firstName) {
         Intent emailVerificationIntent = new Intent(SplashScreenActivity.this, EmailVerificationActivity.class);
         emailVerificationIntent.putExtra(Extras.EXTRA_FIRST_NAME, firstName);
-        emailVerificationIntent.putExtra(Extras.EXTRA_EMAIL, email);
         emailVerificationIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP | Intent.FLAG_ACTIVITY_NO_HISTORY);
         startActivity(emailVerificationIntent);
         finish();
