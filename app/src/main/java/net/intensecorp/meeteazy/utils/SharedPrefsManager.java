@@ -17,7 +17,6 @@ public class SharedPrefsManager {
     public static final String PREF_USER_DATA = "PREF_USER_DATA";
     public static final String PREF_FIRST_NAME = "PREF_FIRST_NAME";
     public static final String PREF_LAST_NAME = "PREF_LAST_NAME";
-    public static final String PREF_EMAIL = "PREF_EMAIL";
     public static final String PREF_ABOUT = "PREF_ABOUT";
     public static final String PREF_PROFILE_PICTURE_URL = "PREF_PROFILE_PICTURE_URL";
     public static final String PREF_FCM_TOKEN = "PREF_FCM_TOKEN";
@@ -44,20 +43,42 @@ public class SharedPrefsManager {
         HashMap<String, String> storedUserData = new HashMap<>();
         storedUserData.put(PREF_FIRST_NAME, mSharedPreferences.getString(PREF_FIRST_NAME, null));
         storedUserData.put(PREF_LAST_NAME, mSharedPreferences.getString(PREF_LAST_NAME, null));
-        storedUserData.put(PREF_EMAIL, mSharedPreferences.getString(PREF_EMAIL, null));
         storedUserData.put(PREF_ABOUT, mSharedPreferences.getString(PREF_ABOUT, null));
         storedUserData.put(PREF_PROFILE_PICTURE_URL, mSharedPreferences.getString(PREF_PROFILE_PICTURE_URL, null));
         return storedUserData;
     }
 
-    public void setUserDataPrefs(String firstName, String lastName, String email, String about, String profilePictureUrl) {
+    public void setUserDataPrefs(String firstName, String lastName, String about, String profilePictureUrl) {
         mSharedPrefsEditor.putBoolean(PREF_SIGNED_IN, true);
         mSharedPrefsEditor.putString(PREF_FIRST_NAME, firstName);
         mSharedPrefsEditor.putString(PREF_LAST_NAME, lastName);
-        mSharedPrefsEditor.putString(PREF_EMAIL, email);
         mSharedPrefsEditor.putString(PREF_ABOUT, about);
         mSharedPrefsEditor.putString(PREF_PROFILE_PICTURE_URL, profilePictureUrl);
 
+        mSharedPrefsEditor.apply();
+    }
+
+    public void setFirstNamePref(String firstName) {
+        mSharedPrefsEditor.putString(PREF_FIRST_NAME, firstName);
+        mSharedPrefsEditor.apply();
+    }
+
+    public void setLastNamePref(String lastName) {
+        mSharedPrefsEditor.putString(PREF_LAST_NAME, lastName);
+        mSharedPrefsEditor.apply();
+    }
+
+    public void setAboutPref(String about) {
+        mSharedPrefsEditor.putString(PREF_ABOUT, about);
+        mSharedPrefsEditor.apply();
+    }
+
+    public String getProfilePictureUrlPref() {
+        return mSharedPreferences.getString(PREF_PROFILE_PICTURE_URL, null);
+    }
+
+    public void setProfilePicturePref(String profilePictureUrl) {
+        mSharedPrefsEditor.putString(PREF_PROFILE_PICTURE_URL, profilePictureUrl);
         mSharedPrefsEditor.apply();
     }
 
