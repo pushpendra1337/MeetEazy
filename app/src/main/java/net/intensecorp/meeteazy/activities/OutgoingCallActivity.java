@@ -18,6 +18,7 @@ import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import com.bumptech.glide.Glide;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.textview.MaterialTextView;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
@@ -42,6 +43,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Objects;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 import retrofit2.Call;
@@ -58,6 +60,7 @@ public class OutgoingCallActivity extends AppCompatActivity {
     private String mOtherCalleesCount;
     private int mCallRejectionCount = 0;
     private int mTotalCallees = 0;
+    private String mEmail;
     BroadcastReceiver mCallResponseReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
@@ -78,7 +81,6 @@ public class OutgoingCallActivity extends AppCompatActivity {
                         HashMap<String, String> userData = mSharedPrefsManager.getUserDataPrefs();
                         String firstName = userData.get(SharedPrefsManager.PREF_FIRST_NAME);
                         String lastName = userData.get(SharedPrefsManager.PREF_LAST_NAME);
-                        String email = userData.get(SharedPrefsManager.PREF_EMAIL);
                         String profilePictureLink = userData.get(SharedPrefsManager.PREF_PROFILE_PICTURE_URL);
 
                         String fullName = FormatterUtility.getFullName(firstName, lastName);
@@ -86,7 +88,7 @@ public class OutgoingCallActivity extends AppCompatActivity {
 
                         JitsiMeetUserInfo jitsiMeetUserInfo = new JitsiMeetUserInfo();
                         jitsiMeetUserInfo.setDisplayName(fullName);
-                        jitsiMeetUserInfo.setEmail(email);
+                        jitsiMeetUserInfo.setEmail(mEmail);
 
                         try {
                             profilePictureUrl = new URL(profilePictureLink);
@@ -127,6 +129,8 @@ public class OutgoingCallActivity extends AppCompatActivity {
         MaterialTextView otherCalleesCountView = findViewById(R.id.textView_other_callees_count);
         MaterialTextView othersOrOtherView = findViewById(R.id.textView_others_or_other);
         FloatingActionButton endCallButton = findViewById(R.id.floatingActionButton_end_call);
+
+        mEmail = Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser()).getEmail();
 
         Intent outgoingCallIntent = getIntent();
         mOutgoingCallType = outgoingCallIntent.getStringExtra(Extras.EXTRA_CALL_TYPE);
@@ -218,7 +222,6 @@ public class OutgoingCallActivity extends AppCompatActivity {
             HashMap<String, String> userData = mSharedPrefsManager.getUserDataPrefs();
             String firstName = userData.get(SharedPrefsManager.PREF_FIRST_NAME);
             String lastName = userData.get(SharedPrefsManager.PREF_LAST_NAME);
-            String email = userData.get(SharedPrefsManager.PREF_EMAIL);
             String profilePictureUrl = userData.get(SharedPrefsManager.PREF_PROFILE_PICTURE_URL);
 
             data.put(ApiUtility.KEY_MESSAGE_TYPE, ApiUtility.MESSAGE_TYPE_CALL_REQUEST);
@@ -226,7 +229,7 @@ public class OutgoingCallActivity extends AppCompatActivity {
             data.put(ApiUtility.KEY_CALL_TYPE, callType);
             data.put(ApiUtility.KEY_CALLER_FIRST_NAME, firstName);
             data.put(ApiUtility.KEY_CALLER_LAST_NAME, lastName);
-            data.put(ApiUtility.KEY_CALLER_EMAIL, email);
+            data.put(ApiUtility.KEY_CALLER_EMAIL, mEmail);
             if (callType.equals(ApiUtility.CALL_TYPE_GROUP)) {
                 data.put(ApiUtility.KEY_OTHER_CALLEES_COUNT, mOtherCalleesCount);
             }
@@ -245,7 +248,6 @@ public class OutgoingCallActivity extends AppCompatActivity {
     }
 
     public void craftCallEndRequestMessageBody(String calleeFcmToken, ArrayList<Contact> callees) {
-
         try {
             JSONArray calleeFcmTokensArray = new JSONArray();
             if (calleeFcmToken != null) {
@@ -270,7 +272,7 @@ public class OutgoingCallActivity extends AppCompatActivity {
             sendCallRequestMessage(body.toString(), ApiUtility.REQUEST_TYPE_ENDED);
 
         } catch (Exception exception) {
-            Log.d(TAG, "Message body can't be crafted: " + exception.getMessage());
+            Log.e(TAG, "Message body can't be crafted: " + exception.getMessage());
         }
     }
 
@@ -284,12 +286,16 @@ public class OutgoingCallActivity extends AppCompatActivity {
                         if (response.isSuccessful()) {
                             switch (requestType) {
                                 case ApiUtility.REQUEST_TYPE_INITIATED:
-                                    Log.d(TAG, "Call initiate request message sent successfully.");
+                                    Log.d(TAG, "Call initiate request message successfully sent.");
                                     break;
 
                                 case ApiUtility.REQUEST_TYPE_ENDED:
-                                    Log.d(TAG, "Call end request message sent successfully.");
+                                    Log.d(TAG, "Call end request message successfully sent.");
                                     finish();
+                                    break;
+
+                                default:
+                                    Log.e(TAG, "Unknown request.");
                                     break;
                             }
                         } else {

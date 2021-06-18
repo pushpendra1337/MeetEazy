@@ -16,6 +16,7 @@ import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import com.bumptech.glide.Glide;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.textview.MaterialTextView;
+import com.google.firebase.auth.FirebaseAuth;
 
 import net.intensecorp.meeteazy.R;
 import net.intensecorp.meeteazy.api.ApiClient;
@@ -34,6 +35,7 @@ import org.json.JSONObject;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.HashMap;
+import java.util.Objects;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 import retrofit2.Call;
@@ -43,7 +45,6 @@ import retrofit2.Response;
 public class IncomingCallActivity extends AppCompatActivity {
 
     private static final String TAG = IncomingCallActivity.class.getSimpleName();
-
     BroadcastReceiver mCallEndRequestReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
@@ -135,7 +136,6 @@ public class IncomingCallActivity extends AppCompatActivity {
     }
 
     public void craftCallResponseMessageBody(String callerFcmToken, String responseType) {
-
         try {
             JSONArray callerFcmTokensArray = new JSONArray();
             callerFcmTokensArray.put(callerFcmToken);
@@ -152,7 +152,7 @@ public class IncomingCallActivity extends AppCompatActivity {
             sendCallResponseMessage(body.toString(), responseType);
 
         } catch (Exception exception) {
-            Log.d(TAG, "Message can't be crafted: " + exception.getMessage());
+            Log.e(TAG, "Message can't be crafted: " + exception.getMessage());
         }
     }
 
@@ -171,7 +171,6 @@ public class IncomingCallActivity extends AppCompatActivity {
                                     HashMap<String, String> userData = sharedPrefsManager.getUserDataPrefs();
                                     String firstName = userData.get(SharedPrefsManager.PREF_FIRST_NAME);
                                     String lastName = userData.get(SharedPrefsManager.PREF_LAST_NAME);
-                                    String email = userData.get(SharedPrefsManager.PREF_EMAIL);
                                     String profilePictureLink = userData.get(SharedPrefsManager.PREF_PROFILE_PICTURE_URL);
 
                                     String fullName = FormatterUtility.getFullName(firstName, lastName);
@@ -179,7 +178,7 @@ public class IncomingCallActivity extends AppCompatActivity {
 
                                     JitsiMeetUserInfo jitsiMeetUserInfo = new JitsiMeetUserInfo();
                                     jitsiMeetUserInfo.setDisplayName(fullName);
-                                    jitsiMeetUserInfo.setEmail(email);
+                                    jitsiMeetUserInfo.setEmail(Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser()).getEmail());
 
                                     try {
                                         profilePictureUrl = new URL(profilePictureLink);
@@ -201,11 +200,11 @@ public class IncomingCallActivity extends AppCompatActivity {
                                     break;
 
                                 case ApiUtility.RESPONSE_TYPE_REJECTED:
-                                    Log.d(TAG, "Call rejected response message sent successfully.");
+                                    Log.d(TAG, "Call rejected response message successfully sent.");
                                     break;
 
                                 default:
-                                    Log.e(TAG, "Unknown response");
+                                    Log.e(TAG, "Unknown response.");
                                     break;
                             }
                         } else {
