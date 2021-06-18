@@ -31,6 +31,7 @@ import net.intensecorp.meeteazy.utils.Extras;
 
 import java.io.File;
 import java.util.List;
+import java.util.Objects;
 
 import static androidx.core.content.FileProvider.getUriForFile;
 
@@ -85,7 +86,7 @@ public class ImagePickerActivity extends AppCompatActivity {
     public static void clearCache(Context context) {
         File path = new File(context.getExternalCacheDir(), "camera");
         if (path.exists() && path.isDirectory()) {
-            for (File child : path.listFiles()) {
+            for (File child : Objects.requireNonNull(path.listFiles())) {
                 child.delete();
             }
         }
