@@ -6,6 +6,7 @@ import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Point;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Build;
 import android.os.Bundle;
@@ -32,6 +33,8 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.bumptech.glide.Glide;
+import com.ferfalk.simplesearchview.SimpleSearchView;
+import com.ferfalk.simplesearchview.utils.DimensUtils;
 import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.button.MaterialButton;
@@ -60,6 +63,7 @@ import net.intensecorp.meeteazy.utils.Patterns;
 import net.intensecorp.meeteazy.utils.SharedPrefsManager;
 import net.intensecorp.meeteazy.utils.Snackbars;
 
+import org.jetbrains.annotations.NotNull;
 import org.jitsi.meet.sdk.JitsiMeetActivity;
 import org.jitsi.meet.sdk.JitsiMeetConferenceOptions;
 import org.jitsi.meet.sdk.JitsiMeetUserInfo;
@@ -88,12 +92,14 @@ public class HomeActivity extends AppCompatActivity implements ActionListener {
     private DocumentReference mUserReference;
     private String mUid;
     private List<Contact> mContacts;
+    private List<Contact> mFilteredContacts;
     private ContactsAdapter mContactsAdapter;
     private MaterialToolbar mMaterialToolbar;
+    private SimpleSearchView mSimpleSearchView;
     private Toolbar mToolbar;
     private ProgressBar mLoadingProgressbar;
     private LinearLayout mNoInternetErrorLayout;
-    private LinearLayout mNoUserErrorLayout;
+    private LinearLayout mNoContactsFoundErrorLayout;
     private SwipeRefreshLayout mSwipeRefreshLayout;
     private FloatingActionButton mNewFloatingActionButton;
     private AlertDialog mBatteryOptimizationDialog;
@@ -118,14 +124,22 @@ public class HomeActivity extends AppCompatActivity implements ActionListener {
 
         mMaterialToolbar = findViewById(R.id.materialToolbar);
         mToolbar = findViewById(R.id.toolbar);
+        mSimpleSearchView = findViewById(R.id.simpleSearchView);
         RecyclerView contactsRecyclerView = findViewById(R.id.recyclerView_users);
         mLoadingProgressbar = findViewById(R.id.progressBar_loading);
         mNoInternetErrorLayout = findViewById(R.id.linearLayout_error_no_internet);
-        mNoUserErrorLayout = findViewById(R.id.linearLayout_error_no_user);
+        mNoContactsFoundErrorLayout = findViewById(R.id.linearLayout_error_no_contacts_found);
         MaterialButton tryAgainButton = findViewById(R.id.button_try_again);
         MaterialButton refreshButton = findViewById(R.id.button_refresh);
         mSwipeRefreshLayout = findViewById(R.id.swipeRefreshLayout);
         mNewFloatingActionButton = findViewById(R.id.floatingActionButton_new);
+
+        Point revealCenter = mSimpleSearchView.getRevealAnimationCenter();
+
+        if (revealCenter != null) {
+            revealCenter.x = DimensUtils.convertDpToPx(200, this);
+            revealCenter.y = DimensUtils.convertDpToPx(30, this);
+        }
 
         mMaterialToolbar.setTitle(R.string.toolbar_title_search);
         setSupportActionBar(mMaterialToolbar);
@@ -141,6 +155,7 @@ public class HomeActivity extends AppCompatActivity implements ActionListener {
         }
 
         mContacts = new ArrayList<>();
+        mFilteredContacts = new ArrayList<>();
         mContactsAdapter = new ContactsAdapter(mContacts, this);
         contactsRecyclerView.setAdapter(mContactsAdapter);
 
@@ -150,21 +165,33 @@ public class HomeActivity extends AppCompatActivity implements ActionListener {
         mSwipeRefreshLayout.setColorSchemeColors(getResources().getColor(R.color.colorSwipeRefreshLayoutProgressSpinner, getTheme()));
 
         mMaterialToolbar.setNavigationOnClickListener(v -> {
-            // TODO: Search
+            mSimpleSearchView.showSearch();
         });
 
         mToolbar.setNavigationOnClickListener(v -> {
             ContactsAdapter.sSelectedContacts.clear();
+
+            if (mSimpleSearchView.isSearchOpen()) {
+                mSimpleSearchView.closeSearch();
+            }
+
+            mContactsAdapter = new ContactsAdapter(mContacts, this);
+            contactsRecyclerView.setAdapter(mContactsAdapter);
+
             mToolbar.setVisibility(View.INVISIBLE);
             mMaterialToolbar.setVisibility(View.VISIBLE);
             mContactsAdapter.notifyDataSetChanged();
         });
 
         mMaterialToolbar.setOnClickListener(v -> {
-            // TODO: Search
+            mSimpleSearchView.showSearch();
         });
 
         tryAgainButton.setOnClickListener(v -> {
+            if (mSimpleSearchView.isSearchOpen()) {
+                mSimpleSearchView.closeSearch();
+            }
+
             if (mNoInternetErrorLayout.getVisibility() == View.VISIBLE) {
                 mNoInternetErrorLayout.setVisibility(View.GONE);
             }
@@ -173,21 +200,200 @@ public class HomeActivity extends AppCompatActivity implements ActionListener {
         });
 
         refreshButton.setOnClickListener(v -> {
-            if (mNoUserErrorLayout.getVisibility() == View.VISIBLE) {
-                mNoUserErrorLayout.setVisibility(View.GONE);
+            if (mSimpleSearchView.isSearchOpen()) {
+                mSimpleSearchView.closeSearch();
             }
-
+            if (mNoContactsFoundErrorLayout.getVisibility() == View.VISIBLE) {
+                mNoContactsFoundErrorLayout.setVisibility(View.GONE);
+            }
             getContacts();
         });
 
         mSwipeRefreshLayout.setOnRefreshListener(() -> {
+            if (mSimpleSearchView.isSearchOpen()) {
+                mSimpleSearchView.closeSearch();
+            }
             mSwipeRefreshLayout.setRefreshing(true);
             getContacts();
         });
 
-        mNewFloatingActionButton.setOnClickListener(v -> showNewBottomSheetDialog());
+        mNewFloatingActionButton.setOnClickListener(v -> {
+            if (mSimpleSearchView.isSearchOpen()) {
+                mSimpleSearchView.closeSearch();
+            }
+            showNewBottomSheetDialog();
+        });
 
         isBatteryOptimizationEnabled();
+
+        ActionListener actionListener = this;
+
+        ActionListener onSearchViewActionListener = new ActionListener() {
+            @RequiresApi(api = Build.VERSION_CODES.O)
+            @Override
+            public void onInitiatePersonalCall(Contact contact) {
+                ContactsAdapter.sSelectedContacts.clear();
+                mContactsAdapter.notifyDataSetChanged();
+
+                if (new NetworkInfoUtility(HomeActivity.this).isConnectedToInternet()) {
+                    if (contact.fcmToken == null || contact.fcmToken.trim().isEmpty()) {
+                        Toast.makeText(HomeActivity.this, contact.firstName + " " + contact.lastName + " is not available right now", Toast.LENGTH_SHORT).show();
+                    } else {
+                        startOutgoingCallActivity(contact);
+                    }
+                } else {
+                    new Snackbars(HomeActivity.this).snackbar(R.string.snackbar_text_check_your_internet_connection, mNewFloatingActionButton);
+                }
+
+                if (mSimpleSearchView.isSearchOpen()) {
+                    mSimpleSearchView.closeSearch();
+                }
+            }
+
+            @SuppressLint("NonConstantResourceId")
+            @RequiresApi(api = Build.VERSION_CODES.O)
+            @Override
+            public void onSelection(List<Contact> contacts) {
+                if (new NetworkInfoUtility(HomeActivity.this).isConnectedToInternet()) {
+                    if (contacts.size() > 0) {
+                        mSimpleSearchView.setVisibility(View.INVISIBLE);
+                        mMaterialToolbar.setVisibility(View.INVISIBLE);
+                        mToolbar.setVisibility(View.VISIBLE);
+                        mToolbar.setTitle(contacts.size() + " " + getResources().getString(R.string.toolbar_title_selected));
+
+                        mToolbar.setOnMenuItemClickListener(item -> {
+                            switch (item.getItemId()) {
+                                case R.id.item_call:
+                                    if (contacts.size() > 0) {
+                                        if (contacts.size() == 1) {
+                                            startOutgoingCallActivity(contacts.get(0));
+                                        } else {
+                                            startOutgoingCallActivity(contacts);
+                                        }
+
+                                        ContactsAdapter.sSelectedContacts.clear();
+                                        mContactsAdapter.notifyDataSetChanged();
+
+                                        if (mSimpleSearchView.isSearchOpen()) {
+                                            mSimpleSearchView.closeSearch();
+                                        } else {
+                                            mMaterialToolbar.setVisibility(View.VISIBLE);
+                                            mToolbar.setVisibility(View.INVISIBLE);
+                                            mToolbar.setTitle(null);
+                                        }
+                                    }
+                                    break;
+
+                                case R.id.item_delete:
+                                    if (contacts.size() > 0) {
+                                        showDeleteContactDialog(contacts);
+                                    }
+                                    break;
+
+                                default:
+                                    break;
+                            }
+
+                            return true;
+                        });
+                    } else {
+                        ContactsAdapter.sSelectedContacts.clear();
+                        mContactsAdapter.notifyDataSetChanged();
+
+                        if (mSimpleSearchView.isSearchOpen()) {
+                            mSimpleSearchView.closeSearch();
+                        } else {
+                            mMaterialToolbar.setVisibility(View.VISIBLE);
+                            mToolbar.setVisibility(View.INVISIBLE);
+                            mToolbar.setTitle(null);
+                        }
+                    }
+
+                    mContactsAdapter.notifyDataSetChanged();
+                } else {
+                    new Snackbars(HomeActivity.this).snackbar(R.string.snackbar_text_check_your_internet_connection, mNewFloatingActionButton);
+                }
+            }
+        };
+
+        mSimpleSearchView.setOnSearchViewListener(new SimpleSearchView.SearchViewListener() {
+            @Override
+            public void onSearchViewShown() {
+                mSimpleSearchView.setVisibility(View.VISIBLE);
+                mMaterialToolbar.setVisibility(View.INVISIBLE);
+                mToolbar.setVisibility(View.INVISIBLE);
+            }
+
+            @Override
+            public void onSearchViewClosed() {
+                mFilteredContacts.clear();
+
+                mContactsAdapter = new ContactsAdapter(mContacts, actionListener);
+                contactsRecyclerView.setAdapter(mContactsAdapter);
+
+                mSimpleSearchView.setVisibility(View.INVISIBLE);
+                mToolbar.setVisibility(View.INVISIBLE);
+                mMaterialToolbar.setVisibility(View.VISIBLE);
+                mToolbar.setTitle(null);
+            }
+
+            @Override
+            public void onSearchViewShownAnimation() {
+
+            }
+
+            @Override
+            public void onSearchViewClosedAnimation() {
+
+            }
+        });
+
+        mSimpleSearchView.setOnQueryTextListener(new SimpleSearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(@NotNull String query) {
+                mFilteredContacts.clear();
+
+                for (int i = 0; i < mContacts.size(); i++) {
+                    if (mContacts.get(i).firstName.contains(query) || mContacts.get(i).lastName.contains(query) || mContacts.get(i).email.contains(query)) {
+                        mFilteredContacts.add(mContacts.get(i));
+                    }
+
+                    mContactsAdapter = new ContactsAdapter(mFilteredContacts, onSearchViewActionListener);
+                    contactsRecyclerView.setAdapter(mContactsAdapter);
+                }
+
+                Log.d(TAG, "Submit:" + query);
+                return true;
+            }
+
+            @Override
+            public boolean onQueryTextChange(@NotNull String newText) {
+                mFilteredContacts.clear();
+
+                for (int i = 0; i < mContacts.size(); i++) {
+                    if (mContacts.get(i).firstName.contains(newText) || mContacts.get(i).lastName.contains(newText) || mContacts.get(i).email.contains(newText)) {
+                        mFilteredContacts.add(mContacts.get(i));
+                    }
+
+                    mContactsAdapter = new ContactsAdapter(mFilteredContacts, onSearchViewActionListener);
+                    contactsRecyclerView.setAdapter(mContactsAdapter);
+                }
+
+                Log.d(TAG, "Text changed:" + newText);
+                return true;
+            }
+
+            @Override
+            public boolean onQueryTextCleared() {
+                mFilteredContacts.clear();
+
+                mContactsAdapter = new ContactsAdapter(mContacts, actionListener);
+                contactsRecyclerView.setAdapter(mContactsAdapter);
+
+                Log.d(TAG, "Text cleared.");
+                return true;
+            }
+        });
     }
 
     @Override
@@ -210,6 +416,16 @@ public class HomeActivity extends AppCompatActivity implements ActionListener {
         profilePictureView.setOnClickListener(v -> showProfileDialog());
 
         return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (mSimpleSearchView.onBackPressed()) {
+            mSimpleSearchView.closeSearch();
+            return;
+        }
+
+        super.onBackPressed();
     }
 
     private boolean isUserValid() {
@@ -290,7 +506,7 @@ public class HomeActivity extends AppCompatActivity implements ActionListener {
                                             if (mContacts.size() > 0) {
                                                 mContactsAdapter.notifyDataSetChanged();
                                             } else {
-                                                mNoUserErrorLayout.setVisibility(View.VISIBLE);
+                                                mNoContactsFoundErrorLayout.setVisibility(View.VISIBLE);
                                             }
 
                                             if (mNewFloatingActionButton.getVisibility() == View.GONE) {
@@ -301,8 +517,8 @@ public class HomeActivity extends AppCompatActivity implements ActionListener {
                                                 mNoInternetErrorLayout.setVisibility(View.GONE);
                                             }
 
-                                            if (mNoUserErrorLayout.getVisibility() == View.VISIBLE) {
-                                                mNoUserErrorLayout.setVisibility(View.GONE);
+                                            if (mNoContactsFoundErrorLayout.getVisibility() == View.VISIBLE) {
+                                                mNoContactsFoundErrorLayout.setVisibility(View.GONE);
                                             }
                                         })
                                         .addOnFailureListener(e -> {
@@ -318,27 +534,22 @@ public class HomeActivity extends AppCompatActivity implements ActionListener {
                                                 mNoInternetErrorLayout.setVisibility(View.VISIBLE);
                                                 mNewFloatingActionButton.setVisibility(View.GONE);
                                             } else {
-                                                mNoUserErrorLayout.setVisibility(View.VISIBLE);
+                                                mNoContactsFoundErrorLayout.setVisibility(View.VISIBLE);
                                             }
 
                                             Log.e(TAG, "Failed to load users: " + e.getMessage());
                                         });
                             }
-                        }
-
-                        if (mContacts.size() > 0) {
-                            mContactsAdapter.notifyDataSetChanged();
                         } else {
-                            mNoUserErrorLayout.setVisibility(View.VISIBLE);
-                        }
+                            if (mSwipeRefreshLayout.isRefreshing()) {
+                                mSwipeRefreshLayout.setRefreshing(false);
+                            }
 
-                        if (mNoInternetErrorLayout.getVisibility() == View.VISIBLE) {
-                            mNoInternetErrorLayout.setVisibility(View.GONE);
-                            mNewFloatingActionButton.setVisibility(View.VISIBLE);
-                        }
+                            if (mLoadingProgressbar.getVisibility() == View.VISIBLE) {
+                                mLoadingProgressbar.setVisibility(View.GONE);
+                            }
 
-                        if (mNoUserErrorLayout.getVisibility() == View.VISIBLE) {
-                            mNoUserErrorLayout.setVisibility(View.GONE);
+                            mNoContactsFoundErrorLayout.setVisibility(View.VISIBLE);
                         }
 
                         Log.d(TAG, "Users loaded successfully.");
@@ -357,7 +568,7 @@ public class HomeActivity extends AppCompatActivity implements ActionListener {
                             mNoInternetErrorLayout.setVisibility(View.VISIBLE);
                             mNewFloatingActionButton.setVisibility(View.GONE);
                         } else {
-                            mNoUserErrorLayout.setVisibility(View.VISIBLE);
+                            mNoContactsFoundErrorLayout.setVisibility(View.VISIBLE);
                         }
 
                         Log.e(TAG, "Failed to load users: " + e.getMessage());
@@ -390,6 +601,9 @@ public class HomeActivity extends AppCompatActivity implements ActionListener {
     @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     public void onInitiatePersonalCall(Contact contact) {
+        ContactsAdapter.sSelectedContacts.clear();
+        mContactsAdapter.notifyDataSetChanged();
+
         if (new NetworkInfoUtility(HomeActivity.this).isConnectedToInternet()) {
             if (contact.fcmToken == null || contact.fcmToken.trim().isEmpty()) {
                 Toast.makeText(this, contact.firstName + " " + contact.lastName + " is not available right now", Toast.LENGTH_SHORT).show();
@@ -410,6 +624,7 @@ public class HomeActivity extends AppCompatActivity implements ActionListener {
                 mMaterialToolbar.setVisibility(View.INVISIBLE);
                 mToolbar.setVisibility(View.VISIBLE);
                 mToolbar.setTitle(contacts.size() + " " + getResources().getString(R.string.toolbar_title_selected));
+
                 mToolbar.setOnMenuItemClickListener(item -> {
                     switch (item.getItemId()) {
                         case R.id.item_call:
@@ -420,11 +635,12 @@ public class HomeActivity extends AppCompatActivity implements ActionListener {
                                     startOutgoingCallActivity(contacts);
                                 }
 
-                                mMaterialToolbar.setVisibility(View.VISIBLE);
-                                mToolbar.setVisibility(View.INVISIBLE);
-
                                 ContactsAdapter.sSelectedContacts.clear();
                                 mContactsAdapter.notifyDataSetChanged();
+
+                                mMaterialToolbar.setVisibility(View.VISIBLE);
+                                mToolbar.setVisibility(View.INVISIBLE);
+                                mToolbar.setTitle(null);
                             }
                             break;
 
@@ -442,6 +658,8 @@ public class HomeActivity extends AppCompatActivity implements ActionListener {
                 });
             } else {
                 ContactsAdapter.sSelectedContacts.clear();
+                mContactsAdapter.notifyDataSetChanged();
+
                 mMaterialToolbar.setVisibility(View.VISIBLE);
                 mToolbar.setVisibility(View.INVISIBLE);
                 mToolbar.setTitle(null);
@@ -545,6 +763,7 @@ public class HomeActivity extends AppCompatActivity implements ActionListener {
                 .get()
                 .addOnSuccessListener(documentSnapshot -> {
                     if (documentSnapshot.getId().equals(mUid)) {
+                        dismissProgressDialog();
                         new Snackbars(HomeActivity.this).snackbar(R.string.snackbar_text_cannot_add_yourself, mNewFloatingActionButton);
                     } else if (documentSnapshot.exists()) {
                         dismissProgressDialog();
@@ -572,6 +791,7 @@ public class HomeActivity extends AppCompatActivity implements ActionListener {
                 .addOnSuccessListener(aVoid -> {
                     dismissProgressDialog();
                     new Snackbars(HomeActivity.this).snackbar(R.string.snackbar_text_contact_saved_successfully, mNewFloatingActionButton);
+                    mContactsAdapter.notifyDataSetChanged();
                     getContacts();
                 })
                 .addOnFailureListener(e -> {
@@ -598,8 +818,13 @@ public class HomeActivity extends AppCompatActivity implements ActionListener {
             dismissProgressDialog();
             new Snackbars(HomeActivity.this).snackbar(R.string.snackbar_text_contacts_deleted_successfully, mNewFloatingActionButton);
 
-            mMaterialToolbar.setVisibility(View.VISIBLE);
-            mToolbar.setVisibility(View.INVISIBLE);
+            if (mSimpleSearchView.isSearchOpen()) {
+                mSimpleSearchView.closeSearch();
+            } else {
+                mToolbar.setVisibility(View.INVISIBLE);
+                mMaterialToolbar.setVisibility(View.VISIBLE);
+                mToolbar.setTitle(null);
+            }
 
             ContactsAdapter.sSelectedContacts.clear();
             mContactsAdapter.notifyDataSetChanged();
