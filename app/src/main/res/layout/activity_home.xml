@@ -21,11 +21,33 @@
         app:navigationIcon="@drawable/ic_baseline_arrow_back_cornflower_blue_24"
         app:titleTextAppearance="@style/StyleToolbarTitle" />
 
+    <com.ferfalk.simplesearchview.SimpleSearchView
+        android:id="@+id/simpleSearchView"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/simple_search_view_height"
+        android:layout_marginHorizontal="@dimen/simple_search_view_margin_horizontal"
+        android:layout_marginTop="@dimen/simple_search_view_margin_top"
+        android:elevation="@dimen/toolbar_elevation"
+        android:hint="@string/toolbar_title_search"
+        android:textColor="@color/colorHighEmphasisText"
+        android:visibility="invisible"
+        app:backIconTint="@color/colorIconography"
+        app:cursorColor="@color/colorPrimary"
+        app:hintColor="@color/colorMediumEmphasisText"
+        app:iconsAlpha="1.0"
+        app:iconsTint="@color/colorIconography"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:searchBackIcon="@drawable/ic_baseline_arrow_back_24"
+        app:searchBackground="@drawable/bg_material_toolbar"
+        app:searchClearIcon="@drawable/ic_baseline_close_24"
+        app:type="card" />
+
     <include
         android:id="@+id/materialToolbar"
         layout="@layout/layout_material_toolbar"
         android:visibility="visible"
-        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -129,7 +151,7 @@
     </LinearLayout>
 
     <LinearLayout
-        android:id="@+id/linearLayout_error_no_user"
+        android:id="@+id/linearLayout_error_no_contacts_found"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_margin="@dimen/margin_16dp"
@@ -146,7 +168,7 @@
             android:layout_height="@dimen/error_image_height"
             android:layout_gravity="center_horizontal"
             android:layout_marginHorizontal="@dimen/margin_16dp"
-            android:contentDescription="@string/content_description_no_user"
+            android:contentDescription="@string/content_description_no_contacts_found"
             android:src="@drawable/img_no_user"
             app:layout_constraintTop_toTopOf="parent" />
 
@@ -157,7 +179,7 @@
             android:layout_marginHorizontal="@dimen/margin_16dp"
             android:layout_marginTop="@dimen/margin_4dp"
             android:includeFontPadding="false"
-            android:text="@string/error_title_no_user"
+            android:text="@string/error_title_no_contacts_found"
             android:textAlignment="center"
             android:textColor="@color/colorHighEmphasisText"
             android:textSize="@dimen/text_size_large"
@@ -170,7 +192,7 @@
             android:layout_marginTop="@dimen/margin_12dp"
             android:fontFamily="@font/poppins_regular"
             android:includeFontPadding="false"
-            android:text="@string/error_message_no_user"
+            android:text="@string/error_message_no_contacts_found"
             android:textAlignment="center"
             android:textColor="@color/colorMediumEmphasisText"
             android:textSize="@dimen/text_size_small" />
