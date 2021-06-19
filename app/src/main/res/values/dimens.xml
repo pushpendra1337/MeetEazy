@@ -109,4 +109,9 @@
     <dimen name="edit_profile_activity_profile_picture_width">200dp</dimen>
     <dimen name="edit_profile_activity_profile_picture_border_width">1dp</dimen>
 
+    <!-- Simple Search View -->
+    <dimen name="simple_search_view_height">60dp</dimen>
+    <dimen name="simple_search_view_margin_top">2dp</dimen>
+    <dimen name="simple_search_view_margin_horizontal">10dp</dimen>
+
 </resources>
