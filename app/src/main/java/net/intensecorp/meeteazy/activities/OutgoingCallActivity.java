@@ -70,7 +70,6 @@ public class OutgoingCallActivity extends AppCompatActivity {
             String responseType = intent.getStringExtra(Extras.EXTRA_RESPONSE_TYPE);
 
             if (responseType != null) {
-
                 switch (responseType) {
                     case ApiUtility.RESPONSE_TYPE_REJECTED:
                         mCallRejectionCount += 1;
@@ -80,7 +79,6 @@ public class OutgoingCallActivity extends AppCompatActivity {
                         break;
 
                     case ApiUtility.RESPONSE_TYPE_ANSWERED:
-
                         HashMap<String, String> userData = mSharedPrefsManager.getUserDataPrefs();
                         String firstName = userData.get(SharedPrefsManager.PREF_FIRST_NAME);
                         String lastName = userData.get(SharedPrefsManager.PREF_LAST_NAME);
@@ -250,6 +248,7 @@ public class OutgoingCallActivity extends AppCompatActivity {
 
             sendCallRequestMessage(body.toString(), ApiUtility.REQUEST_TYPE_INITIATED);
         } catch (Exception exception) {
+            finish();
             Log.d(TAG, "Message body can't be crafted: " + exception.getMessage());
         }
     }
@@ -279,6 +278,7 @@ public class OutgoingCallActivity extends AppCompatActivity {
             sendCallRequestMessage(body.toString(), ApiUtility.REQUEST_TYPE_ENDED);
 
         } catch (Exception exception) {
+            finish();
             Log.e(TAG, "Message body can't be crafted: " + exception.getMessage());
         }
     }
@@ -306,12 +306,14 @@ public class OutgoingCallActivity extends AppCompatActivity {
                                     break;
                             }
                         } else {
+                            finish();
                             Log.d(TAG, "Response of sent message: " + response.message());
                         }
                     }
 
                     @Override
                     public void onFailure(@NonNull Call<String> call, @NonNull Throwable t) {
+                        finish();
                         Log.e(TAG, "Message not sent: " + t.getMessage());
                     }
                 });
