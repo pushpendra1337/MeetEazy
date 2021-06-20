@@ -9,7 +9,8 @@ public class ApiUtility {
     private static final String HEADER_AUTHORIZATION = "Authorization";
     private static final String HEADER_CONTENT_TYPE = "Content-Type";
 
-    private static final String AUTHORIZATION_KEY = "key=AAAAaKi555Q:APA91bHiPMazAftZK4dGMOYy-sPFgvAI7BN-nl-5YOar-kX_HwP6OU0VdmdO_KjzjDIbsDahLAvyDde61M4SvhBZnBbcy9CNb-LXUMLrKg0ahbDMfmX2o-tmplkwFviE88Im0jPoS10g";
+    // Paste your FCM API Key here
+    private static final String AUTHORIZATION_KEY = "your_authorization_key";
     private static final String CONTENT_TYPE_JSON = "application/json";
 
     public static final String JSON_OBJECT_DATA = "data";
@@ -26,6 +27,7 @@ public class ApiUtility {
     public static final String KEY_ROOM_ID = "roomId";
     public static final String KEY_CALLER_FCM_TOKEN = "callerToken";
     public static final String KEY_OTHER_CALLEES_COUNT = "otherCalleesCount";
+    public static final String KEY_REQUEST_TIMESTAMP = "request_timestamp";
 
     public static final String MESSAGE_TYPE_CALL_REQUEST = "callRequest";
     public static final String MESSAGE_TYPE_CALL_RESPONSE = "callResponse";
