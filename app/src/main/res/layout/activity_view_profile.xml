@@ -10,7 +10,7 @@
     <com.google.android.material.appbar.AppBarLayout
         android:id="@+id/appBarLayout_profile"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/profile_picture_height"
+        android:layout_height="@dimen/view_profile_activity_app_bar_height"
         android:fitsSystemWindows="true">
 
         <com.google.android.material.appbar.CollapsingToolbarLayout
