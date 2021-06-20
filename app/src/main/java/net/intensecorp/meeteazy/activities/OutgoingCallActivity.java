@@ -163,15 +163,11 @@ public class OutgoingCallActivity extends AppCompatActivity {
                 break;
         }
 
-        if (!callee.profilePictureUrl.equals("null")) {
-            Glide.with(OutgoingCallActivity.this)
-                    .load(callee.profilePictureUrl)
-                    .centerCrop()
-                    .placeholder(R.drawable.img_profile_picture)
-                    .into(calleeProfilePictureView);
-        } else {
-            calleeProfilePictureView.setImageResource(R.drawable.img_profile_picture);
-        }
+        Glide.with(getBaseContext())
+                .load(callee.profilePictureUrl)
+                .centerCrop()
+                .placeholder(R.drawable.img_profile_picture)
+                .into(calleeProfilePictureView);
 
         calleeFullNameView.setText(FormatterUtility.getFullName(callee.firstName, callee.lastName));
 
@@ -201,7 +197,6 @@ public class OutgoingCallActivity extends AppCompatActivity {
     }
 
     public void craftCallInitiateRequestMessageBody(String callType, String calleeFcmToken, ArrayList<Contact> callees) {
-
         try {
             JSONArray calleeFcmTokensArray = new JSONArray();
 
@@ -236,12 +231,12 @@ public class OutgoingCallActivity extends AppCompatActivity {
             data.put(ApiUtility.KEY_CALLER_PROFILE_PICTURE_URL, profilePictureUrl);
             data.put(ApiUtility.KEY_CALLER_FCM_TOKEN, mSharedPrefsManager.getFcmTokenPref());
             data.put(ApiUtility.KEY_ROOM_ID, ROOM_ID);
+            data.put(ApiUtility.KEY_REQUEST_TIMESTAMP, String.valueOf(System.currentTimeMillis()));
 
             body.put(ApiUtility.JSON_OBJECT_DATA, data);
             body.put(ApiUtility.JSON_OBJECT_REGISTRATION_IDS, calleeFcmTokensArray);
 
             sendCallRequestMessage(body.toString(), ApiUtility.REQUEST_TYPE_INITIATED);
-
         } catch (Exception exception) {
             Log.d(TAG, "Message body can't be crafted: " + exception.getMessage());
         }
@@ -300,14 +295,12 @@ public class OutgoingCallActivity extends AppCompatActivity {
                             }
                         } else {
                             Log.d(TAG, "Response of sent message: " + response.message());
-                            finish();
                         }
                     }
 
                     @Override
                     public void onFailure(@NonNull Call<String> call, @NonNull Throwable t) {
                         Log.e(TAG, "Message not sent: " + t.getMessage());
-                        finish();
                     }
                 });
     }
