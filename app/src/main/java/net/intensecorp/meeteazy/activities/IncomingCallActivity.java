@@ -1,5 +1,6 @@
 package net.intensecorp.meeteazy.activities;
 
+import android.app.NotificationManager;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -23,6 +24,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import net.intensecorp.meeteazy.R;
 import net.intensecorp.meeteazy.api.ApiClient;
 import net.intensecorp.meeteazy.api.ApiService;
+import net.intensecorp.meeteazy.services.MessagingService;
 import net.intensecorp.meeteazy.utils.ApiUtility;
 import net.intensecorp.meeteazy.utils.Extras;
 import net.intensecorp.meeteazy.utils.FormatterUtility;
@@ -46,6 +48,10 @@ import retrofit2.Response;
 
 public class IncomingCallActivity extends AppCompatActivity {
 
+    public static final int INCOMING_CALL_NOTIFICATION_ID = 1;
+    public static final String INCOMING_CALL_NOTIFICATION_CHANNEL_ID = "0";
+    public static final String NOTIFICATION_CHANNEL_INCOMING_CALLS = "Incoming call notifications";
+    public static final String NOTIFICATION_CHANNEL_DESCRIPTION_INCOMING_CALLS = "Incoming call notifications to notify about personal and group calls.";
     private static final String TAG = IncomingCallActivity.class.getSimpleName();
     private static final long INCOMING_CALL_TIMEOUT_TIMER = 60000;
     BroadcastReceiver mCallEndRequestReceiver = new BroadcastReceiver() {
@@ -55,6 +61,7 @@ public class IncomingCallActivity extends AppCompatActivity {
 
             if (requestType != null) {
                 if (requestType.equals(ApiUtility.REQUEST_TYPE_ENDED)) {
+                    cancelIncomingCallNotification();
                     finish();
                 }
             }
@@ -140,6 +147,11 @@ public class IncomingCallActivity extends AppCompatActivity {
         LocalBroadcastManager.getInstance(getApplicationContext()).unregisterReceiver(mCallEndRequestReceiver);
     }
 
+    private void cancelIncomingCallNotification() {
+        NotificationManager notificationManager = (NotificationManager) getApplicationContext().getSystemService(Context.NOTIFICATION_SERVICE);
+        notificationManager.cancel(String.valueOf(R.string.app_name), INCOMING_CALL_NOTIFICATION_ID);
+    }
+
     private void craftCallResponseMessageBody(String callerFcmToken, String responseType) {
         try {
             JSONArray callerFcmTokensArray = new JSONArray();
@@ -159,6 +171,7 @@ public class IncomingCallActivity extends AppCompatActivity {
             Log.e(TAG, "Message can't be crafted: " + exception.getMessage());
         }
 
+        cancelIncomingCallNotification();
         finish();
     }
 
@@ -172,7 +185,6 @@ public class IncomingCallActivity extends AppCompatActivity {
                         if (response.isSuccessful()) {
                             switch (responseType) {
                                 case ApiUtility.RESPONSE_TYPE_ANSWERED:
-
                                     SharedPrefsManager sharedPrefsManager = new SharedPrefsManager(IncomingCallActivity.this, SharedPrefsManager.PREF_USER_DATA);
                                     HashMap<String, String> userData = sharedPrefsManager.getUserDataPrefs();
                                     String firstName = userData.get(SharedPrefsManager.PREF_FIRST_NAME);
