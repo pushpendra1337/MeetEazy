@@ -1,9 +1,20 @@
 package net.intensecorp.meeteazy.services;
 
+import android.app.Notification;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
+import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
+import android.media.RingtoneManager;
+import android.net.Uri;
+import android.os.Build;
 import android.util.Log;
+import android.widget.RemoteViews;
 
 import androidx.annotation.NonNull;
+import androidx.core.app.NotificationCompat;
+import androidx.core.app.NotificationManagerCompat;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import com.google.firebase.auth.FirebaseAuth;
@@ -13,16 +24,20 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
 
+import net.intensecorp.meeteazy.R;
 import net.intensecorp.meeteazy.activities.IncomingCallActivity;
 import net.intensecorp.meeteazy.utils.ApiUtility;
 import net.intensecorp.meeteazy.utils.Extras;
 import net.intensecorp.meeteazy.utils.Firestore;
+import net.intensecorp.meeteazy.utils.FormatterUtility;
 
 import java.util.Objects;
 
 public class MessagingService extends FirebaseMessagingService {
 
     private static final String TAG = MessagingService.class.getSimpleName();
+    private static final String NOTIFICATION_CHANNEL_INCOMING_CALLS = "Incoming call notifications";
+    private static final String NOTIFICATION_CHANNEL_DESCRIPTION_INCOMING_CALLS = "Incoming call notifications to notify about personal and group calls.";
     private FirebaseAuth mAuth;
 
     @Override
@@ -37,9 +52,11 @@ public class MessagingService extends FirebaseMessagingService {
             switch (messageType) {
                 case ApiUtility.MESSAGE_TYPE_CALL_REQUEST:
                     String requestType = remoteMessage.getData().get(ApiUtility.KEY_REQUEST_TYPE);
+
                     if (requestType != null) {
                         switch (requestType) {
                             case ApiUtility.REQUEST_TYPE_INITIATED:
+                                pushIncomingCallNotification(remoteMessage);
                                 startIncomingCallActivity(remoteMessage);
                                 break;
 
@@ -74,7 +91,6 @@ public class MessagingService extends FirebaseMessagingService {
 
         if (isUserValid()) {
             Log.d(TAG, "FCM token: " + token);
-
             setFcmToken(token);
         }
     }
@@ -108,5 +124,74 @@ public class MessagingService extends FirebaseMessagingService {
         incomingCallIntent.putExtra(Extras.EXTRA_ROOM_ID, remoteMessage.getData().get(ApiUtility.KEY_ROOM_ID));
         incomingCallIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         startActivity(incomingCallIntent);
+    }
+
+    public void pushIncomingCallNotification(RemoteMessage remoteMessage) {
+        RemoteViews notificationViews = new RemoteViews(getPackageName(), R.layout.notification_incoming_call);
+        String callerFullName = FormatterUtility.getFullName(remoteMessage.getData().get(ApiUtility.KEY_CALLER_FIRST_NAME), remoteMessage.getData().get(ApiUtility.KEY_CALLER_LAST_NAME));
+        notificationViews.setTextViewText(R.id.textView_caller_full_name, callerFullName);
+
+        switch (Objects.requireNonNull(remoteMessage.getData().get(ApiUtility.KEY_CALL_TYPE))) {
+            case ApiUtility.CALL_TYPE_PERSONAL:
+                notificationViews.setTextViewText(R.id.textView_incoming_call_type, "Incoming call");
+                break;
+            case ApiUtility.CALL_TYPE_GROUP:
+                notificationViews.setTextViewText(R.id.textView_incoming_call_type, "Incoming group call");
+                break;
+            default:
+                break;
+        }
+
+        Uri callRingtoneUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_RINGTONE);
+
+        Intent incomingCallIntent = new Intent(getApplicationContext(), IncomingCallActivity.class);
+        incomingCallIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) {
+            Notification notification = new NotificationCompat.Builder(getApplicationContext())
+                    .setSmallIcon(R.drawable.ic_baseline_call_24)
+                    .setStyle(new NotificationCompat.DecoratedCustomViewStyle())
+                    .setCustomContentView(notificationViews)
+                    .setCustomBigContentView(notificationViews)
+                    .setPriority(NotificationCompat.PRIORITY_MAX)
+                    .setCategory(NotificationCompat.CATEGORY_CALL)
+                    .setSound(callRingtoneUri)
+                    .setVibrate(new long[]{100, 200, 300, 400, 500, 400, 300, 200, 400})
+                    .setLights(Color.BLUE, 500, 500)
+                    .setAutoCancel(false)
+                    .build();
+
+            NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+            notificationManager.notify(1, notification);
+        }
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+
+            NotificationChannel notificationChannel = new NotificationChannel("0", NOTIFICATION_CHANNEL_INCOMING_CALLS, NotificationManager.IMPORTANCE_HIGH);
+            notificationChannel.setDescription(NOTIFICATION_CHANNEL_DESCRIPTION_INCOMING_CALLS);
+            notificationChannel.enableLights(true);
+            notificationChannel.canBypassDnd();
+            notificationChannel.setLightColor(Color.BLUE);
+            notificationChannel.enableVibration(true);
+            notificationChannel.setVibrationPattern(new long[]{100, 200, 300, 400, 500, 400, 300, 200, 400});
+            NotificationManager notificationManager = getSystemService(NotificationManager.class);
+            notificationManager.createNotificationChannel(notificationChannel);
+
+            Notification notification = new NotificationCompat.Builder(getApplicationContext(), "0")
+                    .setSmallIcon(R.drawable.ic_baseline_call_24)
+                    .setStyle(new NotificationCompat.DecoratedCustomViewStyle())
+                    .setCustomContentView(notificationViews)
+                    .setCustomBigContentView(notificationViews)
+                    .setPriority(NotificationCompat.PRIORITY_MAX)
+                    .setCategory(NotificationCompat.CATEGORY_CALL)
+                    .setSound(callRingtoneUri)
+                    .setVibrate(new long[]{100, 200, 300, 400, 500, 400, 300, 200, 400})
+                    .setLights(Color.BLUE, 500, 500)
+                    .setAutoCancel(false)
+                    .build();
+
+            NotificationManagerCompat notificationManagerCompat = NotificationManagerCompat.from(this);
+            notificationManagerCompat.notify(1, notification);
+        }
     }
 }
