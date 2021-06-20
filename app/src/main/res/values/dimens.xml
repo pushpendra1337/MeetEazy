@@ -34,19 +34,32 @@
     <dimen name="corner_radius_medium">6dp</dimen>
     <dimen name="corner_radius_large">8dp</dimen>
 
+    <!-- Toolbar Height -->
+    <dimen name="toolbar_height">48dp</dimen>
+
+    <!-- Divider Height -->
+    <dimen name="divider_height">1dp</dimen>
+
     <!-- Button -->
     <dimen name="button_height_medium">60dp</dimen>
     <dimen name="button_height_large">70dp</dimen>
+
+    <!-- Dialog -->
+    <dimen name="dialog_image_height">150dp</dimen>
+    <dimen name="dialog_title_bar_height">64dp</dimen>
+
+    <!-- List Item -->
+    <dimen name="one_line_list_item_height">56dp</dimen>
+    <dimen name="two_line_list_item_height">72dp</dimen>
+    <dimen name="two_line_list_item_image_height">40dp</dimen>
+    <dimen name="two_line_list_item_image_width">40dp</dimen>
 
     <!-- Progress Dialog -->
     <dimen name="progress_dialog_width">100dp</dimen>
     <dimen name="progress_dialog_height">100dp</dimen>
 
-    <!-- Worm Dots Indicator -->
-    <dimen name="dots_size">12dp</dimen>
-    <dimen name="dots_spacing">4dp</dimen>
-    <dimen name="dots_stroke_width">1dp</dimen>
-    <dimen name="dots_corner_radius">2dp</dimen>
+    <!-- Image Button Padding -->
+    <dimen name="image_button_padding">6dp</dimen>
 
     <!-- Logo -->
     <dimen name="logo_height_large">90dp</dimen>
@@ -57,19 +70,23 @@
     <dimen name="love_icon_height">18dp</dimen>
     <dimen name="love_icon_width">18dp</dimen>
 
+    <!-- Simple Search View -->
+    <dimen name="simple_search_view_height">60dp</dimen>
+    <dimen name="simple_search_view_margin_top">2dp</dimen>
+    <dimen name="simple_search_view_margin_horizontal">10dp</dimen>
+
+    <!-- Worm Dots Indicator -->
+    <dimen name="dots_size">12dp</dimen>
+    <dimen name="dots_spacing">4dp</dimen>
+    <dimen name="dots_stroke_width">1dp</dimen>
+    <dimen name="dots_corner_radius">2dp</dimen>
+
     <!-- Onboarding Slider Image Height -->
     <dimen name="onboarding_slider_image_height">400dp</dimen>
 
     <!-- Home Activity Error Image -->
     <dimen name="error_image_height">250dp</dimen>
     <dimen name="error_image_width">250dp</dimen>
-
-    <!-- Dialog -->
-    <dimen name="dialog_image_height">150dp</dimen>
-    <dimen name="dialog_title_bar_height">64dp</dimen>
-
-    <!-- Toolbar Height -->
-    <dimen name="toolbar_height">48dp</dimen>
 
     <!-- Toolbar Item Profile Picture -->
     <dimen name="toolbar_item_profile_picture_height">28dp</dimen>
@@ -78,40 +95,23 @@
     <dimen name="padding_toolbar_item_profile_picture">6dp</dimen>
     <dimen name="toolbar_item_profile_picture_border_width">1dp</dimen>
 
-    <!-- Divider Height -->
-    <dimen name="divider_height">1dp</dimen>
-
-    <!-- Profile Picture Height -->
-    <dimen name="profile_picture_height">400dp</dimen>
-
-    <!-- Name View Height -->
-    <dimen name="name_view_height">48dp</dimen>
-
-    <!-- List Item -->
-    <dimen name="one_line_list_item_height">56dp</dimen>
-    <dimen name="two_line_list_item_height">72dp</dimen>
-    <dimen name="two_line_list_item_image_height">40dp</dimen>
-    <dimen name="two_line_list_item_image_width">40dp</dimen>
-
-    <!-- Image Button Padding -->
-    <dimen name="image_button_padding">6dp</dimen>
-
     <!-- Call Type Icon -->
     <dimen name="call_type_icon_height">20dp</dimen>
     <dimen name="call_type_icon_width">20dp</dimen>
 
-    <!-- Incoming/Outgoing Call Activity Profile Picture -->
+    <!-- View Profile Activity App Bar Height -->
+    <dimen name="view_profile_activity_app_bar_height">420dp</dimen>
+
+    <!-- Name View Height -->
+    <dimen name="name_view_height">48dp</dimen>
+
+    <!-- Incoming/Outgoing Call Activity -->
     <dimen name="call_activity_profile_picture_height">100dp</dimen>
     <dimen name="call_activity_profile_picture_width">100dp</dimen>
 
-    <!-- Edit Profile Activity Profile Picture -->
+    <!-- Edit Profile Activity -->
     <dimen name="edit_profile_activity_profile_picture_height">200dp</dimen>
     <dimen name="edit_profile_activity_profile_picture_width">200dp</dimen>
     <dimen name="edit_profile_activity_profile_picture_border_width">1dp</dimen>
-
-    <!-- Simple Search View -->
-    <dimen name="simple_search_view_height">60dp</dimen>
-    <dimen name="simple_search_view_margin_top">2dp</dimen>
-    <dimen name="simple_search_view_margin_horizontal">10dp</dimen>
 
 </resources>
