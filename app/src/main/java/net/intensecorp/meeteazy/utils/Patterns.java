@@ -23,11 +23,10 @@ public class Patterns {
     private static final String ENGLISH_ALPHABET = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
 
     public static String generateRoomId() {
-
         String generatedRoomId;
         StringBuilder stringBuilder = new StringBuilder();
         Random random = new Random();
-        int length = 9;
+        int length = 10;
 
         for (int j = 0; j < length; j++) {
             int index = random.nextInt(ENGLISH_ALPHABET.length());
