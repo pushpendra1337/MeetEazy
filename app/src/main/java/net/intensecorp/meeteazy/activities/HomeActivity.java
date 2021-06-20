@@ -115,6 +115,7 @@ public class HomeActivity extends AppCompatActivity implements ActionListener {
     private AlertDialog mJoinRoomDialog;
     private TextInputLayout mRoomIdLayout;
     private TextInputEditText mRoomIdField;
+    private long mBackPressedTime;
 
     @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
@@ -425,7 +426,14 @@ public class HomeActivity extends AppCompatActivity implements ActionListener {
             return;
         }
 
-        super.onBackPressed();
+        if (mBackPressedTime + 2000 > System.currentTimeMillis()) {
+            super.onBackPressed();
+            return;
+        } else {
+            Toast.makeText(this, R.string.toast_text_press_back_again_to_exit, Toast.LENGTH_SHORT).show();
+        }
+
+        mBackPressedTime = System.currentTimeMillis();
     }
 
     private boolean isUserValid() {
