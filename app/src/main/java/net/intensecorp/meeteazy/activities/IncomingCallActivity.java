@@ -104,15 +104,11 @@ public class IncomingCallActivity extends AppCompatActivity {
                 break;
         }
 
-        if (!callerProfilePictureUrl.equals("null")) {
-            Glide.with(IncomingCallActivity.this)
-                    .load(callerProfilePictureUrl)
-                    .centerCrop()
-                    .placeholder(R.drawable.img_profile_picture)
-                    .into(callerProfilePictureView);
-        } else {
-            callerProfilePictureView.setImageResource(R.drawable.img_profile_picture);
-        }
+        Glide.with(getBaseContext())
+                .load(callerProfilePictureUrl)
+                .centerCrop()
+                .placeholder(R.drawable.img_profile_picture)
+                .into(callerProfilePictureView);
 
         callerFullNameView.setText(FormatterUtility.getFullName(callerFirstName, callerLastName));
 
@@ -150,10 +146,11 @@ public class IncomingCallActivity extends AppCompatActivity {
             body.put(ApiUtility.JSON_OBJECT_REGISTRATION_IDS, callerFcmTokensArray);
 
             sendCallResponseMessage(body.toString(), responseType);
-
         } catch (Exception exception) {
             Log.e(TAG, "Message can't be crafted: " + exception.getMessage());
         }
+
+        finish();
     }
 
     private void sendCallResponseMessage(String messageBody, String responseType) {
@@ -196,7 +193,6 @@ public class IncomingCallActivity extends AppCompatActivity {
                                             .setAudioMuted(true);
 
                                     JitsiMeetActivity.launch(IncomingCallActivity.this, conferenceOptionsBuilder.build());
-                                    finish();
                                     break;
 
                                 case ApiUtility.RESPONSE_TYPE_REJECTED:
@@ -210,13 +206,11 @@ public class IncomingCallActivity extends AppCompatActivity {
                         } else {
                             Log.d(TAG, "Response of sent message: " + response.message());
                         }
-                        finish();
                     }
 
                     @Override
                     public void onFailure(@NonNull Call<String> call, @NonNull Throwable t) {
                         Log.e(TAG, "Message not sent: " + t.getMessage());
-                        finish();
                     }
                 });
     }
