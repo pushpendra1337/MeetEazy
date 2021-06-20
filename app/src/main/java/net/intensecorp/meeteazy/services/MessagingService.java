@@ -36,15 +36,11 @@ import java.util.Objects;
 public class MessagingService extends FirebaseMessagingService {
 
     private static final String TAG = MessagingService.class.getSimpleName();
-    private static final String NOTIFICATION_CHANNEL_INCOMING_CALLS = "Incoming call notifications";
-    private static final String NOTIFICATION_CHANNEL_DESCRIPTION_INCOMING_CALLS = "Incoming call notifications to notify about personal and group calls.";
     private FirebaseAuth mAuth;
 
     @Override
     public void onMessageReceived(@NonNull RemoteMessage remoteMessage) {
         super.onMessageReceived(remoteMessage);
-
-        Log.d(TAG, "FCM remote message: " + Objects.requireNonNull(remoteMessage.getData()));
 
         String messageType = remoteMessage.getData().get(ApiUtility.KEY_MESSAGE_TYPE);
 
@@ -52,7 +48,6 @@ public class MessagingService extends FirebaseMessagingService {
             switch (messageType) {
                 case ApiUtility.MESSAGE_TYPE_CALL_REQUEST:
                     String requestType = remoteMessage.getData().get(ApiUtility.KEY_REQUEST_TYPE);
-
                     if (requestType != null) {
                         switch (requestType) {
                             case ApiUtility.REQUEST_TYPE_INITIATED:
@@ -90,6 +85,8 @@ public class MessagingService extends FirebaseMessagingService {
                     break;
             }
         }
+
+        Log.d(TAG, "FCM remote message: " + Objects.requireNonNull(remoteMessage.getData()));
     }
 
     @Override
@@ -169,13 +166,12 @@ public class MessagingService extends FirebaseMessagingService {
                     .build();
 
             NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-            notificationManager.notify(1, notification);
+            notificationManager.notify(String.valueOf(R.string.app_name), IncomingCallActivity.INCOMING_CALL_NOTIFICATION_ID, notification);
         }
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-
-            NotificationChannel notificationChannel = new NotificationChannel("0", NOTIFICATION_CHANNEL_INCOMING_CALLS, NotificationManager.IMPORTANCE_HIGH);
-            notificationChannel.setDescription(NOTIFICATION_CHANNEL_DESCRIPTION_INCOMING_CALLS);
+            NotificationChannel notificationChannel = new NotificationChannel(IncomingCallActivity.INCOMING_CALL_NOTIFICATION_CHANNEL_ID, IncomingCallActivity.NOTIFICATION_CHANNEL_INCOMING_CALLS, NotificationManager.IMPORTANCE_HIGH);
+            notificationChannel.setDescription(IncomingCallActivity.NOTIFICATION_CHANNEL_DESCRIPTION_INCOMING_CALLS);
             notificationChannel.enableLights(true);
             notificationChannel.canBypassDnd();
             notificationChannel.setLightColor(Color.BLUE);
@@ -184,7 +180,7 @@ public class MessagingService extends FirebaseMessagingService {
             NotificationManager notificationManager = getSystemService(NotificationManager.class);
             notificationManager.createNotificationChannel(notificationChannel);
 
-            Notification notification = new NotificationCompat.Builder(getApplicationContext(), "0")
+            Notification notification = new NotificationCompat.Builder(getApplicationContext(), IncomingCallActivity.INCOMING_CALL_NOTIFICATION_CHANNEL_ID)
                     .setSmallIcon(R.drawable.ic_baseline_call_24)
                     .setStyle(new NotificationCompat.DecoratedCustomViewStyle())
                     .setCustomContentView(notificationViews)
@@ -198,7 +194,7 @@ public class MessagingService extends FirebaseMessagingService {
                     .build();
 
             NotificationManagerCompat notificationManagerCompat = NotificationManagerCompat.from(this);
-            notificationManagerCompat.notify(1, notification);
+            notificationManagerCompat.notify(String.valueOf(R.string.app_name), IncomingCallActivity.INCOMING_CALL_NOTIFICATION_ID, notification);
         }
     }
 }
