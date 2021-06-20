@@ -6,6 +6,8 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.util.Log;
 import android.view.View;
 import android.widget.LinearLayout;
@@ -54,6 +56,7 @@ public class OutgoingCallActivity extends AppCompatActivity {
 
     private static final String TAG = OutgoingCallActivity.class.getSimpleName();
     private static final String ROOM_ID = Patterns.generateRoomId();
+    private static final long OUTGOING_CALL_TIMEOUT_TIMER = 60000;
     SharedPrefsManager mSharedPrefsManager;
     private ArrayList<Contact> mCallees;
     private String mOutgoingCallType;
@@ -182,6 +185,15 @@ public class OutgoingCallActivity extends AppCompatActivity {
         });
 
         craftCallInitiateRequestMessageBody(mOutgoingCallType, callee.fcmToken, mCallees);
+
+        new Handler(Looper.getMainLooper()).postDelayed(() -> {
+            if (mOutgoingCallType.equals(ApiUtility.CALL_TYPE_PERSONAL)) {
+                craftCallEndRequestMessageBody(callee.fcmToken, null);
+            } else {
+                craftCallEndRequestMessageBody(null, mCallees);
+            }
+            finish();
+        }, OUTGOING_CALL_TIMEOUT_TIMER);
     }
 
     @Override
@@ -196,7 +208,7 @@ public class OutgoingCallActivity extends AppCompatActivity {
         LocalBroadcastManager.getInstance(getApplicationContext()).unregisterReceiver(mCallResponseReceiver);
     }
 
-    public void craftCallInitiateRequestMessageBody(String callType, String calleeFcmToken, ArrayList<Contact> callees) {
+    private void craftCallInitiateRequestMessageBody(String callType, String calleeFcmToken, ArrayList<Contact> callees) {
         try {
             JSONArray calleeFcmTokensArray = new JSONArray();
 

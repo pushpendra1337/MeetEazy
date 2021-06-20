@@ -5,6 +5,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.util.Log;
 import android.view.View;
 import android.widget.LinearLayout;
@@ -45,6 +47,7 @@ import retrofit2.Response;
 public class IncomingCallActivity extends AppCompatActivity {
 
     private static final String TAG = IncomingCallActivity.class.getSimpleName();
+    private static final long INCOMING_CALL_TIMEOUT_TIMER = 60000;
     BroadcastReceiver mCallEndRequestReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
@@ -57,6 +60,7 @@ public class IncomingCallActivity extends AppCompatActivity {
             }
         }
     };
+
     private String mRoomId;
 
     @Override
@@ -117,6 +121,11 @@ public class IncomingCallActivity extends AppCompatActivity {
         rejectCallButton.setOnClickListener(v -> craftCallResponseMessageBody(callerFcmToken, ApiUtility.RESPONSE_TYPE_REJECTED));
 
         answerCallButton.setOnClickListener(v -> craftCallResponseMessageBody(callerFcmToken, ApiUtility.RESPONSE_TYPE_ANSWERED));
+
+        new Handler(Looper.getMainLooper()).postDelayed(() -> {
+            craftCallResponseMessageBody(callerFcmToken, ApiUtility.RESPONSE_TYPE_REJECTED);
+            finish();
+        }, INCOMING_CALL_TIMEOUT_TIMER);
     }
 
     @Override
@@ -131,7 +140,7 @@ public class IncomingCallActivity extends AppCompatActivity {
         LocalBroadcastManager.getInstance(getApplicationContext()).unregisterReceiver(mCallEndRequestReceiver);
     }
 
-    public void craftCallResponseMessageBody(String callerFcmToken, String responseType) {
+    private void craftCallResponseMessageBody(String callerFcmToken, String responseType) {
         try {
             JSONArray callerFcmTokensArray = new JSONArray();
             callerFcmTokensArray.put(callerFcmToken);
