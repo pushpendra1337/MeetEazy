@@ -24,7 +24,6 @@ import com.google.firebase.auth.FirebaseAuth;
 import net.intensecorp.meeteazy.R;
 import net.intensecorp.meeteazy.api.ApiClient;
 import net.intensecorp.meeteazy.api.ApiService;
-import net.intensecorp.meeteazy.services.MessagingService;
 import net.intensecorp.meeteazy.utils.ApiUtility;
 import net.intensecorp.meeteazy.utils.Extras;
 import net.intensecorp.meeteazy.utils.FormatterUtility;
@@ -125,12 +124,17 @@ public class IncomingCallActivity extends AppCompatActivity {
 
         callerEmailView.setText(callerEmail);
 
-        rejectCallButton.setOnClickListener(v -> craftCallResponseMessageBody(callerFcmToken, ApiUtility.RESPONSE_TYPE_REJECTED));
+        rejectCallButton.setOnClickListener(v -> {
+            craftCallResponseMessageBody(callerFcmToken, ApiUtility.RESPONSE_TYPE_REJECTED);
+            cancelIncomingCallNotification();
+            finish();
+        });
 
         answerCallButton.setOnClickListener(v -> craftCallResponseMessageBody(callerFcmToken, ApiUtility.RESPONSE_TYPE_ANSWERED));
 
         new Handler(Looper.getMainLooper()).postDelayed(() -> {
             craftCallResponseMessageBody(callerFcmToken, ApiUtility.RESPONSE_TYPE_REJECTED);
+            cancelIncomingCallNotification();
             finish();
         }, INCOMING_CALL_TIMEOUT_TIMER);
     }
@@ -168,11 +172,10 @@ public class IncomingCallActivity extends AppCompatActivity {
 
             sendCallResponseMessage(body.toString(), responseType);
         } catch (Exception exception) {
+            cancelIncomingCallNotification();
+            finish();
             Log.e(TAG, "Message can't be crafted: " + exception.getMessage());
         }
-
-        cancelIncomingCallNotification();
-        finish();
     }
 
     private void sendCallResponseMessage(String messageBody, String responseType) {
@@ -214,6 +217,9 @@ public class IncomingCallActivity extends AppCompatActivity {
                                             .setAudioMuted(true);
 
                                     JitsiMeetActivity.launch(IncomingCallActivity.this, conferenceOptionsBuilder.build());
+
+                                    cancelIncomingCallNotification();
+                                    finish();
                                     break;
 
                                 case ApiUtility.RESPONSE_TYPE_REJECTED:
@@ -226,11 +232,15 @@ public class IncomingCallActivity extends AppCompatActivity {
                             }
                         } else {
                             Log.d(TAG, "Response of sent message: " + response.message());
+                            cancelIncomingCallNotification();
+                            finish();
                         }
                     }
 
                     @Override
                     public void onFailure(@NonNull Call<String> call, @NonNull Throwable t) {
+                        cancelIncomingCallNotification();
+                        finish();
                         Log.e(TAG, "Message not sent: " + t.getMessage());
                     }
                 });
