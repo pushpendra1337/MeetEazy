@@ -56,8 +56,15 @@ public class MessagingService extends FirebaseMessagingService {
                     if (requestType != null) {
                         switch (requestType) {
                             case ApiUtility.REQUEST_TYPE_INITIATED:
-                                pushIncomingCallNotification(remoteMessage);
-                                startIncomingCallActivity(remoteMessage);
+                                long requestCraftTime = Long.parseLong(Objects.requireNonNull(remoteMessage.getData().get(ApiUtility.KEY_REQUEST_TIMESTAMP)));
+                                long currentTime = System.currentTimeMillis();
+
+                                if ((currentTime - requestCraftTime) >= 5000) {
+                                    Log.d(TAG, "Remote message ignored.");
+                                } else {
+                                    pushIncomingCallNotification(remoteMessage);
+                                    startIncomingCallActivity(remoteMessage);
+                                }
                                 break;
 
                             case ApiUtility.REQUEST_TYPE_ENDED:
