@@ -20,21 +20,24 @@ public class OnboardingPagerAdapter extends PagerAdapter {
             R.drawable.img_video_meeting,
             R.drawable.img_screen_sharing,
             R.drawable.img_calling,
-            R.drawable.img_pip_mode
+            R.drawable.img_pip_mode,
+            R.drawable.img_add_contact
     };
 
     private static final int[] ONBOARDING_HEADINGS = {
             R.string.onboarding_heading_first_slide,
             R.string.onboarding_heading_second_slide,
             R.string.onboarding_heading_third_slide,
-            R.string.onboarding_heading_fourth_slide
+            R.string.onboarding_heading_fourth_slide,
+            R.string.onboarding_heading_fifth_slide
     };
 
     private static final int[] ONBOARDING_DESCRIPTIONS = {
             R.string.onboarding_description_first_slide,
             R.string.onboarding_description_second_slide,
             R.string.onboarding_description_third_slide,
-            R.string.onboarding_description_fourth_slide
+            R.string.onboarding_description_fourth_slide,
+            R.string.onboarding_description_fifth_slide
     };
 
     Context mContext;

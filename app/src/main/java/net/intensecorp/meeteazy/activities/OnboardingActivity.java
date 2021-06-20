@@ -41,6 +41,10 @@ public class OnboardingActivity extends AppCompatActivity {
                 mSkipButton.setVisibility(View.VISIBLE);
                 mNextButton.setVisibility(View.VISIBLE);
             } else if (position == 2) {
+                mGetStartedButton.setVisibility(View.GONE);
+                mSkipButton.setVisibility(View.VISIBLE);
+                mNextButton.setVisibility(View.VISIBLE);
+            } else if (position == 3) {
                 if (mGetStartedButton.getVisibility() == View.VISIBLE) {
                     Animation skipButtonShowAnimation = AnimationUtils.loadAnimation(OnboardingActivity.this, R.anim.anim_fade_in_from_left_to_right_500);
                     mSkipButton.setAnimation(skipButtonShowAnimation);
