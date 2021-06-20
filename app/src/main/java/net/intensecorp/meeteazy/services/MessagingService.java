@@ -148,9 +148,6 @@ public class MessagingService extends FirebaseMessagingService {
 
         Uri callRingtoneUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_RINGTONE);
 
-        Intent incomingCallIntent = new Intent(getApplicationContext(), IncomingCallActivity.class);
-        incomingCallIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) {
             Notification notification = new NotificationCompat.Builder(getApplicationContext())
                     .setSmallIcon(R.drawable.ic_baseline_call_24)
