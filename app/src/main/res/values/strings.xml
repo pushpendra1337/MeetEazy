@@ -280,5 +280,6 @@
 
     <!-- Toasts -->
     <string name="toast_text_room_id_copied_to_clipboard">Room ID copied to clipboard</string>
+    <string name="toast_text_press_back_again_to_exit">"Press back again to exit"</string>
 
 </resources>
