@@ -129,7 +129,7 @@ To get a local copy up and running follow these simple steps.
 
 # Download
 
-You can download the latest installable version of MeetEazy for android from [here](https://github.com/pushpendra1337/MeetEazy/release/tag/v1.0).
+You can download the latest installable version of MeetEazy for android from [here](https://github.com/pushpendra1337/MeetEazy/releases/tag/v1.0).
 
 # Credits
 
