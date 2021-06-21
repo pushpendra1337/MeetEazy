@@ -120,12 +120,12 @@ To get a local copy up and running follow these simple steps.
 
 ## Permissions Required
 
-    `android.permission.ACCESS_NETWORK_STATE`
-    `android.permission.INTERNET`
-    `android.permission.CAMERA`
-    `android.permission.VIBRATE`
-    `android.permission.READ_EXTERNAL_STORAGE`
-    `android.permission.WRITE_EXTERNAL_STORAGE`
+    android.permission.ACCESS_NETWORK_STATE
+    android.permission.INTERNET
+    android.permission.CAMERA
+    android.permission.VIBRATE
+    android.permission.READ_EXTERNAL_STORAGE
+    android.permission.WRITE_EXTERNAL_STORAGE
 
 # Download
 
