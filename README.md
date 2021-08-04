@@ -64,7 +64,7 @@
 * Create meeting room
 * Join meeting room
 * Personal and group meeting calls
-* Screen Sharing
+* Screen sharing
 * Picture-in-picture mode
 * Live chat feature
 * Start recording
@@ -93,6 +93,7 @@ To get a local copy up and running follow these simple steps.
 ## Prerequisites
 
 * Android Studio
+* A Firebase/Google account
 
 ## Installation
 
